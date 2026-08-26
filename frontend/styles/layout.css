@@ -1,24 +1,22 @@
 :root {
     /* using clamp() function */
-    --navbar-height: clamp(50px, calc(4vw + 35px), 64px);
+    --navbar-height: clamp(50px, calc(-2vw + 60px), 70px);
     --main-padding: clamp(12px, 2vw, 24px);
     --sidebar-width: clamp(200px, 18vw, 260px);
     --footer-height: clamp(40px, calc(3vw + 25px), 48px);
 }
 
-.app-layout{
+.app-layout {
     display: grid;
 
-    grid-template-areas: 
+    grid-template-areas:
         "navbar navbar"
         "sidebar main"
         "footer footer";
-    
+
     grid-template-columns: var(--sidebar-width) 1fr;
-    grid-template-rows: 
-        var(--navbar-height)   
-        1fr 
-        var(--footer-height);
+    grid-template-rows:
+        var(--navbar-height) 1fr var(--footer-height);
 
     /* for browser mobile */
     min-height: 100vh;
@@ -26,39 +24,38 @@
     overflow: hidden;
 }
 
-.layout-main{
+.layout-main {
     grid-area: main;
     padding: var(--main-padding);
     min-width: 0;
     overflow-y: auto;
 }
 
-.layout-navbar{
+.layout-navbar {
     grid-area: navbar;
 }
 
-.layout-sidebar{
+.layout-sidebar {
     grid-area: sidebar;
 }
 
-.layout-footer{
+.layout-footer {
     grid-area: footer;
 }
 
 
 /* mobile */
-@media (max-width: 767px){
-    .app-layout{
-        grid-template-areas: 
+@media (max-width: 767px) {
+    .app-layout {
+        grid-template-areas:
             "navbar"
             "main"
             "footer";
         grid-template-columns: 1fr;
-        grid-template-rows: 
-            var(--navbar-height) 
-            1fr 
-            auto;
+        grid-template-rows:
+            var(--navbar-height) 1fr auto;
     }
+
     .layout-sidebar {
         position: fixed;
         top: 0;
@@ -73,20 +70,23 @@
 
         background-color: var(--color-tertiary);
     }
-    .layout-sidebar.is-open{
+
+    .layout-sidebar.is-open {
         transform: translateX(0);
     }
-    .layout-sidebar-overlay{
+
+    .layout-sidebar-overlay {
         position: fixed;
         inset: 0;
         z-index: 40;
         background: rgb(0 0 0 /0.4);
         opacity: 0;
         visibility: hidden;
-        transition: 
+        transition:
             opacity var(--drawer-transition),
             visibility var(--drawer-transition);
     }
+
     .layout-sidebar-overlay.is-open {
         opacity: 1;
         visibility: visible;
