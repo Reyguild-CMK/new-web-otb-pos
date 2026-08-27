@@ -9,7 +9,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* Brand Colors (from variables.css) */
+  /* Brand Colors & Palette (from variables.css) */
   --color-white: var(--color-white);
   --color-gray-light: var(--color-gray-light);
   --color-gray: var(--color-gray);
@@ -27,7 +27,7 @@
   --color-blue-soft: var(--color-blue-soft);
   --color-blue-medium: var(--color-blue-medium);
 
-  /* Brand Mappings (from variables.css) */
+  /* Semantic Brand Mappings (from variables.css) */
   --color-tertiary: var(--color-tertiary);
   --color-bg-white: var(--color-bg-white);
   --color-text-primary: var(--color-text-primary);
@@ -160,11 +160,11 @@ body {
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
-  --sidebar: var(--color-navy-medium);
+  --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: var(--color-navy-dark);
+  --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
