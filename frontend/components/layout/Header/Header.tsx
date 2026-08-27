@@ -1,10 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import { ReceiptText, Menu, SquareX } from "lucide-react";
 import Link from "next/link";
 import { NotificationBell } from "./NotificationBell";
 import { formatBusinessDate } from "@/lib/date";
+
+import {
+  SidebarProvider,
+  SidebarTrigger
+} from "@/components/ui/sidebar";
 
 interface HeaderProps {
   userName?: string;
@@ -15,6 +20,7 @@ interface HeaderProps {
   businessDate?: string;
   onMenuClick?: () => void;
   onTgpClick?: () => void;
+  children?: ReactNode;
 }
 
 // Style Button & Side
@@ -30,6 +36,7 @@ export function Header({
   businessDate,
   onMenuClick,
   onTgpClick,
+  children,
 }: HeaderProps) {
   const [isActive, setIsActive] = useState(false);
   const displayDate = businessDate || formatBusinessDate();
@@ -38,9 +45,11 @@ export function Header({
       {/* Left Side */}
       <div className={style_side}>
         {/* Sidebar Button */}
-        <button onClick={onMenuClick} className={style_button}>
-          <Menu size={16} />
-        </button>
+        {children ? (children) : (
+          <button onClick={onMenuClick} className={style_button}>
+            <Menu size={16} />
+          </button>
+        )}
         {/* Title */}
         <Link href="/dashboard" className="hidden sm:inline">
           {userName} - {brandName} {storeName} ({storeCode})
