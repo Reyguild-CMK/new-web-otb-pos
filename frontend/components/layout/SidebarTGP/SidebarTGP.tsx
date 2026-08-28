@@ -8,6 +8,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { formatRupiah } from "@/lib/currency";
 
 
 interface LogamMulia {
@@ -131,7 +132,7 @@ export function SidebarTGP() {
             <Table className="w-full">
                 <TableHeader>
                     <TableRow className="hover:bg-transparent">
-                        <TableHead colSpan={2} className={header}>
+                        <TableHead colSpan={2} className={`${header} whitespace-normal`}>
                             Harga Beli Batangan Logam Mulia
                         </TableHead>
                     </TableRow>
@@ -143,7 +144,7 @@ export function SidebarTGP() {
                                 {logammulia.name}
                             </TableCell>
                             <TableCell className={cell_right}>
-                                Rp {logammulia.price.toLocaleString("id-ID")}
+                                {formatRupiah(logammulia.price)}
                             </TableCell>
                         </TableRow>
                     ))}
@@ -165,7 +166,7 @@ export function SidebarTGP() {
                                 {beliemas.name}
                             </TableCell>
                             <TableCell className={cell_right}>
-                                Rp {beliemas.price.toLocaleString("id-ID")}
+                                {formatRupiah(beliemas.price)}
                             </TableCell>
                         </TableRow>
                     ))}

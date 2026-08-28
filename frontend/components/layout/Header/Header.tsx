@@ -6,6 +6,7 @@ import Link from "next/link";
 import { NotificationBell } from "./NotificationBell";
 import { formatBusinessDate } from "@/lib/date";
 import { SidebarTGP } from "@/components/layout/SidebarTGP/SidebarTGP";
+import { formatRupiah } from "@/lib/currency";
 
 interface HeaderProps {
   userName?: string;
@@ -59,7 +60,7 @@ export function Header({
             {/* Notification */}
             <NotificationBell styleButton={style_button} />
             {/* Business Date & TGP */}
-            <span suppressHydrationWarning>{displayDate}</span> <span className="font-bold text-gold">TGP: Rp{tgpValue.toLocaleString('id-ID')}</span>
+            <span suppressHydrationWarning>{displayDate}</span> <span className="font-bold text-gold">TGP: {formatRupiah(tgpValue)}</span>
           </div>
 
           <p className="font-bold">|</p>
