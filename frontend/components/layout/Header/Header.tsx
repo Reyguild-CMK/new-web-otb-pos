@@ -12,7 +12,7 @@ interface HeaderProps {
   brandName?: string;
   storeName?: string;
   storeCode?: string;
-  tgpValue?: string | number;
+  tgpValue?: number;
   businessDate?: string;
   onMenuClick?: () => void;
   onTgpClick?: () => void;
@@ -38,40 +38,40 @@ export function Header({
   const displayDate = businessDate || formatBusinessDate();
   return (
     <>
-    <header className="bg-navy-dark text-white flex justify-between h-navbar md:px-6 w-full z-50 top-0 sticky">
-      {/* Left Side */}
-      <div className={style_side}>
-        {/* Sidebar Button */}
-        {children ? (children) : (
-          <button onClick={onMenuClick} className={style_button}>
-            <Menu size={16} />
-          </button>
-        )}
-        {/* Title */}
-        <Link href="/dashboard" className="hidden sm:inline">
-          {userName} - {brandName} {storeName} ({storeCode})
-        </Link>
-      </div>
-
-      {/* Right Side */}
-      <div className={style_side}>
-        <div className="flex items-center gap-2 md:mx-2 mx-1">
-          {/* Notification */}
-          <NotificationBell styleButton={style_button} />
-          {/* Business Date & TGP */}
-          <span suppressHydrationWarning>{displayDate}</span> <span className="font-bold text-gold">TGP: Rp{tgpValue.toLocaleString('id-ID')}</span>
+      <header className="bg-navy-dark text-white flex justify-between h-navbar md:px-6 w-full z-50 top-0 sticky">
+        {/* Left Side */}
+        <div className={style_side}>
+          {/* Sidebar Button */}
+          {children ? (children) : (
+            <button onClick={onMenuClick} className={style_button}>
+              <Menu size={16} />
+            </button>
+          )}
+          {/* Title */}
+          <Link href="/dashboard" className="hidden sm:inline">
+            {userName} - {brandName} {storeName} ({storeCode})
+          </Link>
         </div>
 
-        <p className="font-bold">|</p>
+        {/* Right Side */}
+        <div className={style_side}>
+          <div className="flex items-center gap-2 md:mx-2 mx-1">
+            {/* Notification */}
+            <NotificationBell styleButton={style_button} />
+            {/* Business Date & TGP */}
+            <span suppressHydrationWarning>{displayDate}</span> <span className="font-bold text-gold">TGP: Rp{tgpValue.toLocaleString('id-ID')}</span>
+          </div>
 
-        {/* TGP Sidebar */}
-        <button
-          onClick={() => 
-            setIsActive(prev => !prev)}       
+          <p className="font-bold">|</p>
+
+          {/* TGP Sidebar */}
+          <button
+            onClick={() =>
+              setIsActive(prev => !prev)}
             className={style_button}>
-          {isActive ? (<SquareX stroke="gold" size={16} />) : (<ReceiptText stroke="gold" size={16} />)}
-        </button>
-      </div>
+            {isActive ? (<SquareX stroke="gold" size={16} />) : (<ReceiptText stroke="gold" size={16} />)}
+          </button>
+        </div>
       </header>
       {isActive && <SidebarTGP />}
     </>
