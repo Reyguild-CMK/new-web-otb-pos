@@ -127,7 +127,7 @@ const row_cell = "hover:bg-navy-dark border-none";
 
 export function SidebarTGP() {
     return (
-        <div className="flex flex-col gap-4 bg-[#111] text-white sm:w-87.5 w-full p-4 h-[calc(100vh-var(--height-navbar))] top-(--height-navbar) z-50 absolute right-0 overflow-y-auto overflow-x-hidden **:data-[slot=table-container]:overflow-visible">
+        <div className="flex flex-col gap-4 bg-[#111] text-white sm:w-87.5 w-full p-4 h-[calc(100vh-var(--height-navbar))] top-(--height-navbar) z-50 fixed right-0 overflow-y-auto overflow-x-hidden **:data-[slot=table-container]:overflow-visible">
             <Table className="w-full">
                 <TableHeader>
                     <TableRow className="hover:bg-transparent">
