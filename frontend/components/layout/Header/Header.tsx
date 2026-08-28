@@ -5,11 +5,7 @@ import { ReceiptText, Menu, SquareX } from "lucide-react";
 import Link from "next/link";
 import { NotificationBell } from "./NotificationBell";
 import { formatBusinessDate } from "@/lib/date";
-
-import {
-  SidebarProvider,
-  SidebarTrigger
-} from "@/components/ui/sidebar";
+import { SidebarTGP } from "@/components/layout/SidebarTGP/SidebarTGP";
 
 interface HeaderProps {
   userName?: string;
@@ -41,6 +37,7 @@ export function Header({
   const [isActive, setIsActive] = useState(false);
   const displayDate = businessDate || formatBusinessDate();
   return (
+    <>
     <header className="bg-navy-dark text-white flex justify-between h-navbar md:px-6 w-full z-50 top-0 sticky">
       {/* Left Side */}
       <div className={style_side}>
@@ -69,14 +66,14 @@ export function Header({
 
         {/* TGP Sidebar */}
         <button
-          onClick={() => {
-            setIsActive(!isActive);
-            if (onTgpClick) onTgpClick();
-          }}
-          className={style_button}>
+          onClick={() => 
+            setIsActive(prev => !prev)}       
+            className={style_button}>
           {isActive ? (<SquareX stroke="gold" size={16} />) : (<ReceiptText stroke="gold" size={16} />)}
         </button>
       </div>
-    </header>
+      </header>
+      {isActive && <SidebarTGP />}
+    </>
   );
 }
