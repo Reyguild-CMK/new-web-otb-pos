@@ -32,7 +32,7 @@ export function Header({
   brandName = "FRANK & CO",
   storeName = "Deli Park Medan",
   storeCode = "E43",
-  tgpValue = "Rp. 0",
+  tgpValue = 2222222,
   businessDate,
   onMenuClick,
   onTgpClick,
@@ -62,7 +62,7 @@ export function Header({
           {/* Notification */}
           <NotificationBell styleButton={style_button} />
           {/* Business Date & TGP */}
-          <span suppressHydrationWarning>{displayDate}</span> <span className="font-bold text-gold">TGP: {tgpValue}</span>
+          <span suppressHydrationWarning>{displayDate}</span> <span className="font-bold text-gold">TGP: Rp{tgpValue.toLocaleString('id-ID')}</span>
         </div>
 
         <p className="font-bold">|</p>
