@@ -13,9 +13,11 @@ import { Label } from "@/components/ui/label"
 import Image from "next/image"
 import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
-export function LoginPage() {
+export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
   return (
     <Card size="sm" className="m-auto w-full max-w-sm [--card-spacing:--spacing(6)]">
       <CardHeader>
@@ -76,7 +78,7 @@ export function LoginPage() {
         <Button type="submit" className="w-full px-2 bg-btn-primary-bg text-navy-dark">
           Login
         </Button>
-        <Button variant="outline" className="w-full">
+        <Button variant="outline" className="w-full" onClick={() => window.location.href = "/resetpassword"}>
           Lupa Password
         </Button>
       </CardFooter>

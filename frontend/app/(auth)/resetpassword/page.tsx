@@ -10,11 +10,14 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Link } from "lucide-react";
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
-export function ResetPasswordPage() {
+export default function ResetPasswordPage() {
 //   const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
   return (
     <Card size="sm" className="m-auto w-full max-w-sm [--card-spacing:--spacing(6)]">
       <CardHeader>
@@ -49,8 +52,8 @@ export function ResetPasswordPage() {
         <Button type="submit" className="w-full bg-btn-primary-bg text-navy-dark">
           Kirim ke Email
         </Button>
-        <Button variant="outline" className="w-full">
-          Kembali ke Login
+        <Button variant="outline" className="w-full" onClick={() => router.push("/login")}> 
+            Kembali ke Login
         </Button>
       </CardFooter>
     </Card>
