@@ -15,7 +15,7 @@ export default function ProtectedLayout({ children }: { children: ReactNode; }) 
             </Header>
             <div className="flex flex-1 w-full">
                 <AppSidebar />
-                <main className="flex-1 mt-2.5 mx-5 mb-0 min-h-[86vh]">
+                <main className="flex-1 pt-2.5 px-5 mb-0 min-h-(--height-content)">
                     {children}
                 </main>
             </div>

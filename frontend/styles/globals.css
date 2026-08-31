@@ -85,11 +85,9 @@
   --letter-spacing-wide: var(--letter-spacing-wide);
 
   /* Layout Size parameter */
-  --width-sidebar: var(--sidebar-width);
   --height-navbar: var(--navbar-height);
   --height-footer: var(--footer-height);
-  --spacing-main-padding: var(--main-padding);
-
+  
   --font-sans: var(--font-family-sans);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
