@@ -10,19 +10,21 @@ import {
 } from "@/components/ui/table"
 import { formatRupiah } from "@/lib/currency";
 
-
+// tipe data untuk setiap item logam mulia
 interface LogamMulia {
     id: number;
     name: string;
     price: number;
 }
 
+// tipe data untuk setiap item emas
 interface BeliEmas {
     id: number;
     name: string;
     price: number;
 }
 
+// Pembuatan data logam mulia & harga beli
 const LogamMuliaDummy: LogamMulia[] = [
     {
         id: 1,
@@ -36,6 +38,7 @@ const LogamMuliaDummy: LogamMulia[] = [
     }
 ]
 
+// Pembuatan data emas & harga beli
 const EmasDummy: BeliEmas[] = [
     {
         id: 1,
@@ -121,7 +124,7 @@ const EmasDummy: BeliEmas[] = [
 
 // Style
 const cell_padding = "px-2 py-1";
-const header = `text-gold text-lg ${cell_padding}`;
+const header = `text-gold text-md ${cell_padding}`;
 const cell_left = `text-left ${cell_padding}`;
 const cell_right = `text-right ${cell_padding} whitespace-nowrap`;
 const row_cell = "hover:bg-navy-dark border-none";
@@ -130,6 +133,7 @@ export function SidebarTGP() {
     return (
         <div className="flex flex-col gap-4 bg-[#111] text-white sm:w-87.5 w-full p-4 h-[calc(100vh-var(--height-navbar))] top-(--height-navbar) z-50 fixed right-0 overflow-y-auto overflow-x-hidden **:data-[slot=table-container]:overflow-visible">
             <Table className="w-full">
+                {/* Judul */}
                 <TableHeader>
                     <TableRow className="hover:bg-transparent">
                         <TableHead colSpan={2} className={`${header} whitespace-normal`}>
@@ -137,6 +141,7 @@ export function SidebarTGP() {
                         </TableHead>
                     </TableRow>
                 </TableHeader>
+                {/* Isi */}
                 <TableBody className="text-xs">
                     {LogamMuliaDummy.map((logammulia: LogamMulia) => (
                         <TableRow key={logammulia.id} className={row_cell}>
@@ -151,7 +156,9 @@ export function SidebarTGP() {
                 </TableBody>
             </Table>
 
+            {/* Tabel 2 - Harga Beli Emas */}
             <Table>
+                {/* Judul */}
                 <TableHeader>
                     <TableRow className="hover:bg-transparent">
                         <TableHead colSpan={2} className={header}>
@@ -159,6 +166,7 @@ export function SidebarTGP() {
                         </TableHead>
                     </TableRow>
                 </TableHeader>
+                {/* Isi */}
                 <TableBody className="text-xs">
                     {EmasDummy.map((beliemas: BeliEmas) => (
                         <TableRow key={beliemas.id} className={row_cell}>
