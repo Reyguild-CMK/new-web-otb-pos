@@ -21,7 +21,7 @@ export interface Step {
   href?: string;
 }
 
-export const style_card = "rounded-xl border border-border bg-background p-6 md:p-8 flex flex-col gap-8 shadow-md"
+export const style_card = "rounded-xl border border-border bg-background py-8 px-4 md:px-8 flex flex-col gap-8 shadow-md"
 
 export function Stepper({ children }: { children: React.ReactNode }) {
   const router = useRouter();
