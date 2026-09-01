@@ -48,6 +48,8 @@
   --color-btn-action-text: var(--btn-action-text);
   --color-btn-document-bg: var(--btn-document-bg);
   --color-btn-document-text: var(--btn-document-text);
+  --color-btn-delete-bg: var(--btn-delete-bg);
+  --color-btn-delete-text: var(--btn-delete-text);
 
   /* Alert Colors (from variables.css) */
   --color-alert-success-bg: var(--alert-success-bg);
@@ -148,7 +150,7 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --ring: var(--color-gold);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);

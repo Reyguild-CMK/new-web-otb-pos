@@ -5,5 +5,5 @@ export function formatRupiah(value: number): string {
         maximumFractionDigits: 0,
     }).format(value);
 
-    return `Rp ${formatted}`;
+    return `Rp${formatted}`;
 }

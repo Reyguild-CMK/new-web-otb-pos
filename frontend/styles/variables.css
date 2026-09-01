@@ -68,6 +68,9 @@
     --btn-document-bg: var(--color-yellow-medium);
     --btn-document-text: var(--color-navy-dark);
 
+    --btn-delete-bg: var(--color-red-medium);
+    --btn-delete-text: var(--color-white);
+
     /* Success Alert */
     --alert-success-bg: var(--color-green-soft);
     --alert-success-border: var(--color-green-medium);
