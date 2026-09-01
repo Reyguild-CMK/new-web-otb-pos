@@ -3,9 +3,7 @@
 import { Button } from "@/components/ui/button"
 import {
   Card,
-  CardAction,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -15,11 +13,13 @@ import { Label } from "@/components/ui/label"
 import Image from "next/image"
 import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
-export function LoginPage() {
+export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
   return (
-    <Card size="sm" className="m-auto w-full max-w-sm">
+    <Card size="sm" className="m-auto w-full max-w-sm [--card-spacing:--spacing(6)]">
       <CardHeader>
         <div className="flex flex-col items-center gap-2">
           <div className="relative mx-auto my-1 h-16 w-16">
@@ -60,7 +60,7 @@ export function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute right-0 top-0 h-full px-3 flex items-center justify-center text-muted-foreground hover:text-foreground focus:outline-none z-10 cursor-pointer"
+                  className="absolute right-0 top-0 h-full px-2 flex items-center justify-center text-muted-foreground hover:text-foreground focus:outline-none z-10 cursor-pointer"
                   aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
                 >
                   {showPassword ? (
@@ -74,11 +74,11 @@ export function LoginPage() {
           </div>
         </form>
       </CardContent>
-      <CardFooter className="flex-col gap-2">
-        <Button type="submit" className="w-full bg-btn-primary-bg text-navy-dark">
+      <CardFooter className="flex-col gap-2 mb-4">
+        <Button type="submit" className="w-full px-2 bg-btn-primary-bg text-navy-dark">
           Login
         </Button>
-        <Button variant="outline" className="w-full">
+        <Button variant="outline" className="w-full" onClick={() => window.location.href = "/resetpassword"}>
           Lupa Password
         </Button>
       </CardFooter>
