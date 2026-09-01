@@ -1,12 +1,12 @@
 "use client"
 
 import {
-    Home,
+    HandCoins,
 } from "lucide-react";
 
 // Isi Default Breadcrumb
 export const defaultBreadcrumb = [
-  { label: "Dashboard", href: "/dashboard", icon: Home },
+  { label: "Pawn", href: "/pawn", icon: HandCoins },
 ]
 
 export default function ApplicationLayout({ children }: { children: React.ReactNode }) {
