@@ -1,27 +1,30 @@
 "use client";
 
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
+    TableTGP,
+    TableBodyTGP,
+    TableCellTGP,
+    TableHeadTGP,
+    TableHeaderTGP,
+    TableRowTGP,
+} from "@/components/ui/tableTGP"
+import { formatRupiah } from "@/lib/currency";
 
-
+// tipe data untuk setiap item logam mulia
 interface LogamMulia {
     id: number;
     name: string;
     price: number;
 }
 
+// tipe data untuk setiap item emas
 interface BeliEmas {
     id: number;
     name: string;
     price: number;
 }
 
+// Pembuatan data logam mulia & harga beli
 const LogamMuliaDummy: LogamMulia[] = [
     {
         id: 1,
@@ -35,6 +38,7 @@ const LogamMuliaDummy: LogamMulia[] = [
     }
 ]
 
+// Pembuatan data emas & harga beli
 const EmasDummy: BeliEmas[] = [
     {
         id: 1,
@@ -120,7 +124,7 @@ const EmasDummy: BeliEmas[] = [
 
 // Style
 const cell_padding = "px-2 py-1";
-const header = `text-gold text-lg ${cell_padding}`;
+const header = `text-gold text-md ${cell_padding}`;
 const cell_left = `text-left ${cell_padding}`;
 const cell_right = `text-right ${cell_padding} whitespace-nowrap`;
 const row_cell = "hover:bg-navy-dark border-none";
@@ -128,49 +132,54 @@ const row_cell = "hover:bg-navy-dark border-none";
 export function SidebarTGP() {
     return (
         <div className="flex flex-col gap-4 bg-[#111] text-white sm:w-87.5 w-full p-4 h-[calc(100vh-var(--height-navbar))] top-(--height-navbar) z-50 fixed right-0 overflow-y-auto overflow-x-hidden **:data-[slot=table-container]:overflow-visible">
-            <Table className="w-full">
-                <TableHeader>
-                    <TableRow className="hover:bg-transparent">
-                        <TableHead colSpan={2} className={header}>
+            <TableTGP className="w-full">
+                {/* Judul */}
+                <TableHeaderTGP>
+                    <TableRowTGP className="hover:bg-transparent">
+                        <TableHeadTGP colSpan={2} className={`${header} whitespace-normal`}>
                             Harga Beli Batangan Logam Mulia
-                        </TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody className="text-xs">
+                        </TableHeadTGP>
+                    </TableRowTGP>
+                </TableHeaderTGP>
+                {/* Isi */}
+                <TableBodyTGP className="text-xs">
                     {LogamMuliaDummy.map((logammulia: LogamMulia) => (
-                        <TableRow key={logammulia.id} className={row_cell}>
-                            <TableCell className={cell_left}>
+                        <TableRowTGP key={logammulia.id} className={row_cell}>
+                            <TableCellTGP className={cell_left}>
                                 {logammulia.name}
-                            </TableCell>
-                            <TableCell className={cell_right}>
-                                Rp {logammulia.price.toLocaleString("id-ID")}
-                            </TableCell>
-                        </TableRow>
+                            </TableCellTGP>
+                            <TableCellTGP className={cell_right}>
+                                {formatRupiah(logammulia.price)}
+                            </TableCellTGP>
+                        </TableRowTGP>
                     ))}
-                </TableBody>
-            </Table>
+                </TableBodyTGP>
+            </TableTGP>
 
-            <Table>
-                <TableHeader>
-                    <TableRow className="hover:bg-transparent">
-                        <TableHead colSpan={2} className={header}>
+            {/* Tabel 2 - Harga Beli Emas */}
+            <TableTGP>
+                {/* Judul */}
+                <TableHeaderTGP>
+                    <TableRowTGP className="hover:bg-transparent">
+                        <TableHeadTGP colSpan={2} className={header}>
                             Harga Beli Emas
-                        </TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody className="text-xs">
+                        </TableHeadTGP>
+                    </TableRowTGP>
+                </TableHeaderTGP>
+                {/* Isi */}
+                <TableBodyTGP className="text-xs">
                     {EmasDummy.map((beliemas: BeliEmas) => (
-                        <TableRow key={beliemas.id} className={row_cell}>
-                            <TableCell className={cell_left}>
+                        <TableRowTGP key={beliemas.id} className={row_cell}>
+                            <TableCellTGP className={cell_left}>
                                 {beliemas.name}
-                            </TableCell>
-                            <TableCell className={cell_right}>
-                                Rp {beliemas.price.toLocaleString("id-ID")}
-                            </TableCell>
-                        </TableRow>
+                            </TableCellTGP>
+                            <TableCellTGP className={cell_right}>
+                                {formatRupiah(beliemas.price)}
+                            </TableCellTGP>
+                        </TableRowTGP>
                     ))}
-                </TableBody>
-            </Table>
+                </TableBodyTGP>
+            </TableTGP>
         </div>
     );
 }
