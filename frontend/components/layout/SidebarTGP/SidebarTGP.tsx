@@ -1,13 +1,13 @@
 "use client";
 
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
+    TableTGP,
+    TableBodyTGP,
+    TableCellTGP,
+    TableHeadTGP,
+    TableHeaderTGP,
+    TableRowTGP,
+} from "@/components/ui/tableTGP"
 import { formatRupiah } from "@/lib/currency";
 
 // tipe data untuk setiap item logam mulia
@@ -132,54 +132,54 @@ const row_cell = "hover:bg-navy-dark border-none";
 export function SidebarTGP() {
     return (
         <div className="flex flex-col gap-4 bg-[#111] text-white sm:w-87.5 w-full p-4 h-[calc(100vh-var(--height-navbar))] top-(--height-navbar) z-50 fixed right-0 overflow-y-auto overflow-x-hidden **:data-[slot=table-container]:overflow-visible">
-            <Table className="w-full">
+            <TableTGP className="w-full">
                 {/* Judul */}
-                <TableHeader>
-                    <TableRow className="hover:bg-transparent">
-                        <TableHead colSpan={2} className={`${header} whitespace-normal`}>
+                <TableHeaderTGP>
+                    <TableRowTGP className="hover:bg-transparent">
+                        <TableHeadTGP colSpan={2} className={`${header} whitespace-normal`}>
                             Harga Beli Batangan Logam Mulia
-                        </TableHead>
-                    </TableRow>
-                </TableHeader>
+                        </TableHeadTGP>
+                    </TableRowTGP>
+                </TableHeaderTGP>
                 {/* Isi */}
-                <TableBody className="text-xs">
+                <TableBodyTGP className="text-xs">
                     {LogamMuliaDummy.map((logammulia: LogamMulia) => (
-                        <TableRow key={logammulia.id} className={row_cell}>
-                            <TableCell className={cell_left}>
+                        <TableRowTGP key={logammulia.id} className={row_cell}>
+                            <TableCellTGP className={cell_left}>
                                 {logammulia.name}
-                            </TableCell>
-                            <TableCell className={cell_right}>
+                            </TableCellTGP>
+                            <TableCellTGP className={cell_right}>
                                 {formatRupiah(logammulia.price)}
-                            </TableCell>
-                        </TableRow>
+                            </TableCellTGP>
+                        </TableRowTGP>
                     ))}
-                </TableBody>
-            </Table>
+                </TableBodyTGP>
+            </TableTGP>
 
             {/* Tabel 2 - Harga Beli Emas */}
-            <Table>
+            <TableTGP>
                 {/* Judul */}
-                <TableHeader>
-                    <TableRow className="hover:bg-transparent">
-                        <TableHead colSpan={2} className={header}>
+                <TableHeaderTGP>
+                    <TableRowTGP className="hover:bg-transparent">
+                        <TableHeadTGP colSpan={2} className={header}>
                             Harga Beli Emas
-                        </TableHead>
-                    </TableRow>
-                </TableHeader>
+                        </TableHeadTGP>
+                    </TableRowTGP>
+                </TableHeaderTGP>
                 {/* Isi */}
-                <TableBody className="text-xs">
+                <TableBodyTGP className="text-xs">
                     {EmasDummy.map((beliemas: BeliEmas) => (
-                        <TableRow key={beliemas.id} className={row_cell}>
-                            <TableCell className={cell_left}>
+                        <TableRowTGP key={beliemas.id} className={row_cell}>
+                            <TableCellTGP className={cell_left}>
                                 {beliemas.name}
-                            </TableCell>
-                            <TableCell className={cell_right}>
+                            </TableCellTGP>
+                            <TableCellTGP className={cell_right}>
                                 {formatRupiah(beliemas.price)}
-                            </TableCell>
-                        </TableRow>
+                            </TableCellTGP>
+                        </TableRowTGP>
                     ))}
-                </TableBody>
-            </Table>
+                </TableBodyTGP>
+            </TableTGP>
         </div>
     );
 }
