@@ -49,7 +49,7 @@ export function CustomBreadcrumbs({ items }: BreadcrumbsProps) {
                                         render={<Link href={item.href} />}
                                     >
                                         {Icon && <Icon className="size-4" />}
-                                        <span>{item.label}</span>
+                                        <span className="text-xs">{item.label}</span>
                                     </BreadcrumbLink>
                                 )}
                             </BreadcrumbItem>
