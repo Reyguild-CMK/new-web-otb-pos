@@ -16,8 +16,8 @@ import { Plus } from "lucide-react";
 import { itemType } from "../_data/other-data";
 
 // modal auto & manual
-// import { DJModalAuto } from "./DJAutoForm";
-// import { DJModalManual } from "./DJManualForm";
+import { DJModalAuto } from "./DJAutoForm";
+import { DJModalManual } from "./DJManualForm";
 import { PGModalAuto } from "./PGAutoForm";
 import { PGModalManual } from "./PGManualForm";
 
@@ -60,27 +60,29 @@ export function ModalLayout() {
 
           <Separator />
 
-          {/*Tabs auto & manual  */}
+          {/*Tabs auto & manual */}
           <Tabs defaultValue="auto">
             <TabsList>
               <TabsTrigger value="auto">Auto</TabsTrigger>
               <TabsTrigger value="manual">Manual</TabsTrigger>
             </TabsList>
-            {selectedItem && (
+            
+            {selectedItem === "CMK Diamond Jewelry" && (
               <>
-                <TabsContent value="auto">
-                  {/* <DJModalAuto /> */}
-                  <PGModalAuto/>
-                </TabsContent>
-                <TabsContent value="manual">
-                  {/* <DJModalManual /> */}
-                  <PGModalManual/>
-                </TabsContent>
+                <TabsContent value="auto"><DJModalAuto /></TabsContent>
+                <TabsContent value="manual"><DJModalManual /></TabsContent>
               </>
             )}
 
+            {selectedItem === "CMK Plain Gold" && (
+              <>
+                <TabsContent value="auto"><PGModalAuto /></TabsContent>
+                <TabsContent value="manual"><PGModalManual /></TabsContent>
+              </>
+            )}
           </Tabs>
 
+          {/* Footer */}
           <DialogFooter className="flex-col justify-between sm:flex-row gap-4">
             <div className="flex flex-row gap-2 items-center">
               <Checkbox id="toggle-checkbox" name="toggle-checkbox" required />
