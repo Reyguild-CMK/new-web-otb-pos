@@ -58,9 +58,17 @@ const fieldVariants = cva(
       orientation: {
         vertical: "flex-col *:w-full [&>.sr-only]:w-auto",
         horizontal:
-          "flex-row items-center *:data-[slot=field-label]:justify-between grid md:grid-cols-[120px_1fr] grid-cols-[1fr_150px]",
-        responsive:
-          "flex-col *:w-full @md/field-group:flex-row @md/field-group:items-center @md/field-group:*:w-auto @md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:*:data-[slot=field-label]:flex-auto [&>.sr-only]:w-auto @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
+          "flex-row items-center *:data-[slot=field-label]:justify-between grid md:grid-cols-[120px_1fr] sm:grid-cols-[1fr_500px] grid-cols-[1fr_150px] data-[slot=checkbox-group]:grid-cols-0",
+        responsive: [
+          // Mobile: vertical, full width untuk semua child
+          "flex-col",
+          // Desktop (md): horizontal & item center
+          "md:flex-row md:items-center",
+          // Desktop (md): agar justify-between jika ada field between
+          "md:*:data-[slot=field-label]:justify-between",
+          // Desktop (md): tambah margin atas untuk checkbox/radio jika ada field-content
+          "md:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
+        ].join(" "),
       },
     },
     defaultVariants: {

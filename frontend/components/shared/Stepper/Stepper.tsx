@@ -13,7 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { stepItems } from "@/app/(protected)/pawn/application/layout";
+import { stepItems } from "@/app/(protected)/_data/stepper";
 
 export interface Step {
   label: string;
