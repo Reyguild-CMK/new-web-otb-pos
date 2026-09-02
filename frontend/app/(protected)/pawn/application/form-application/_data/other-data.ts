@@ -12,4 +12,4 @@ export const manualConditionType = [
   { id: "excellent", value: "Excellent (90%)", percentage:90 },
 ];
 
-export const pgfineness = ["18K (75.0%)", "24K (99%)"];
+export const pgfineness = ["18K (75.0%)", "24K (99.0%)"];
