@@ -4,11 +4,11 @@
 import { style_card } from "@/components/shared/Stepper/Stepper";
 
 // Component
-// import { BarangTable } from "./_components/barang-table";
-// import { ModalLayout } from "./_components/modal-layout";
+import { BarangTable } from "./_components/barang-table";
+import { ModalLayout } from "./_form/form-layout";
 
 // Data
-// import { dataBarang } from "./_data/barang-data";
+import { dataBarang } from "./_data/barang-data";
 
 export default function FormApplication() {
   return (
@@ -18,10 +18,10 @@ export default function FormApplication() {
         <h1 className="font-bold pb-2">Daftar Barang</h1>
 
         {/* Form */}
-        {/* <ModalLayout /> */}
+        <ModalLayout />
       </div>
       {/* Tabel */}
-      {/* <BarangTable data={dataBarang} /> */}
+      <BarangTable data={dataBarang} />
     </div>
   )
 }
