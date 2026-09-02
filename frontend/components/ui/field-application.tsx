@@ -58,7 +58,7 @@ const fieldVariants = cva(
       orientation: {
         vertical: "flex-col *:w-full [&>.sr-only]:w-auto",
         horizontal:
-          "flex-row items-center *:data-[slot=field-label]:justify-between grid md:grid-cols-[120px_1fr] sm:grid-cols-[1fr_500px] grid-cols-[1fr_150px] data-[slot=checkbox-group]:grid-cols-0",
+          "flex-row items-center *:data-[slot=field-label]:justify-between grid md:grid-cols-[120px_1fr] sm:grid-cols-[1fr_500px] grid-cols-[1fr_200px] data-[slot=checkbox-group]:grid-cols-0",
         responsive: [
           // Mobile: vertical, full width untuk semua child
           "flex-col",
