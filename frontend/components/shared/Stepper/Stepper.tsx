@@ -91,6 +91,7 @@ export function Stepper({ children }: { children: React.ReactNode }) {
                   {/* Button per icon */}
                   <button
                     type="button"
+                    suppressHydrationWarning
                     // menuju ke index
                     onClick={() =>
                       handleStepClick(index)

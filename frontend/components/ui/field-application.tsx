@@ -63,7 +63,7 @@ const fieldVariants = cva(
           // Mobile: vertical, full width untuk semua child
           "flex-col",
           // Desktop (md): horizontal & item center
-          "md:flex-row md:items-center",
+          "flex-row items-center *:data-[slot=field-label]:justify-between grid md:grid-cols-[120px_1fr] sm:grid-cols-[1fr_500px] grid-cols-[1fr_200px] data-[slot=checkbox-group]:grid-cols-0",
           // Desktop (md): agar justify-between jika ada field between
           "md:*:data-[slot=field-label]:justify-between",
           // Desktop (md): tambah margin atas untuk checkbox/radio jika ada field-content
