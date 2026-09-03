@@ -1,40 +1,19 @@
 "use client"
 
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
-
 import * as React from "react"
-import { addDays, format } from "date-fns"
-import { cn } from "@/lib/utils"
 
-import { Button } from "@/components/ui/button"
-import { Field, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Calendar} from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+// icon
+import { List } from 'lucide-react';
 
-import { type DateRange } from "react-day-picker"
-
-import { CalendarIcon } from "lucide-react"
-import { FileText, List, Search } from 'lucide-react';
-
+// components
 import { SearchBar } from "./_components/search-bar"
-import { pawnData } from "./_data/pawn-data"
-
-import Link from "next/link"
 import { PawnDataPicker } from "./_components/date-picker"
-import { PawnTable } from "./_components/pawn-table"
-import { selectData } from "./_data/status-take-over"
 import { DropDown } from "./_components/dropdown"
+import { PawnTable } from "./_components/pawn-table"
 
 // Data Dummy for Select
+import { pawnData } from "./_data/pawn-data"
+import { selectData } from "./_data/status-take-over"
 
 
 export default function PawnList(){

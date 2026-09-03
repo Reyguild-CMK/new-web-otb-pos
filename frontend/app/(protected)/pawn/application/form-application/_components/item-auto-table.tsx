@@ -20,7 +20,14 @@ export function ItemAutoTable({ data }: AutoBarangProps) {
                 </TableRow>
             </TableHeader>
 
-            {data.map((data) => (
+            {data.length === 0 ? (
+                <TableBody>
+                    <TableRow>
+                        <TableCell className="text-center bg-muted" colSpan={6}>No Data</TableCell>
+                    </TableRow>
+                </TableBody>
+            ) : (
+            data.map((data) => (
                 <TableBody key={data.kode}>
                     <TableRow>
                         <TableCell>{data.clarity}</TableCell>
@@ -31,7 +38,8 @@ export function ItemAutoTable({ data }: AutoBarangProps) {
                         <TableCell>{data.qty}</TableCell>
                     </TableRow>
                 </TableBody>
-            ))}
+            ))
+        )}
         </Table>
     )
 }

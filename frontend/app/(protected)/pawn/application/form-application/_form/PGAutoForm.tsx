@@ -1,24 +1,18 @@
 // components
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Combobox, ComboboxInput, ComboboxEmpty, ComboboxList, ComboboxItem, ComboboxContent } from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
+import { ItemAutoTable } from "../_components/item-auto-table";
 
 // components - label & field input
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { FieldGroup, FieldSeparator, Field, FieldLabel } from "@/components/ui/field-application";
-import InputImage from "@/components/shared/InputImage/InputImage";
+import { UploadSection } from "../../_components/upload-section";
 
-// data dummy
-import { conditionType } from "../_data/other-data";
-import { BarangTable } from "../_components/barang-table";
+// data
+import { dataBarang } from "../_data/barang-data";
 
 // icons
 import { Calculator, Check } from "lucide-react";
-import { ItemAutoTable } from "../_components/item-auto-table";
-import { dataBarang } from "../_data/barang-data";
-
 
 export function PGModalAuto() {
   return (
@@ -40,9 +34,9 @@ export function PGModalAuto() {
 
       <FieldSeparator className="my-2" />
 
-      {/* Isi lainnya */}
+      {/* Detail Item & Value */}
       <div className="md:flex gap-6">
-        {/* Item Detail */}
+        {/* Detail Item */}
         <FieldGroup>
           <Field>
             <FieldLabel htmlFor="itemWeight">Weight (*)</FieldLabel>
@@ -61,6 +55,7 @@ export function PGModalAuto() {
               name="itemFineness"
               type="number"
               placeholder="0"
+              disabled
               onWheel={(e) => e.currentTarget.blur()}>
             </Input>
           </Field>
@@ -71,6 +66,7 @@ export function PGModalAuto() {
               name="itemQty"
               type="number"
               placeholder="1"
+              disabled
               onWheel={(e) => e.currentTarget.blur()}>
             </Input>
           </Field>
@@ -88,7 +84,10 @@ export function PGModalAuto() {
             <FieldLabel htmlFor="calculate"></FieldLabel>
             <Button className="bg-btn-action-bg"><Calculator/>Calculate</Button>
           </Field>
+
         <FieldSeparator className="p-0!"/>
+
+        {/* Value */}
           <Field>
             <FieldLabel htmlFor="appraisal">Appraisal</FieldLabel>
             <Input
@@ -96,6 +95,7 @@ export function PGModalAuto() {
               name="appraisal"
               type="number"
               placeholder="0"
+              disabled
               onWheel={(e) => e.currentTarget.blur()}>
             </Input>
           </Field>
@@ -106,6 +106,7 @@ export function PGModalAuto() {
               name="maxLoan"
               type="number"
               placeholder="0"
+              disabled
               onWheel={(e) => e.currentTarget.blur()}>
             </Input>
           </Field>
@@ -115,24 +116,10 @@ export function PGModalAuto() {
           </Field>
         </FieldGroup>
 
-        {/* Product & Invoice Photo */}
         <FieldSeparator />
-        <FieldGroup>
-          <InputImage
-            id="productPhoto"
-            name="productPhoto"
-            label="Product Photo"
-            imageSrc="/image/image_placeholder.png"
-            imageAlt="Product Thumbnail"
-          />
-          <InputImage
-            id="invoicePhoto"
-            name="invoicePhoto"
-            label="Invoice Photo"
-            imageSrc="/image/image_placeholder.png"
-            imageAlt="Invoice Photo"
-          />
-        </FieldGroup>
+        
+        {/* Product & Invoice Photo */}
+        <UploadSection/>
       </div>
 
       <FieldSeparator className="my-2" />

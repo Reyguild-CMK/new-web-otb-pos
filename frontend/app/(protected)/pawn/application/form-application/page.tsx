@@ -17,10 +17,11 @@ export default function FormApplication() {
       <div className="md:flex justify-between align-middle">
         <h1 className="font-bold pb-2">Daftar Barang</h1>
 
-        {/* Form */}
+        {/* Add Item */}
         <ModalLayout />
       </div>
-      {/* Tabel */}
+
+      {/* Tabel Daftar Barang*/}
       <BarangTable data={dataBarang} />
     </div>
   )

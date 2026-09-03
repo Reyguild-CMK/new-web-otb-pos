@@ -1,24 +1,15 @@
 // components
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Combobox, ComboboxInput, ComboboxEmpty, ComboboxList, ComboboxItem, ComboboxContent } from "@/components/ui/combobox";
-import { Button } from "@/components/ui/button";
 
 // components - label & field input
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { FieldGroup, FieldSeparator, Field, FieldLabel } from "@/components/ui/field-application";
-import InputImage from "@/components/shared/InputImage/InputImage";
+import { UploadSection } from "../../_components/upload-section";
 
 // data dummy
-import { manualConditionType, manualFineness } from "../_data/other-data";
-import { BarangTable } from "../_components/barang-table";
-
-// icons
-import { Check } from "lucide-react";
-import { ItemAutoTable } from "../_components/item-auto-table";
+import { manualConditionType } from "../_data/other-data";
 import { pgfineness } from "../_data/other-data";
-
 
 export function PGModalManual() {
   return (
@@ -37,9 +28,9 @@ export function PGModalManual() {
 
       <FieldSeparator className="my-2" />
 
-      {/* Isi lainnya */}
+      {/* Detail Item & Value*/}
       <div className="md:flex gap-6">
-        {/* Item Detail */}
+        {/* Detail Item */}
         <FieldGroup>
           <Field>
             <FieldLabel htmlFor="itemWeight">Weight</FieldLabel>
@@ -102,7 +93,10 @@ export function PGModalManual() {
               </ComboboxInput>
             </Combobox>
           </Field>
+
           <FieldSeparator/>
+
+          {/* Value */}
           <Field>
             <FieldLabel htmlFor="maxLoan">Max Loan</FieldLabel>
             <Input
@@ -120,24 +114,10 @@ export function PGModalManual() {
           </Field>
         </FieldGroup>
 
-        {/* Product & Invoice Photo */}
         <FieldSeparator />
-        <FieldGroup>
-          <InputImage
-            id="productPhoto"
-            name="productPhoto"
-            label="Product Photo"
-            imageSrc="/image/image_placeholder.png"
-            imageAlt="Product Thumbnail"
-          />
-          <InputImage
-            id="invoicePhoto"
-            name="invoicePhoto"
-            label="Invoice Photo"
-            imageSrc="/image/image_placeholder.png"
-            imageAlt="Invoice Photo"
-          />
-        </FieldGroup>
+        
+        {/* Product & Invoice Photo */}
+        <UploadSection/>
       </div>
     </>
   )
