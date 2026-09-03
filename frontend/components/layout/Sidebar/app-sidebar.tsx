@@ -54,7 +54,7 @@ export function AppSidebar() {
           {/* daftar transaksi */}
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Daftar Transaksi"
-              render={<Link href="/transactions" />}
+              render={<Link href="/pawn/list" />}
               className={`flex items-center group-data-[collapsible=icon]:p-1! ${isCollapsed ? "mx-auto" : "px-5"}`}>
               <List className={isCollapsed ? "size-6!" : "size-5!"} />
               {!isCollapsed && <span>Daftar Transaksi</span>}
