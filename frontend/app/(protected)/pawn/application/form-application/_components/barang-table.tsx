@@ -16,6 +16,8 @@ interface BarangTableProps {
   data: Barang[]
 }
 
+import PreviewImage from "@/components/shared/ImagePreview/ImagePreview";
+
 export function BarangTable({ data }: BarangTableProps) {
   let totalNilai = 0;
   let totalMaksPinjaman = 0;
@@ -48,14 +50,10 @@ export function BarangTable({ data }: BarangTableProps) {
         <TableRow>
           <TableCell>{item.kode}</TableCell>
           <TableCell>
-            <Image 
+            <PreviewImage 
               src={item.foto}
-              width={100}
-              height={100}
               alt={item.namabarang}
-              className="mx-auto"
-              >
-            </Image>
+            />
           </TableCell>
           <TableCell>{item.jenis}</TableCell>
           <TableCell>{item.karat}</TableCell>
