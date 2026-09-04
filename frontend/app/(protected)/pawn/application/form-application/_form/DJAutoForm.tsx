@@ -95,8 +95,15 @@ export function DJModalAuto() {
           <Card className="relative p-4">
             <CardContent>
               <div>
-                <Field orientation="responsive" className="grid-cols-[3fr]!">
-                  <FieldLabel htmlFor="resellValue" className="wrap-break-word md:w-24">Resell Value/ASP (*)</FieldLabel>
+                <Field orientation="vertical" className="">
+                  
+                  <div className="flex gap-2 justify-between">
+                    <FieldLabel htmlFor="resellValue" className="">Resell Value/ASP (*)</FieldLabel>
+                    <div className="flex gap-2">
+                      <Checkbox id="toggle-checkbox" name="toggle-checkbox" />
+                      <FieldLabel htmlFor="toggle-checkbox">Free tax area</FieldLabel>
+                    </div>
+                  </div>
                   <Input
                     id="resellValue"
                     name="resellValue"
@@ -105,10 +112,7 @@ export function DJModalAuto() {
                     onWheel={(e) => e.currentTarget.blur()}
                     className="flex-1" required>
                   </Input>
-                  <div className="flex gap-2">
-                    <Checkbox id="toggle-checkbox" name="toggle-checkbox" />
-                    <FieldLabel htmlFor="toggle-checkbox">Free tax area</FieldLabel>
-                  </div>
+                
                 </Field>
                 <p className="text-red-medium md:text-right mt-1">*Value must be less than or equal to 80</p>
               </div>
@@ -152,7 +156,7 @@ export function DJModalAuto() {
           </Field>
           <Field>
             <FieldLabel htmlFor="remark">Remark (*)</FieldLabel>
-            <Textarea id="remark" name="remark" placeholder="Remark" className="lg:min-h-25 min-h-20.5" required></Textarea>
+            <Textarea id="remark" name="remark" placeholder="Remark" className="lg:min-h-20 min-h-10" required></Textarea>
           </Field>
         </FieldGroup>
 
