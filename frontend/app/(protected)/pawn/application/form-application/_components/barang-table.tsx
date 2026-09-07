@@ -1,12 +1,12 @@
 // component
 import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell, TableFooter } from "@/components/ui/table";
-import Image from 'next/image';
+import PreviewImage from "@/components/shared/ImagePreview/ImagePreview";
 
 // lib
 import { formatRupiah } from "@/lib/currency";
 
-// icon & 
+// icon
 import { CircleX } from "lucide-react";
 
 // interface data
@@ -15,8 +15,6 @@ import type { Barang } from "../../_data/barang-data"
 interface BarangTableProps {
   data: Barang[]
 }
-
-import PreviewImage from "@/components/shared/ImagePreview/ImagePreview";
 
 export function BarangTable({ data }: BarangTableProps) {
   let totalNilai = 0;
@@ -45,7 +43,14 @@ export function BarangTable({ data }: BarangTableProps) {
     </TableHeader>
 
     {/* Body table */}
-    {data.map((item) => (
+    {data.length === 0 ? (
+      <TableBody>
+        <TableRow>
+          <TableCell className="text-center bg-muted" colSpan={6}>No Data</TableCell>
+        </TableRow>
+      </TableBody>
+    ) : (
+    data.map((item) => (
       <TableBody key={item.kode}>
         <TableRow>
           <TableCell>{item.kode}</TableCell>
@@ -68,8 +73,9 @@ export function BarangTable({ data }: BarangTableProps) {
             </Button>
           </TableCell>
         </TableRow>
-    </TableBody>
-    ))}
+      </TableBody>
+      ))
+    )}
 
     {/* Footer total */}
     <TableFooter>
@@ -80,5 +86,5 @@ export function BarangTable({ data }: BarangTableProps) {
       </TableRow>
     </TableFooter>
   </Table>
-    )
+  )
 }

@@ -1,8 +1,13 @@
+// Components - label & field input
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field-application";
-import { Bank } from "../_data/data-bank"
-import { Combobox, ComboboxInput, ComboboxList, ComboboxItem, ComboboxContent} from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
+import { Combobox, ComboboxInput, ComboboxList, ComboboxItem, ComboboxContent} from "@/components/ui/combobox";
+
+// Component
 import { Button } from "@/components/ui/button";
+
+// Data
+import { Bank } from "../_data/data-bank"
 
 interface BankProps{
     data: Bank[]
