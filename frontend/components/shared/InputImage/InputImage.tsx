@@ -72,7 +72,7 @@ export default function InputImage({
         {/* Preview */}
         <div 
           onClick={handleOpenPreview}
-          className="relative h-55 border border-dashed border-gray-300 rounded-lg bg-gray-50/50 w-full">
+          className="relative lg:h-55 h-25 border border-dashed border-gray-300 rounded-lg bg-gray-50/50 w-full">
             
           {/* Jika belum ada Unggahan File */}
           {!selectedItem && (
