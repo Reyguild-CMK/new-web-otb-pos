@@ -5,20 +5,22 @@ import { FileIcon } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect, ChangeEvent } from "react";
 
-interface PhotoFieldProps {
+export interface FileFieldProps {
   id: string;
   name: string;
   label: string;
   imageAlt?: string;
+  required?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function InputImage({
+export default function FileInput({
   id,
   name,
   label,
   imageAlt,
-}: PhotoFieldProps) {
+  required = false,
+}: FileFieldProps) {
   // Input
   const [selectedItem, setSelectedItem] = useState<File | null>(null);
   // Preview
@@ -66,6 +68,7 @@ export default function InputImage({
             accept=".jpg, .jpeg, .png, .pdf"
             onChange={handleFileChange}
             className="w-full cursor-pointer file:hover:bg-gray-200"
+            required={required}
           />
           <p className="text-xs text-alert-error-icon text-right">*PNG, JPG, JPEG, or PDF.</p>
 
