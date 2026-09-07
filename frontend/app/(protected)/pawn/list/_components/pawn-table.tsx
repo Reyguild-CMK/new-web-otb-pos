@@ -1,9 +1,14 @@
-import { Pawn } from "../_data/pawn-data";
 
+// Component
+import Link from "next/link";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+
+// Data
+import { Pawn } from "../_data/pawn-data";
+
+// Icon
 import { FileText } from "lucide-react";
-import Link from "next/link";
 
 // function dummy for last url
 const getLastStepUrl = (status: string) => {

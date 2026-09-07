@@ -1,17 +1,22 @@
+// Global
+import React from "react"
+
+// Components
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
-import { Field } from "@/components/ui/field"
 import { Button } from "@/components/ui/button"
-import React from "react"
+
+// Component - label & field input
+import { Field } from "@/components/ui/field"
+
+// Lib
 import { addDays, format } from "date-fns"
 import type { DateRange } from "react-day-picker"
+
+// Icon
 import { CalendarIcon } from "lucide-react"
 
-interface DatePickerProps {
-
-}
-
-export function PawnDataPicker({}: DatePickerProps) {
+export function PawnDataPicker({}) {
     const [date, setDate] = React.useState<DateRange | undefined>({
             from: new Date(new Date().getFullYear(), 0, 20),
             to: addDays(new Date(new Date().getFullYear(), 0, 20), 20),
