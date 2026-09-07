@@ -2,7 +2,6 @@
 
 import { style_card } from "@/components/shared/Stepper/Stepper";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application";
-import { Input} from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 import { dataBarang, type Barang } from "../form-application/_data/barang-data"
