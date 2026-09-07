@@ -10,7 +10,7 @@ import { formatRupiah } from "@/lib/currency";
 import { CircleX } from "lucide-react";
 
 // interface data
-import type { Barang } from "../_data/barang-data"
+import type { Barang } from "../../_data/barang-data"
 
 interface BarangTableProps {
   data: Barang[]
@@ -32,7 +32,7 @@ export function BarangTable({ data }: BarangTableProps) {
     <TableHeader>
       <TableRow>
         <TableHead>Kode</TableHead>
-        <TableHead>Foto</TableHead>
+        <TableHead>Product Photo</TableHead>
         <TableHead>Jenis Barang</TableHead>
         <TableHead>Karat</TableHead>
         <TableHead>Berat</TableHead>

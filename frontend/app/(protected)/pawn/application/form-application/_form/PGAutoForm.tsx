@@ -9,7 +9,7 @@ import { FieldGroup, FieldSeparator, Field, FieldLabel } from "@/components/ui/f
 import { UploadSection } from "../../_components/upload-section";
 
 // data
-import { dataBarang } from "../_data/barang-data";
+import { dataBarang } from "../../_data/barang-data";
 
 // icons
 import { Calculator, Check } from "lucide-react";

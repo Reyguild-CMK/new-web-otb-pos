@@ -13,7 +13,7 @@ import { UploadSection } from "../../_components/upload-section";
 
 // data dummy
 import { conditionType } from "../_data/other-data";
-import { dataBarang } from "../_data/barang-data";
+import { dataBarang } from "../../_data/barang-data";
 
 // icons
 import { Check } from "lucide-react";
