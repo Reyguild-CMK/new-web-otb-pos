@@ -1,3 +1,4 @@
+// Component
 import { Spinner } from "@/components/ui/spinner";
 
 export function WaitingApproval(){

@@ -1,4 +1,4 @@
-// Components - Input & Label
+// Components - label & field input
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application";
 import { Input } from "@/components/ui/input";
 
@@ -10,55 +10,31 @@ export function FieldDokumen(){
     <FieldGroup className={`${style_card}`}>
       <Field>
         <FieldLabel>No Dokumen</FieldLabel>
-        <Input 
-          placeholder=""
-          disabled
-        />
+        <Input disabled/>
       </Field>
       <Field>
         <FieldLabel>Tanggal Jatuh Tempo</FieldLabel>
-        <Input 
-          placeholder=""
-          type="date"
-          disabled
-        />
+        <Input disabled type="date"/>
       </Field>
       <Field>
         <FieldLabel>Tanggal Penjualan</FieldLabel>
-        <Input 
-          placeholder=""
-          type="date"
-          disabled
-        />
+        <Input disabled type="date"/>
       </Field>
       <Field>
         <FieldLabel>Nilai Pinjaman</FieldLabel>
-        <Input 
-          placeholder=""
-          disabled
-        />
+        <Input disabled/>
       </Field>
       <Field>
         <FieldLabel>Admin Fee</FieldLabel>
-        <Input 
-          placeholder=""
-          disabled
-        />
+        <Input disabled/>
       </Field>
       <Field>
         <FieldLabel>Biaya Perawatan</FieldLabel>
-        <Input 
-          placeholder=""
-          type="text"
-          disabled
-        />
+        <Input disabled type="text"/>
       </Field>
       <Field>
         <FieldLabel>Nominal Ditransfer</FieldLabel>
-        <Input 
-          placeholder=""
-          disabled
-        />
+        <Input disabled/>
       </Field>
     </FieldGroup>
   )

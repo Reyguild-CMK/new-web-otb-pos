@@ -1,10 +1,15 @@
-import PreviewImage from "@/components/shared/ImagePreview/ImagePreview";
+// Component
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { formatRupiah } from "@/lib/currency";
-import { dataBarang } from "../../_data/barang-data";
+import PreviewImage from "@/components/shared/ImagePreview/ImagePreview";
 
-// interface data
+// Lib
+import { formatRupiah } from "@/lib/currency";
+
+// Interface data
 import type { Barang } from "../../_data/barang-data";
+
+// Data
+import { dataBarang } from "../../_data/barang-data";
 
 interface BarangTableProps {
   data: Barang[]
