@@ -8,8 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
 // Component - Input & Label
-import { FieldGroup } from "@/components/ui/field-application";
-import InputImage from "@/components/shared/InputImage/InputImage";
+import { InputFile } from "./_components/input-file";
 
 // Component - Form & Section
 import { TableDocument } from "./_components/table-document";
@@ -49,51 +48,11 @@ export default function CustomerApplication() {
         <WaitingApproval/>
 
         <div className="text-center">
+          {/* Button Download Document */}
           <Button className="mb-8 bg-btn-primary-bg text-btn-primary-text"><Download/>Download Document</Button>
-          <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <InputImage
-              id="formPerjanjian"
-              name="formPerjanjian"
-              label="Form Perjanjian"
-              imageAlt="Form Perjanjian"
-            />
-            <InputImage
-              id="suratKepemilikanBarang"
-              name="suratKepemilikanBarang"
-              label="Surat Kepemilikan Barang"
-              imageAlt="Surat Kepemilikan Barang"
-            />
-            <InputImage
-              id="suratSegelBarang"
-              name="suratSegelBarang"
-              label="Surat Segel Barang"
-              imageAlt="Surat Segel Barang"
-            />
-            <InputImage
-              id="sertifikatInHouse"
-              name="sertifikatInHouse"
-              label="Sertifikat in House"
-              imageAlt="Sertifikat in House"
-            />
-            <InputImage
-              id="sertifikatGIA"
-              name="sertifikatGIA"
-              label="Sertifikat GIA/Setara"
-              imageAlt="Sertifikat GIA/Setara"
-            />
-            <InputImage
-              id="buyingPrice"
-              name="buyingPrice"
-              label="Buying Price"
-              imageAlt="Buying Price"
-            />
-            <InputImage
-              id="lainnya"
-              name="lainnya"
-              label="Lainnya"
-              imageAlt="Lainnya"
-            />
-          </FieldGroup>
+
+          {/* Section Input File */}
+          <InputFile/>
         </div>
       </div> 
     </>

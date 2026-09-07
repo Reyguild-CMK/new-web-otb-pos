@@ -3,7 +3,7 @@
 // Styling
 import { style_card } from "@/components/shared/Stepper/Stepper";
 
-// Components - Input & Label
+// Components - label & field input
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application";
 import { Textarea } from "@/components/ui/textarea";
 
