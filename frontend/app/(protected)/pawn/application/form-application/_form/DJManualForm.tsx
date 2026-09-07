@@ -1,3 +1,6 @@
+// Global
+import { useState } from "react";
+
 // components
 import { Combobox, ComboboxInput, ComboboxEmpty, ComboboxList, ComboboxItem, ComboboxContent } from "@/components/ui/combobox";
 
@@ -6,11 +9,15 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FieldGroup, FieldSeparator, Field, FieldLabel } from "@/components/ui/field-application";
 import { UploadSection } from "../../_components/upload-section";
+import { CurrencyInput } from "@/components/ui/currency-input";
 
 // data dummy
 import { manualConditionType, manualFineness } from "../_data/other-data";
 
 export function DJModalManual() {
+  const [invoiceVal, setInvoiceVal] = useState("");
+  const [appraisal, setAppraisal] = useState("");
+  const [maxLoan, setMaxLoan] = useState("");
   return (
     <>
       {/* Input item PLU & name */}
@@ -59,22 +66,23 @@ export function DJModalManual() {
           </Field>
           <Field>
             <FieldLabel htmlFor="invoiceVal">Invoice Value</FieldLabel>
-            <Input
+            <CurrencyInput
               id="invoiceVal"
               name="invoiceVal"
-              type="number"
-              onWheel={(e) => e.currentTarget.blur()}>
-            </Input>
+              value={invoiceVal}
+              onValueChange={setInvoiceVal}
+              placeholder="0"
+            />
           </Field>
           <Field>
             <FieldLabel htmlFor="appraisal">Appraisal</FieldLabel>
-            <Input
+            <CurrencyInput
               id="appraisal"
               name="appraisal"
-              type="number"
+              value={appraisal}
+              onValueChange={setAppraisal}
               placeholder="0"
-              onWheel={(e) => e.currentTarget.blur()}>
-            </Input>
+            />
           </Field>
           <Field>
             <FieldLabel htmlFor="itemType">Condition</FieldLabel>
@@ -98,14 +106,14 @@ export function DJModalManual() {
           {/* Value */}
           <Field>
             <FieldLabel htmlFor="maxLoan">Max Loan</FieldLabel>
-            <Input
+            <CurrencyInput
               id="maxLoan"
               name="maxLoan"
-              type="number"
+              value={maxLoan}
+              onValueChange={setMaxLoan}
+              disabled
               placeholder="0"
-              onWheel={(e) => e.currentTarget.blur()}
-              disabled>
-            </Input>
+            />
           </Field>
           <Field>
             <FieldLabel htmlFor="remark">Remark (*)</FieldLabel>
