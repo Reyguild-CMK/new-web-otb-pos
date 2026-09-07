@@ -5,7 +5,7 @@ import { style_card } from "@/components/shared/Stepper/Stepper";
 import { Summary } from "../summary/_components/summary"
 import { dataCustomer } from "./_data/data-customer";
 import { BarangTable } from "../form-application/_components/barang-table";
-import { dataBarang } from "../form-application/_data/barang-data";
+import { dataBarang } from "../_data/barang-data";
 
 export default function SummaryPage(){
     return(
