@@ -8,7 +8,7 @@ import { BarangTable } from "./_components/barang-table";
 import { ModalLayout } from "./_form/form-layout";
 
 // Data
-import { dataBarang } from "./_data/barang-data";
+import { dataBarang } from "../_data/barang-data";
 
 export default function FormApplication() {
   return (

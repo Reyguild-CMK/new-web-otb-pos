@@ -1,14 +1,13 @@
+// Global
+import React from "react";
+
+// Icon
 import { Search } from "lucide-react";
 
-// components
+// Components
 import { Input } from "@/components/ui/input";
 import { Field } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
-
-// interface data
-import type { Pawn } from "../_data/pawn-data"
-import React from "react";
-
 
 interface SearchBarProps {
     onSearch: (query: string) => void;
@@ -22,6 +21,7 @@ export function SearchBar({ onSearch }: SearchBarProps) {
     }
     return(
         <form onSubmit={handleSearch}>
+            {/* Search Bar Field */}
             <Field orientation="horizontal" className="mb-4 text-xs">
                 <Input 
                     type="search" 

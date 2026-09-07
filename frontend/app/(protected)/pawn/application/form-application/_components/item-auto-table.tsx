@@ -1,7 +1,9 @@
+// Component
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import type { Barang } from "../_data/barang-data"
 
-// export function ItemAutoTable() {
+// Type interface
+import type { Barang } from "../../_data/barang-data"
+
 interface AutoBarangProps {
     data: Barang[]
 }

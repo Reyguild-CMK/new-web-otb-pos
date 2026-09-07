@@ -1,3 +1,6 @@
+// Global
+import { useState } from "react";
+
 // components
 import { Button } from "@/components/ui/button";
 import { ItemAutoTable } from "../_components/item-auto-table";
@@ -7,14 +10,19 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FieldGroup, FieldSeparator, Field, FieldLabel } from "@/components/ui/field-application";
 import { UploadSection } from "../../_components/upload-section";
+import { CurrencyInput } from "@/components/ui/currency-input";
 
 // data
-import { dataBarang } from "../_data/barang-data";
+import { dataBarang } from "../../_data/barang-data";
 
 // icons
 import { Calculator, Check } from "lucide-react";
 
 export function PGModalAuto() {
+  const [pricePerGram, setPricePerGram] = useState("");
+  const [appraisal, setAppraisal] = useState("");
+  const [maxLoan, setMaxLoan] = useState("");
+
   return (
     <>
       {/* Input item PLU & name */}
@@ -72,13 +80,13 @@ export function PGModalAuto() {
           </Field>
           <Field>
             <FieldLabel htmlFor="pricePerGram">Price/Gram</FieldLabel>
-            <Input
+            <CurrencyInput
               id="pricePerGram"
               name="pricePerGram"
-              type="number"
+              value={pricePerGram}
+              onValueChange={setPricePerGram}
               placeholder="0"
-              onWheel={(e) => e.currentTarget.blur()}>
-            </Input>
+            />
           </Field>
           <Field>
             <FieldLabel htmlFor="calculate"></FieldLabel>
@@ -90,25 +98,25 @@ export function PGModalAuto() {
         {/* Value */}
           <Field>
             <FieldLabel htmlFor="appraisal">Appraisal</FieldLabel>
-            <Input
+            <CurrencyInput
               id="appraisal"
               name="appraisal"
-              type="number"
+              value={appraisal}
+              onValueChange={setAppraisal}
               placeholder="0"
               disabled
-              onWheel={(e) => e.currentTarget.blur()}>
-            </Input>
+            />
           </Field>
           <Field>
             <FieldLabel htmlFor="maxLoan">Max Loan</FieldLabel>
-            <Input
+            <CurrencyInput
               id="maxLoan"
               name="maxLoan"
-              type="number"
+              value={maxLoan}
+              onValueChange={setMaxLoan}
               placeholder="0"
               disabled
-              onWheel={(e) => e.currentTarget.blur()}>
-            </Input>
+            />
           </Field>
           <Field>
             <FieldLabel htmlFor="remark">Remark (*)</FieldLabel>

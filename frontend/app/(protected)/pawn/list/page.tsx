@@ -15,18 +15,19 @@ import { PawnTable } from "./_components/pawn-table"
 import { pawnData } from "./_data/pawn-data"
 import { selectData } from "./_data/status-take-over"
 
-
 export default function PawnList(){
-    
     const [searchQuery, setSearchQuery] = React.useState("")
     const filteredApplications = pawnData.filter((application) => application.applicationNumber.toLowerCase().includes(searchQuery.toLowerCase()))
     return(
         <div>
             <div className="mt-6">
+                {/* Judul */}
                 <div className="mb-4 flex justify-left">
                     <List className="inline-block mr-2" size={12} />
                     <h3>Application List</h3>
                 </div>
+
+                {/* Search Bar, Dropdown Filter & Date Picker */}
                 <div className="mb-2 flex justify-between">
                     <SearchBar onSearch={setSearchQuery} />
                     <div className="flex gap-2">
@@ -34,6 +35,8 @@ export default function PawnList(){
                         <PawnDataPicker></PawnDataPicker>
                     </div>
                 </div>
+
+                {/* Show Table based on Filter */}
                 <PawnTable data={filteredApplications}></PawnTable>
             </div>
         </div>

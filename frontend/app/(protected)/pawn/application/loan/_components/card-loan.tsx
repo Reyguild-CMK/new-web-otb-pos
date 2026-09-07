@@ -1,18 +1,25 @@
+// Global
+import { useState } from "react";
+
+// Data
 import { Tenor } from "../_data/data-tenor"
 
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application"
-import { Combobox, ComboboxInput, ComboboxContent, ComboboxList, ComboboxItem } from "@/components/ui/combobox"
+// Components - label & field input
 import { Input } from "@/components/ui/input"
-import React from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { CurrencyInput } from "@/components/ui/currency-input";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application"
+import { Combobox, ComboboxInput, ComboboxContent, ComboboxList, ComboboxItem } from "@/components/ui/combobox"
 
 interface LoanProps{
     data:Tenor[]
 }
 
 export function CardDayLoan({data}:LoanProps){
-    const [open, setOpen] = React.useState(false)
+    const [maksNilaiPinjaman, setMaksNilaiPinjaman] = useState("");
+    const [nilaiPinjaman, setNilaiPinjaman] = useState("");
+
     return(
         <div className="md:flex h-fit gap-6 border border-grey/50 rounded-lg p-4">
             <FieldGroup>
@@ -37,21 +44,22 @@ export function CardDayLoan({data}:LoanProps){
                 </Field>
                 <Field>
                     <FieldLabel htmlFor="maksNilaiPinjaman">Maks Nilai Pinjaman</FieldLabel>
-                    <Input
+                    <CurrencyInput
                         id="maksNilaiPinjaman"
                         name="maksNilaiPinjaman"
-                        type="number"
-                        disabled>
-                    </Input>
+                        value={maksNilaiPinjaman}
+                        onValueChange={setMaksNilaiPinjaman}
+                        disabled
+                    />
                 </Field>
                 <Field>
                     <FieldLabel htmlFor="nilaiPinjaman">Nilai Pinjaman</FieldLabel>
-                    <Input
+                    <CurrencyInput
                         id="nilaiPinjaman"
                         name="nilaiPinjaman"
-                        type="number"
-                        disabled>
-                    </Input>
+                        value={nilaiPinjaman}
+                        onValueChange={setNilaiPinjaman}
+                    />
                 </Field>    
                 <Field>
                     <FieldLabel></FieldLabel>

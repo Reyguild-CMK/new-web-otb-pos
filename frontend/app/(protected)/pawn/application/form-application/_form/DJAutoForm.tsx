@@ -1,3 +1,6 @@
+// Global
+import { useState } from "react";
+
 // components
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Combobox, ComboboxInput, ComboboxEmpty, ComboboxList, ComboboxItem, ComboboxContent } from "@/components/ui/combobox";
@@ -10,15 +13,19 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { FieldGroup, FieldSeparator, Field, FieldLabel } from "@/components/ui/field-application";
 import { UploadSection } from "../../_components/upload-section";
+import { CurrencyInput } from "@/components/ui/currency-input";
 
 // data dummy
 import { conditionType } from "../_data/other-data";
-import { dataBarang } from "../_data/barang-data";
+import { dataBarang } from "../../_data/barang-data";
 
 // icons
 import { Check } from "lucide-react";
 
 export function DJModalAuto() {
+  const [estimatedValue, setEstimatedValue] = useState("");
+  const [maxLoan, setMaxLoan] = useState("");
+
   return (
     <>
       {/* Input item PLU & name */}
@@ -134,25 +141,25 @@ export function DJModalAuto() {
           {/* Value */}
           <Field>
             <FieldLabel htmlFor="estimatedValue">Estimated Value</FieldLabel>
-            <Input
+            <CurrencyInput
               id="estimatedValue"
               name="estimatedValue"
-              type="number"
-              placeholder="0"
+              value={estimatedValue}
+              onValueChange={setEstimatedValue}
               disabled
-              onWheel={(e) => e.currentTarget.blur()}>
-            </Input>
+              placeholder="0"
+            />
           </Field>
           <Field>
             <FieldLabel htmlFor="maxLoan">Max Loan</FieldLabel>
-            <Input
+            <CurrencyInput
               id="maxLoan"
               name="maxLoan"
-              type="number"
-              placeholder="0"
+              value={maxLoan}
+              onValueChange={setMaxLoan}
               disabled
-              onWheel={(e) => e.currentTarget.blur()}>
-            </Input>
+              placeholder="0"
+            />
           </Field>
           <Field>
             <FieldLabel htmlFor="remark">Remark (*)</FieldLabel>
