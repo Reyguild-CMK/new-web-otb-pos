@@ -14,7 +14,7 @@ export function FieldNominal(){
         <Input disabled/>
       </Field>
       <Field>
-        <FieldLabel>Persentase Biaya Perawatan</FieldLabel>
+        <FieldLabel>Persentase Biaya Perawatan (%)</FieldLabel>
         <Input disabled/>
       </Field>
       <Field>
