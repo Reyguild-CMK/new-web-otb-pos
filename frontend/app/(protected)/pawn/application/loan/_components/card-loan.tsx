@@ -33,24 +33,6 @@ export function CardDayLoan({data}:LoanProps){
                     </Combobox>
                 </Field>
                 <Field>
-                    <FieldLabel htmlFor="cabang">Cabang (opsional)</FieldLabel>
-                    <Input
-                        id="cabang"
-                        name="cabang"
-                        type="text"
-                        onWheel={(e) => e.currentTarget.blur()}
-                        >
-                    </Input>
-                </Field>
-                <Field>
-                    <FieldLabel htmlFor="nomorRekening">Nomor Rekening</FieldLabel>
-                    <Input
-                        id="nomorRekening"
-                        name="nomorRekening"
-                        type="number">
-                    </Input>
-                </Field>
-                <Field>
                     <FieldLabel htmlFor="cek-no-rekening"></FieldLabel>
                 </Field>
                 <Field>
