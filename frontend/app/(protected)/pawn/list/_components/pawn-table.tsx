@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 
 // Data
-import { Pawn } from "../_data/pawn-data";
+import { Pawn, pawnData } from "../../../_data/data-pawn";
 
 // Icon
 import { FileText } from "lucide-react";
@@ -20,14 +20,18 @@ const getLastStepUrl = (status: string) => {
         case "approved":
             return "/pawn/application/document"
         case "disbursed":
-            return "/pawn/application/summary"
+            return "/pawn/list/detail"
         default:
             return "/pawn/application/form-application"
     }
 }
 
+interface PawnTableRow extends Pawn {
+    customerName: string;
+}
+
 interface PawnTableProps {
-    data: Pawn[];
+    data: PawnTableRow[];
 }
 
 export function PawnTable({ data }: PawnTableProps) {
@@ -53,7 +57,7 @@ export function PawnTable({ data }: PawnTableProps) {
                         <TableCell>{list.type}</TableCell>
                         <TableCell>{list.applicationNumber}</TableCell>
                         <TableCell>{list.oldApplication}</TableCell>
-                        <TableCell>{list.customer}</TableCell>
+                        <TableCell>{list.customerName}</TableCell>
                         <TableCell>{list.jatuhTempo}</TableCell>
                         <TableCell>{list.dibuatOleh}</TableCell>
                         <TableCell>{list.status}</TableCell>

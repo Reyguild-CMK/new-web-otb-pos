@@ -17,12 +17,21 @@ import { WaitingApproval } from "./_components/waiting-approval";
 import { FieldDokumen } from "./_components/field-dokumen";
 
 // Interface Data
-import { dataBarang } from "../_data/barang-data";
+import { dataBarang } from "../../../_data/barang-data";
+
+//interface summary pawn
+import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
 
 // Icon
 import { Download } from 'lucide-react';
 
 export default function CustomerApplication() {
+  const pawnSummary = getPawnSummary("J2CE432608310004")
+
+  if (!pawnSummary) {
+    return <p>Data pinjaman tidak ditemukan.</p>;
+  }
+
     return (
       <>
       {/* Card */}
@@ -31,15 +40,15 @@ export default function CustomerApplication() {
         <h1 className="font-bold">Dokumen</h1>
 
         {/* Tabel */}
-        <TableDocument data={dataBarang}/>
+        <TableDocument data={pawnSummary.barang}/>
         
         {/* Form Pembayaran*/}
         <h1>Detail Informasi Pinjaman</h1>
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Field Nominal, Bank ,dll */}
-          <FieldNominal/>
+          <FieldNominal data={pawnSummary}/>
           {/* Field Informasi Dokumen */}
-          <FieldDokumen/>
+          <FieldDokumen data={pawnSummary}/>
         </div>
         
         <Separator/>

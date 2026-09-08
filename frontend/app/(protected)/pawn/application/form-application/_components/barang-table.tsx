@@ -10,7 +10,7 @@ import { formatRupiah } from "@/lib/currency";
 import { CircleX } from "lucide-react";
 
 // interface data
-import type { Barang } from "../../_data/barang-data"
+import type { Barang } from "../../../../_data/barang-data"
 
 interface BarangTableProps {
   data: Barang[]

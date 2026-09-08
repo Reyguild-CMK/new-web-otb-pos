@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 // Data
-import { Tenor } from "../_data/data-tenor"
+import { Tenor } from "../../../../_data/data-tenor"
 
 // Components - label & field input
 import { Input } from "@/components/ui/input"

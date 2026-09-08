@@ -3,7 +3,7 @@ import { Field } from "@/components/ui/field"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "@/components/ui/select"
 
 // Data
-import { Status } from "../_data/status-take-over"
+import { Status } from "../../../_data/status-take-over"
 
 interface DropDownProps {
     data: Status[];

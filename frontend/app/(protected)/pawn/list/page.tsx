@@ -12,8 +12,19 @@ import { DropDown } from "./_components/dropdown"
 import { PawnTable } from "./_components/pawn-table"
 
 // Data Dummy for Select
-import { pawnData } from "./_data/pawn-data"
-import { selectData } from "./_data/status-take-over"
+import { pawnData } from "../../_data/data-pawn"
+import { dataCustomer } from "../../_data/data-customer";
+import { selectData } from "../../_data/status-take-over"
+
+const pawnTableData = pawnData.map((pawn) => {
+    const customer = dataCustomer.find((item) => String(item.idNumber) === pawn.customerId
+    );
+    return {
+        ...pawn,
+        customerName: customer?.nama ?? "-",
+    };
+});
+
 
 export default function PawnList(){
     const [searchQuery, setSearchQuery] = React.useState("")
@@ -37,7 +48,7 @@ export default function PawnList(){
                 </div>
 
                 {/* Show Table based on Filter */}
-                <PawnTable data={filteredApplications}></PawnTable>
+                <PawnTable data={pawnTableData}></PawnTable>
             </div>
         </div>
     )

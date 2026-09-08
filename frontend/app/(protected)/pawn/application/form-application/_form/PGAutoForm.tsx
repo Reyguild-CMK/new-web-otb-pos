@@ -13,7 +13,7 @@ import { UploadSection } from "../../_components/upload-section";
 import { CurrencyInput } from "@/components/ui/currency-input";
 
 // data
-import { dataBarang } from "../../_data/barang-data";
+import { dataBarang } from "../../../../_data/barang-data";
 
 // icons
 import { Calculator, Check } from "lucide-react";

@@ -7,7 +7,7 @@ import { Combobox, ComboboxInput, ComboboxList, ComboboxItem, ComboboxContent} f
 import { Button } from "@/components/ui/button";
 
 // Data
-import { Bank } from "../_data/data-bank"
+import { Bank } from "../../../../_data/data-bank"
 
 interface BankProps{
     data: Bank[]

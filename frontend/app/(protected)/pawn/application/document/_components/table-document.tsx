@@ -6,10 +6,10 @@ import PreviewImage from "@/components/shared/ImagePreview/ImagePreview";
 import { formatRupiah } from "@/lib/currency";
 
 // Interface data
-import type { Barang } from "../../_data/barang-data";
+import type { Barang } from "../../../../_data/barang-data";
 
 // Data
-import { dataBarang } from "../../_data/barang-data";
+import { dataBarang } from "../../../../_data/barang-data";
 
 interface BarangTableProps {
   data: Barang[]

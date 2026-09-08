@@ -5,37 +5,50 @@ import { useState } from "react";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application";
 import { Input } from "@/components/ui/input";
 import { CurrencyInput } from "@/components/ui/currency-input";
+import { PawnSummary } from "@/app/(protected)/_data/data-summary";
+
+interface FieldDokumenProps{
+  data: PawnSummary;
+}
 
 // Styling
 import { style_card } from "@/components/shared/Stepper/Stepper";
 
-export function FieldDokumen(){
-  const [nilaiPinjaman, setNilaiPinjaman] = useState("");
-  const [adminFee, setAdminFee] = useState("");
-  const [biayaPerawatan, setBiayaPerawatan] = useState("");
-  const [nominalDitransfer, setNominalDitransfer] = useState("");
+export function FieldDokumen({ data }: FieldDokumenProps){
+  // const [nilaiPinjaman, setNilaiPinjaman] = useState("");
+  // const [adminFee, setAdminFee] = useState("");
+  // const [biayaPerawatan, setBiayaPerawatan] = useState("");
+  // const [nominalDitransfer, setNominalDitransfer] = useState("");
   
   return(
     <FieldGroup className={`${style_card}`}>
       <Field>
         <FieldLabel>No Dokumen</FieldLabel>
-        <Input disabled/>
+        <Input value={data.applicationNumber} disabled/>
       </Field>
       <Field>
         <FieldLabel>Tanggal Jatuh Tempo</FieldLabel>
-        <Input disabled type="date"/>
+        <Input value={data.jatuhTempo} disabled type="date"/>
       </Field>
       <Field>
         <FieldLabel>Tanggal Penjualan</FieldLabel>
-        <Input disabled type="date"/>
+        <Input
+          value={
+            data.tanggalTransaksi instanceof Date
+              ? data.tanggalTransaksi.toISOString().slice(0, 10)
+              : data.tanggalTransaksi
+          }
+          disabled
+          type="date"
+        />
       </Field>
       <Field>
         <FieldLabel>Nilai Pinjaman</FieldLabel>
         <CurrencyInput
           id="nilaiPinjaman"
           name="nilaiPinjaman"
-          value={nilaiPinjaman}
-          onValueChange={setNilaiPinjaman}
+          value={String(data.nilaiPinjaman)}
+          onValueChange={()=> {}}
           disabled
         />
       </Field>
@@ -44,8 +57,8 @@ export function FieldDokumen(){
         <CurrencyInput
           id="adminFee"
           name="adminFee"
-          value={adminFee}
-          onValueChange={setAdminFee}
+          value="0"
+          onValueChange={()=>{}}
           disabled
         />
       </Field>
@@ -54,8 +67,8 @@ export function FieldDokumen(){
         <CurrencyInput
           id="biayaPerawatan"
           name="biayaPerawatan"
-          value={biayaPerawatan}
-          onValueChange={setBiayaPerawatan}
+          value={String(data.biayaPerawatan)}
+          onValueChange={() => {}}
           disabled
         />
       </Field>
@@ -64,8 +77,8 @@ export function FieldDokumen(){
         <CurrencyInput
           id="nominalDitransfer"
           name="nominalDitransfer"
-          value={nominalDitransfer}
-          onValueChange={setNominalDitransfer}
+          value={String(data.nominalDitransfer)}
+          onValueChange={()=> {}}
           disabled
         />
       </Field>

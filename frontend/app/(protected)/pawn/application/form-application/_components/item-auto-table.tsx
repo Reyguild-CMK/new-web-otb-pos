@@ -2,7 +2,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 // Type interface
-import type { Barang } from "../../_data/barang-data"
+import type { Barang } from "../../../../_data/barang-data"
 
 interface AutoBarangProps {
     data: Barang[]

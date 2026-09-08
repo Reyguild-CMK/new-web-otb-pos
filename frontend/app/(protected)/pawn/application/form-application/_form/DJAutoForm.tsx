@@ -17,7 +17,7 @@ import { CurrencyInput } from "@/components/ui/currency-input";
 
 // data dummy
 import { conditionType } from "../_data/other-data";
-import { dataBarang } from "../../_data/barang-data";
+import { dataBarang } from "../../../../_data/barang-data";
 
 // icons
 import { Check } from "lucide-react";

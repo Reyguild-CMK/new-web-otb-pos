@@ -16,9 +16,9 @@ import { CardDayLoan } from "./_components/card-loan"
 import { CardDetailLown } from "./_components/card-detail-loan";
 
 // Data
-import { dataBarang } from "../_data/barang-data"
-import { dataBank } from "./_data/data-bank";
-import { tenor } from "./_data/data-tenor";
+import { dataBarang } from "../../../_data/barang-data"
+import { dataBank } from "../../../_data/data-bank";
+import { tenor } from "../../../_data/data-tenor";
 
 export default function FormLoanApplication() {
     return (
