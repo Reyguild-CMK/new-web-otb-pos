@@ -2,12 +2,13 @@
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { PawnSummary } from "@/app/(protected)/_data/data-summary";
 
-// Styling
+// Style Card
 import { style_card } from "@/components/shared/Stepper/Stepper";
 
-// Interface untuk pawn summary
+// Interface data
+import { PawnSummary } from "@/app/(protected)/_data/data-summary";
+
 interface FieldNominalProps{
   data: PawnSummary;
 }
@@ -17,11 +18,11 @@ export function FieldNominal({data}: FieldNominalProps){
     <FieldGroup className={`${style_card}`}>
       <Field>
         <FieldLabel>Tenor</FieldLabel>
-        <Input  value={data.tenor} disabled/>
+        <Input value={`${data.tenor} Days`} disabled />
       </Field>
       <Field>
         <FieldLabel>Persentase Biaya Perawatan (%)</FieldLabel>
-        <Input value={data.persentaseBiayaPerawatan} disabled/>
+        <Input value={`${(data.persentaseBiayaPerawatan * 100).toFixed(2)}%`} disabled/>
       </Field>
       <Field>
         <FieldLabel>Metode Pencairan</FieldLabel>

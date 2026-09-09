@@ -3,18 +3,19 @@ export interface Pawn {
    type: string;
    applicationNumber: string;
    oldApplication: string;
-   jatuhTempo: string;
    dibuatOleh: string;
-   status: string;
+   status: string; //open, waiting_approval, approved, disbursed,
    nilaiPinjaman: number;
-   tenor: string;
+   tenor: number;
    tanggalTransaksi: Date;
-   biayaPerawatan: number;
-   persentaseBiayaPerawatan: string;
+   // biayaPerawatan otomatis di getPawnSummary;
+   // jatuhTempo otomatis di getPawnSummary;
+   biayaAdmin: number;
+   persentaseBiayaPerawatan: number;
 
    customerId: string;
    barangCodes: string[];
-   bankId: string;
+   bankId: number;
    metodePencairan: string;
    nomorRekening: string;
    namaPemilikRekening: string;
@@ -22,15 +23,28 @@ export interface Pawn {
 
 // Data Dummy
 export const pawnData: Pawn[] =[
-   // {
-   //    no:"1",
-   //    type:"J2C",
-   //    applicationNumber:"J2CE432608310001",
-   //    oldApplication:"-",
-   //    jatuhTempo:"23 Dec 2019",
-   //    dibuatOleh:"JR CMK",
-   //    status:"open",
-   // },
+   {
+      no:"1",
+      type:"J2C",
+      applicationNumber:"J2CE432608310001",
+      oldApplication:"-",
+      dibuatOleh:"JR CMK",
+      status:"open",
+
+      
+      nilaiPinjaman: 17522375,
+      tenor: 120,
+      tanggalTransaksi: new Date("2023-03-05"),
+      biayaAdmin:35000,
+      persentaseBiayaPerawatan: 0.06,
+
+      customerId: "1234567891011121",
+      barangCodes: ["ITEM-260901-0001"],
+      bankId: 1,
+      metodePencairan: "Transfer",
+      nomorRekening: "0011223344",
+      namaPemilikRekening: "BCA Simulator A"
+   },
    // {
    //    no:"2",
    //    type:"J2C",
@@ -54,19 +68,19 @@ export const pawnData: Pawn[] =[
       type:"J2C",
       applicationNumber:"J2CE432608310004",
       oldApplication:"-",
-      jatuhTempo:"23 Dec 2019",
       dibuatOleh:"JR CMK",
       status:"disbursed",
 
       nilaiPinjaman: 2178838,
-      tenor: "120 Days",
+      tenor: 120,
       tanggalTransaksi: new Date("2023-03-04"),
-      biayaPerawatan: 130731,
-      persentaseBiayaPerawatan: "6.00%",
+      // biayaPerawatan: 130731,
+      biayaAdmin:35000,
+      persentaseBiayaPerawatan: 0.06,
 
-      customerId: "1234567891011121",
+      customerId: "1234567891012131",
       barangCodes: ["ITEM-260901-0001"],
-      bankId: "1",
+      bankId: 2,
       metodePencairan: "Transfer",
       nomorRekening: "0011223344",
       namaPemilikRekening: "BCA Simulator A"

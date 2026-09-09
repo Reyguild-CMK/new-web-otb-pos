@@ -15,11 +15,13 @@ interface BankProps{
 
 export function CardBank({data}:BankProps){
     return(
-        <div className="md:flex h-fit gap-6 border border-grey/50 rounded-lg p-4">
+        <form className="md:flex h-fit gap-6 border border-grey/50 rounded-lg p-4"
+        // onSubmit={}
+        >
             <FieldGroup>
                 <Field>
                     <FieldLabel htmlFor="dataBank">Bank</FieldLabel>
-                    <Combobox items={data} defaultValue={data[0]} itemToStringLabel={(item) => item.name}  itemToStringValue={(item) => item.id}>
+                    <Combobox items={data} defaultValue={data[0]} itemToStringLabel={(item) => item.name}  itemToStringValue={(item) => String(item.id)}>
                         <ComboboxInput placeholder="Choose Bank">
                             <ComboboxContent>
                                 <ComboboxList>
@@ -51,7 +53,11 @@ export function CardBank({data}:BankProps){
                             name="nomorRekening"
                             type="number">
                         </Input>
-                        <Button className="shrink-0 px-2 bg-btn-action-bg text-[11px]!">Cek Nomor Rekening</Button>
+                        <Button 
+                            type="button"
+                            className="shrink-0 px-2 bg-btn-action-bg text-[11px]!"
+                            // onClick={}
+                        >Cek Nomor Rekening</Button>
                     </div>
                 </Field>
                 <Field>
@@ -65,6 +71,6 @@ export function CardBank({data}:BankProps){
                     </Input>
                 </Field>
            </FieldGroup>
-        </div>
+        </form>
     )
 }

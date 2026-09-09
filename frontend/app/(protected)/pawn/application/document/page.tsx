@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { InputFile } from "./_components/input-file";
 
 // Components - label & field input
-import { TableDocument } from "./_components/table-document";
+import { TableDocument } from "../_components/table-document";
 import { FieldNominal } from "./_components/field-nominal";
 import { WaitingApproval } from "./_components/waiting-approval";
 import { FieldDokumen } from "./_components/field-dokumen";
@@ -35,17 +35,23 @@ export default function CustomerApplication() {
       <div className={`${style_card} w-full`}>
         {/* Judul */}
         <h1 className="font-bold">Dokumen</h1>
-
-        {/* Tabel */}
-        <TableDocument data={pawnSummary.barang}/>
         
-        {/* Form Pembayaran*/}
-        <h1>Detail Informasi Pinjaman</h1>
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* Field Nominal, Bank ,dll */}
-          <FieldNominal data={pawnSummary}/>
-          {/* Field Informasi Dokumen */}
-          <FieldDokumen data={pawnSummary}/>
+
+        {/* Tabel Dokumen*/}
+        <div className="flex flex-col gap-2">
+          <h3>Daftar Barang</h3>
+          <TableDocument data={pawnSummary.barang}/>
+        </div>
+        
+        {/* Form Informasi Pembayaran*/}
+        <div className="flex flex-col gap-2">
+          <h3>Detail Informasi Pinjaman</h3>
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Tenor, Bank ,dll */}
+            <FieldNominal data={pawnSummary}/>
+            {/* Informasi Dokumen */}
+            <FieldDokumen data={pawnSummary}/>
+          </div>
         </div>
         
         <Separator/>

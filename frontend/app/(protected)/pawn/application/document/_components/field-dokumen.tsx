@@ -1,25 +1,19 @@
-// Global
-import { useState } from "react";
-
 // Components - label & field input
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application";
 import { Input } from "@/components/ui/input";
 import { CurrencyInput } from "@/components/ui/currency-input";
+
+// Interface data
 import { PawnSummary } from "@/app/(protected)/_data/data-summary";
 
 interface FieldDokumenProps{
   data: PawnSummary;
 }
 
-// Styling
+// Style Card
 import { style_card } from "@/components/shared/Stepper/Stepper";
 
-export function FieldDokumen({ data }: FieldDokumenProps){
-  // const [nilaiPinjaman, setNilaiPinjaman] = useState("");
-  // const [adminFee, setAdminFee] = useState("");
-  // const [biayaPerawatan, setBiayaPerawatan] = useState("");
-  // const [nominalDitransfer, setNominalDitransfer] = useState("");
-  
+export function FieldDokumen({ data }: FieldDokumenProps){  
   return(
     <FieldGroup className={`${style_card}`}>
       <Field>
@@ -28,15 +22,18 @@ export function FieldDokumen({ data }: FieldDokumenProps){
       </Field>
       <Field>
         <FieldLabel>Tanggal Jatuh Tempo</FieldLabel>
-        <Input value={data.jatuhTempo} disabled type="date"/>
+        <Input value={data.jatuhTempo instanceof Date
+              ? data.jatuhTempo.toISOString().slice(0, 10)
+              : data.jatuhTempo
+          }
+        disabled type="date"/>
       </Field>
       <Field>
         <FieldLabel>Tanggal Penjualan</FieldLabel>
         <Input
-          value={
-            data.tanggalTransaksi instanceof Date
-              ? data.tanggalTransaksi.toISOString().slice(0, 10)
-              : data.tanggalTransaksi
+          value={data.jatuhTempo instanceof Date
+              ? data.jatuhTempo.toISOString().slice(0, 10)
+              : data.jatuhTempo
           }
           disabled
           type="date"

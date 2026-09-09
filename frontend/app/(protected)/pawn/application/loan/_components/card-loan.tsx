@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label"
 import { CurrencyInput } from "@/components/ui/currency-input";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application"
 import { Combobox, ComboboxInput, ComboboxContent, ComboboxList, ComboboxItem } from "@/components/ui/combobox"
+import { Button } from "@/components/ui/button";
 
 interface LoanProps{
     data:Tenor[]
@@ -21,17 +22,20 @@ export function CardDayLoan({data}:LoanProps){
     const [nilaiPinjaman, setNilaiPinjaman] = useState("");
 
     return(
-        <div className="md:flex h-fit gap-6 border border-grey/50 rounded-lg p-4">
+        <form 
+            // onSubmit={onSubmit} 
+            className="md:flex h-fit gap-6 border border-grey/50 rounded-lg p-4"
+        >
             <FieldGroup>
                 <Field>
                     <FieldLabel htmlFor="tenor">Tenor</FieldLabel>
-                    <Combobox items={data} defaultValue={data[0]} itemToStringLabel={(item) => item.tenor}  itemToStringValue={(item) => item.id}>
+                    <Combobox items={data} defaultValue={data[0]} itemToStringLabel={(item) => item.label}  itemToStringValue={(item) => item.id}>
                         <ComboboxInput placeholder="Select Tenor">
                             <ComboboxContent>
                                 <ComboboxList>
                                     {(item) => (
                                         <ComboboxItem key={item.id} value={item}>
-                                            {item.tenor}
+                                            {item.label}
                                         </ComboboxItem>
                                     )}
                                 </ComboboxList>
@@ -76,6 +80,7 @@ export function CardDayLoan({data}:LoanProps){
                         type="number"
                         disabled>
                     </Input>
+                    
                 </Field>
                 <Field>
                     <FieldLabel htmlFor="tanggalTransaksi">Tanggal Transaksi</FieldLabel>
@@ -85,8 +90,16 @@ export function CardDayLoan({data}:LoanProps){
                         type="date"
                         >
                     </Input>
-                </Field>           
+                </Field>     
+                <Field>
+                    <div></div>
+                    <Button 
+                        type="button"
+                        // onClick={}
+                        className="shrink-0 px-2 bg-btn-action-bg text-[11px]!">Calculate
+                    </Button>
+                </Field>    
             </FieldGroup>
-        </div>
+        </form>
     )
 }
