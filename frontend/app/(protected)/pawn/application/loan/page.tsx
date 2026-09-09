@@ -8,7 +8,7 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application
 import { Textarea } from "@/components/ui/textarea";
 
 // Components
-import { BarangTable } from "../form-application/_components/barang-table";
+import { TableDocument } from "../_components/table-document";
 
 // Form
 import { CardBank } from "./_components/card-bank";
@@ -28,7 +28,7 @@ export default function FormLoanApplication() {
                 <h1 className="font-bold pb-2">Detail Pinjaman</h1>
             </div>
             {/* Table Barang */}
-            <BarangTable data={dataBarang}></BarangTable>
+            <TableDocument data={dataBarang}></TableDocument>
             <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
                 {/* Content */}
                 <div className="flex flex-col gap-4">

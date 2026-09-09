@@ -5,7 +5,7 @@ import { style_card } from "@/components/shared/Stepper/Stepper";
 
 // Component
 import { Summary } from "../summary/_components/summary"
-import { BarangTable } from "../form-application/_components/barang-table";
+import { TableDocument } from "../_components/table-document";
 
 // Function getPawnSummary
 import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
@@ -24,7 +24,7 @@ export default function SummaryPage(){
                 <h1 className="font-bold pb-2">Detail Pinjaman</h1>
             </div>
             {/* Table Barang */}
-            <BarangTable data={summaryData.barang}></BarangTable>
+            <TableDocument data={summaryData.barang}></TableDocument>
             <Summary data={summaryData}></Summary>
         </div>
     )

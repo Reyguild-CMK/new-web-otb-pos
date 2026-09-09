@@ -6,10 +6,10 @@ import PreviewImage from "@/components/shared/ImagePreview/ImagePreview";
 import { formatRupiah } from "@/lib/currency";
 
 // Interface data Barang
-import type { Barang } from "../../../../_data/barang-data";
+import type { Barang } from "../../../_data/barang-data";
 
 // Data Barang
-import { dataBarang } from "../../../../_data/barang-data";
+import { dataBarang } from "../../../_data/barang-data";
 
 interface BarangTableProps {
   data: Barang[]
@@ -34,6 +34,7 @@ export function TableDocument({ data }: BarangTableProps){
           <TableHead>Karat</TableHead>
           <TableHead>Berat</TableHead>
           <TableHead>Catatan</TableHead>
+          <TableHead>Qty</TableHead>
           <TableHead className="text-right">Nilai</TableHead>
           <TableHead className="text-right">Maks Nilai Pinjaman</TableHead>
         </TableRow>
@@ -54,6 +55,7 @@ export function TableDocument({ data }: BarangTableProps){
             <TableCell>{item.karat}</TableCell>
             <TableCell>{item.berat}</TableCell>
             <TableCell>{item.catatan}</TableCell>
+            <TableCell>{item.qty}</TableCell>
             <TableCell className="text-right">{formatRupiah(item.nilai)}</TableCell>
             <TableCell className="text-right">{formatRupiah(item.makspinjaman)}</TableCell>
           </TableRow>
@@ -63,7 +65,7 @@ export function TableDocument({ data }: BarangTableProps){
       {/* Footer total */}
       <TableFooter>
         <TableRow>
-          <TableCell className="text-right" colSpan={6}>Total</TableCell>
+          <TableCell className="text-right" colSpan={7}>Total</TableCell>
           <TableCell className="text-right">{formatRupiah(totalNilai)}</TableCell>
           <TableCell className="text-right">{formatRupiah(totalMaksPinjaman)}</TableCell>
         </TableRow>

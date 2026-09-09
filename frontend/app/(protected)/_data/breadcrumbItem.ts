@@ -2,6 +2,7 @@ import {
   HandCoins,
   FilePenLine,
   ShoppingCartPlus,
+  List,
 } from "lucide-react";
 
 // Isi Default Breadcrumb
@@ -15,5 +16,9 @@ export const appBreadcrumb = [
 ]
 
 export const appTodaysTransaction = [
-  { label: "Today's Transactions", href: "/todays_transaction", icon: ShoppingCartPlus },
+  { label: "Today's Transactions", href: "/pawn/todays_transaction", icon: ShoppingCartPlus },
+]
+
+export const appPawnList = [
+  { label: "List", href: "/pawn/list", icon: List },
 ]

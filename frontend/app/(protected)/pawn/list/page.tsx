@@ -33,9 +33,8 @@ export default function PawnList(){
         <div>
             <div className="mt-6">
                 {/* Judul */}
-                <div className="mb-4 flex justify-left">
-                    <List className="inline-block mr-2" size={12} />
-                    <h3>Application List</h3>
+                <div className="mb-6 justify-left">
+                    <h1 className="font-bold flex gap-2 self-center"><List size={22}/>Application List</h1>
                 </div>
 
                 {/* Search Bar, Dropdown Filter & Date Picker */}
