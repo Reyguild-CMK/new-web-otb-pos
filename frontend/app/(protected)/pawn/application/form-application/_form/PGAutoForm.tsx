@@ -1,21 +1,21 @@
 // Global
 import { useState } from "react";
 
-// components
+// Components
 import { Button } from "@/components/ui/button";
 import { ItemAutoTable } from "../_components/item-auto-table";
 
-// components - label & field input
+// Components - label & field input
+import { FieldGroup, FieldSeparator, Field, FieldLabel } from "@/components/ui/field-application";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { FieldGroup, FieldSeparator, Field, FieldLabel } from "@/components/ui/field-application";
 import { UploadSection } from "../../_components/upload-section";
 import { CurrencyInput } from "@/components/ui/currency-input";
 
-// data
+// Data dummy
 import { dataBarang } from "../../../../_data/barang-data";
 
-// icons
+// Icons
 import { Calculator, Check } from "lucide-react";
 
 export function PGModalAuto() {

@@ -1,28 +1,28 @@
-// components
+// Global
+import { useState } from "react";
+
+// Components 
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogTrigger, DialogTitle, DialogContent, DialogHeader, DialogFooter, DialogClose } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
-// components - label & field input
-import { FieldLabel } from "@/components/ui/field-application";
-import { Combobox, ComboboxInput, ComboboxEmpty, ComboboxList, ComboboxItem, ComboboxContent } from "@/components/ui/combobox";
+// Components - label & field input
 import { Checkbox } from "@/components/ui/checkbox";
+import { FieldLabel } from "@/components/ui/field-application";
+import { Combobox, ComboboxInput, ComboboxList, ComboboxItem, ComboboxContent, ComboboxEmpty } from "@/components/ui/combobox";
 
-// icon
-import { Plus } from "lucide-react";
-
-// data dummy
+// Data dummy
 import { itemType } from "../_data/other-data";
 
-// modal auto & manual
+// Icons
+import { Plus } from "lucide-react";
+
+// Modal auto & manual
 import { DJModalAuto } from "./DJAutoForm";
 import { DJModalManual } from "./DJManualForm";
 import { PGModalAuto } from "./PGAutoForm";
 import { PGModalManual } from "./PGManualForm";
-
-import { useState } from "react";
-
 
 export function ModalLayout() {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);

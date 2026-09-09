@@ -16,7 +16,7 @@ const receiveItemsDummy: ReceiveItem[] = [
   { id: 2, delivery_code: "Contoh kode 2" },
 ];
 
-// Style
+// Styling for Notification Bell
 const header_style = "px-4 py-2.5 font-semibold border-b border-gray-light text-[13px] text-navy-dark flex justify-between items-center";
 const row_style = "px-4 py-2 border-b last:border-b-0 border-gray-light hover:bg-gray-light/50 transition-colors block text-[12px]";
 

@@ -1,6 +1,11 @@
-import { PawnSummary } from "@/app/(protected)/_data/data-summary"
+// Component
 import { Card, CardContent } from "@/components/ui/card"
+
+// Library
 import { formatRupiah } from "@/lib/currency"
+
+// Interface Data PawnSummary
+import { PawnSummary } from "@/app/(protected)/_data/data-summary"
 
 interface SummaryProps {
     data: PawnSummary;
@@ -14,12 +19,12 @@ export function Summary({ data }: SummaryProps) {
             <CardContent className="flex flex-col gap-2">
                 <div className="grid grid-cols-[220px_1fr] gap-x-2">
                     <span>Tenor</span>
-                    <span>: {data.tenor}</span>
+                    <span>: {data.tenor} Days</span>
                 </div>
 
                 <div className="grid grid-cols-[220px_1fr] gap-x-2">
                     <span>Persentase Biaya Perawatan</span>
-                    <span>: {data.persentaseBiayaPerawatan}</span>
+                    <span>: {`${(data.persentaseBiayaPerawatan * 100).toFixed(2)}%`}</span>
                 </div>
 
                 <div className="grid grid-cols-[220px_1fr] gap-x-2">
@@ -51,12 +56,12 @@ export function Summary({ data }: SummaryProps) {
 
                 <div className="grid grid-cols-[220px_1fr] gap-x-2">
                     <span>Tanggal Transaksi</span>
-                    <span>: {data.tanggalTransaksi.toLocaleDateString()}</span>
+                    <span>: {data.tanggalTransaksi.toLocaleDateString("id-ID")}</span>
                 </div>
 
                 <div className="grid grid-cols-[220px_1fr] gap-x-2">
                     <span>Tanggal Jatuh Tempo</span>
-                    <span>: {data.jatuhTempo}</span>
+                    <span>: {data.jatuhTempo.toLocaleDateString("id-ID")}</span>
                 </div>
 
                 <div className="grid grid-cols-[220px_1fr] gap-x-2">

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 // Component - label & field input
 import { Field } from "@/components/ui/field"
 
-// Lib
+// Library
 import { addDays, format } from "date-fns"
 import type { DateRange } from "react-day-picker"
 

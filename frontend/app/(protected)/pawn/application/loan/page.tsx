@@ -1,6 +1,6 @@
 "use client"
 
-// Styling
+// Style Card
 import { style_card } from "@/components/shared/Stepper/Stepper";
 
 // Components - label & field input

@@ -1,9 +1,13 @@
 "use client"
 
+// Style Card
 import { style_card } from "@/components/shared/Stepper/Stepper";
 
+// Component
 import { Summary } from "../summary/_components/summary"
 import { BarangTable } from "../form-application/_components/barang-table";
+
+// Function getPawnSummary
 import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
 
 export default function SummaryPage(){

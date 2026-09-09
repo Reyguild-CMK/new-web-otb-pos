@@ -1,29 +1,26 @@
 "use client"
 
-// Style
+// Style Card
 import { style_card } from "@/components/shared/Stepper/Stepper";
 
 // Component
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
-// Component - Input & Label
+// Component - label & field input
 import { InputFile } from "./_components/input-file";
 
-// Component - Form & Section
+// Components - label & field input
 import { TableDocument } from "./_components/table-document";
 import { FieldNominal } from "./_components/field-nominal";
 import { WaitingApproval } from "./_components/waiting-approval";
 import { FieldDokumen } from "./_components/field-dokumen";
 
-// Interface Data
-import { dataBarang } from "../../../_data/barang-data";
-
-//interface summary pawn
-import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
-
 // Icon
 import { Download } from 'lucide-react';
+
+// Function getPawnSummary
+import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
 
 export default function CustomerApplication() {
   const pawnSummary = getPawnSummary("J2CE432608310004")

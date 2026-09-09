@@ -10,14 +10,14 @@ import {
 } from "@/components/ui/tableTGP"
 import { formatRupiah } from "@/lib/currency";
 
-// tipe data untuk setiap item logam mulia
+// Tipe data untuk setiap item logam mulia
 interface LogamMulia {
     id: number;
     name: string;
     price: number;
 }
 
-// tipe data untuk setiap item emas
+// Tipe data untuk setiap item emas
 interface BeliEmas {
     id: number;
     name: string;
@@ -122,7 +122,7 @@ const EmasDummy: BeliEmas[] = [
     }
 ]
 
-// Style
+// Styling for SidebarTGP
 const cell_padding = "px-2 py-1";
 const header = `text-gold text-md ${cell_padding}`;
 const cell_left = `text-left ${cell_padding}`;

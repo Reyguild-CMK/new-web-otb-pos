@@ -20,7 +20,7 @@ interface HeaderProps {
   children?: ReactNode;
 }
 
-// Style Button & Side
+// Styling for Header Button & Side
 const style_button = "hover:bg-navy-medium rounded-sm p-2 transition-colors";
 const style_side = "flex items-center text-xs md:gap-2 md:px-2 gap-0.5 px-0.5";
 

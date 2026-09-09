@@ -1,17 +1,15 @@
 // Global
 import { useState } from "react";
 
-// components
-import { Combobox, ComboboxInput, ComboboxEmpty, ComboboxList, ComboboxItem, ComboboxContent } from "@/components/ui/combobox";
-
-// components - label & field input
+// Components - label & field input
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FieldGroup, FieldSeparator, Field, FieldLabel } from "@/components/ui/field-application";
 import { UploadSection } from "../../_components/upload-section";
 import { CurrencyInput } from "@/components/ui/currency-input";
+import { Combobox, ComboboxInput, ComboboxList, ComboboxItem, ComboboxContent } from "@/components/ui/combobox";
 
-// data dummy
+// Data dummy
 import { manualConditionType, manualFineness } from "../_data/other-data";
 
 export function DJModalManual() {

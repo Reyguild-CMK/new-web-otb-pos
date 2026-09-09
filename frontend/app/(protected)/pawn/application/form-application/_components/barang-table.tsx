@@ -1,15 +1,15 @@
-// component
+// Component
 import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell, TableFooter } from "@/components/ui/table";
 import PreviewImage from "@/components/shared/ImagePreview/ImagePreview";
 
-// lib
+// Library
 import { formatRupiah } from "@/lib/currency";
 
-// icon
+// Icon
 import { CircleX } from "lucide-react";
 
-// interface data
+// Interface data Barang
 import type { Barang } from "../../../../_data/barang-data"
 
 interface BarangTableProps {

@@ -1,25 +1,25 @@
 // Global
 import { useState } from "react";
 
-// components
+// Components
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Combobox, ComboboxInput, ComboboxEmpty, ComboboxList, ComboboxItem, ComboboxContent } from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
 import { ItemAutoTable } from "../_components/item-auto-table";
 
-// components - label & field input
+// Components - label & field input
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { FieldGroup, FieldSeparator, Field, FieldLabel } from "@/components/ui/field-application";
 import { UploadSection } from "../../_components/upload-section";
 import { CurrencyInput } from "@/components/ui/currency-input";
+import { Combobox, ComboboxInput, ComboboxList, ComboboxItem, ComboboxContent } from "@/components/ui/combobox";
 
-// data dummy
+// Data dummy
 import { conditionType } from "../_data/other-data";
 import { dataBarang } from "../../../../_data/barang-data";
 
-// icons
+// Icons
 import { Check } from "lucide-react";
 
 export function DJModalAuto() {

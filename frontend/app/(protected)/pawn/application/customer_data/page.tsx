@@ -1,12 +1,12 @@
 "use client"
 
-// Style
+// Style Card
 import { style_card } from "@/components/shared/Stepper/Stepper";
 
 // Component
 import { Button } from "@/components/ui/button";
 
-// Component - Input & Label
+// Components - label & field input
 import { Input } from "@/components/ui/input";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application";
 

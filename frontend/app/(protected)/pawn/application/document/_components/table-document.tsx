@@ -2,13 +2,13 @@
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import PreviewImage from "@/components/shared/ImagePreview/ImagePreview";
 
-// Lib
+// Library
 import { formatRupiah } from "@/lib/currency";
 
-// Interface data
+// Interface data Barang
 import type { Barang } from "../../../../_data/barang-data";
 
-// Data
+// Data Barang
 import { dataBarang } from "../../../../_data/barang-data";
 
 interface BarangTableProps {

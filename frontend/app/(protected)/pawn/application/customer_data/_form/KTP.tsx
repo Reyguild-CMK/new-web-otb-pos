@@ -1,5 +1,8 @@
+// Components - label & field input
 import { Field, FieldLabel } from "@/components/ui/field-application";
 import { Input } from "@/components/ui/input";
+
+// Image
 import Image from "next/image";
 
 export function FieldKTP() {

@@ -5,7 +5,7 @@ import { FieldGroup } from "@/components/ui/field-application";
 // Interface data
 import { FileFieldProps } from "@/components/shared/FileInput/FileInput";
 
-// Isi File Input Field
+// Data File Input Field
 const dataInputField: FileFieldProps[] =[
   { 
     id: "formPerjanjian", 
