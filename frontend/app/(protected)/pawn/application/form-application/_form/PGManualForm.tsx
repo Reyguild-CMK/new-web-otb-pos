@@ -3,6 +3,7 @@ import { useState } from "react";
 
 // Components
 import { Combobox, ComboboxInput, ComboboxEmpty, ComboboxList, ComboboxItem, ComboboxContent } from "@/components/ui/combobox";
+import { RequiredDot } from "@/components/ui/required-dot";
 
 // Components - label & field input
 import { Input } from "@/components/ui/input";
@@ -117,7 +118,7 @@ export function PGModalManual() {
             />
           </Field>
           <Field>
-            <FieldLabel htmlFor="remark">Remark (*)</FieldLabel>
+            <FieldLabel htmlFor="remark">Remark<RequiredDot/></FieldLabel>
             <Textarea id="remark" name="remark" placeholder="Remark" className="lg:min-h-25 min-h-20.5" required></Textarea>
           </Field>
         </FieldGroup>

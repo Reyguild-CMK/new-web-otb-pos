@@ -4,6 +4,7 @@ import { useState } from "react";
 // Components
 import { Button } from "@/components/ui/button";
 import { ItemAutoTable } from "../_components/item-auto-table";
+import { RequiredDot } from "@/components/ui/required-dot";
 
 // Components - label & field input
 import { FieldGroup, FieldSeparator, Field, FieldLabel } from "@/components/ui/field-application";
@@ -47,7 +48,7 @@ export function PGModalAuto() {
         {/* Detail Item */}
         <FieldGroup>
           <Field>
-            <FieldLabel htmlFor="itemWeight">Weight (*)</FieldLabel>
+            <FieldLabel htmlFor="itemWeight">Weight<RequiredDot/></FieldLabel>
             <Input
               id="itemWeight"
               name="itemWeight"
@@ -119,7 +120,7 @@ export function PGModalAuto() {
             />
           </Field>
           <Field>
-            <FieldLabel htmlFor="remark">Remark (*)</FieldLabel>
+            <FieldLabel htmlFor="remark">Remark<RequiredDot/></FieldLabel>
             <Textarea id="remark" name="remark" placeholder="Remark" className="lg:min-h-25 min-h-20.5" required></Textarea>
           </Field>
         </FieldGroup>
