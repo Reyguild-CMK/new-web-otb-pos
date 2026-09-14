@@ -16,11 +16,13 @@ import { CardDayLoan } from "./_components/card-loan"
 import { CardDetailLoan } from "./_components/card-detail-loan";
 
 // Data
-import { dataBarang } from "../../../_data/barang-data"
 import { dataBank } from "../../../_data/data-bank";
 import { tenor } from "../../../_data/data-tenor";
+import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
 
 export default function FormLoanApplication() {
+    const pawnSummary = getPawnSummary(4);
+    const pawnItems = pawnSummary?.pawnItems || [];
     return (
         <div className={`${style_card} w-full`}>
             {/* Judul */}
@@ -28,7 +30,7 @@ export default function FormLoanApplication() {
                 <h1 className="font-bold pb-2">Detail Pinjaman</h1>
             </div>
             {/* Table Barang */}
-            <TableDocument data={dataBarang}></TableDocument>
+            <TableDocument data={pawnItems}></TableDocument>
             <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
                 {/* Content */}
                 <div className="flex flex-col gap-4">
@@ -40,7 +42,7 @@ export default function FormLoanApplication() {
                         <FieldGroup>
                             <Field>
                                 <FieldLabel>Catatan/ Keterangan</FieldLabel>
-                                <Textarea id="catatan"/>
+                                <Textarea id="catatan" />
                             </Field>
                         </FieldGroup>
                     </div>
