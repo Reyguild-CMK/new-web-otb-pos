@@ -32,7 +32,7 @@ export const dataBarang: Barang[] = [
     color: ["D", "E", "F", "G"],
     shape: "Round",
     fineness: .019,
-  },
+  },  
   // {
   //   kode: "ITEM-260901-0002",
   //   foto: "/image/bg-login.jpg",

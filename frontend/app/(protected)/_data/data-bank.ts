@@ -1,38 +1,75 @@
 export interface Bank{
     id: number,
     name: string,
-    logo?: string,
+    bank: string,
+    bank_midtrans: string,
+    instruksi_pembayaran: object | null,
+    logo: string,
+    nomor_rek: string,
+    nama_rek: string,
 }
 
-export const dataBank: Bank[] =[
+export const dataBank: Bank[] = [
     {
         id: 1,
-        name: "BCA",
-        logo: "image/bank/bca.png"
+        name: "Bank Central Asia",
+        bank: "Bank Central Asia",
+        bank_midtrans: "bca",
+        instruksi_pembayaran: null,
+        logo: "image/bank/bca.png",
+        nomor_rek: "777341211",
+        nama_rek: "PT LAKUEMAS INDONESIA"
     },
     {
         id: 2,
-        name: "BNI",
-        logo: "image/bank/bni.png"
-    },
-    {
-        id: 3,
-        name: "BRI",
-        logo: "image/bank/bri.png"
-    },
-    {
-        id: 4,
-        name: "DANA",
-        logo: "image/bank/dana.png"
+        name: "Bank Mandiri",
+        bank: "Bank Mandiri",
+        bank_midtrans: "mandiri",
+        instruksi_pembayaran: null,
+        logo: "image/bank/mandiri",
+        nomor_rek: "-",
+        nama_rek: "-"
     },
     {
         id: 5,
-        name: "Danamon",
-        logo: "image/bank/danamon.png"
-    },
-    {
-        id: 6,
-        name: "DBS",
-        logo: "image/bank/dbs.png"
-    },
+        name: "Bank Negara Indonesia",
+        bank: "Bank BNI",
+        bank_midtrans: "bni",
+        instruksi_pembayaran: null,
+        logo: "image/bank/bni.png",
+        nomor_rek: "-",
+        nama_rek: "-"
+    }
+   
+    //     [3, "Bank Negara Indonesia", "bni"],
+    //     [4, "Bank Rakyat Indonesia", "bri"],
+    //     [5, "Bank Permata", "permata"],
+    //     [6, "Bank Danamon", "danamon"],
+    //     [7, "Bank BTPN", "btpn"],
+    //     [8, "Bank Mega", "mega"],
+    //     [9, "Bank Panin", "panin"],
+    //     [10, "Bank OCBC NISP", "ocbc"],
+    //     [11, "Bank UOB Indonesia", "uob"],
+    //     [12, "Bank Maybank Indonesia", "maybank"],
+    //     [13, "Bank Sinarmas", "sinarmas"],
+    //     [14, "Bank Bukopin", "bukopin"],
+    //     [15, "Bank Muamalat", "muamalat"],
+    //     [16, "Bank Syariah Indonesia", "bsi"],
+    //     [18, "Bank Jago", "jago"],
+    //     [19, "Bank Jenius", "jenius"],
+    //     [20, "Bank KEB Hana Indonesia", "hana"],
+    //     [21, "Bank Commonwealth", "commonwealth"],
+    //     [22, "Bank DBS Indonesia", "dbs"],
+    //     [23, "Bank Capital Indonesia", "capital"],
+    //     [24, "Bank Maspion Indonesia", "maspion"],
+    // ].map(([id, name, bank_midtrans]) => ({
+    //     id: id as number,
+    //     name: name as string,
+    //     bank: name as string,
+    //     bank_midtrans: bank_midtrans as string,
+    //     instruksi_pembayaran: null,
+    //     logo: "image/bank/backIn.png",
+    //     nomor_rek: "777341211",
+    //     nama_rek: "PT LAKUEMAS INDONESIA",
+    // })),
 ]
