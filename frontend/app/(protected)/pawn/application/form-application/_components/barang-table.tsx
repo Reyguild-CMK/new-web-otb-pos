@@ -10,10 +10,10 @@ import { formatRupiah } from "@/lib/currency";
 import { CircleX } from "lucide-react";
 
 // Interface data Barang
-import type { Barang } from "../../../../_data/barang-data"
+import type { PawnItemSummary } from "@/app/(protected)/_data/data-summary";
 
 interface BarangTableProps {
-  data: Barang[]
+  data: PawnItemSummary[]
 }
 
 export function BarangTable({ data }: BarangTableProps) {
@@ -21,70 +21,70 @@ export function BarangTable({ data }: BarangTableProps) {
   let totalMaksPinjaman = 0;
 
   data.forEach((item) => {
-    totalNilai += item.nilai || 0;
-    totalMaksPinjaman += item.makspinjaman || 0;
+    totalNilai += item.appraisal || 0;
+    totalMaksPinjaman += item.max_loan_price || 0;
   });
 
   return (
-  <Table>
-    <TableHeader>
-      <TableRow>
-        <TableHead>Kode</TableHead>
-        <TableHead>Product Photo</TableHead>
-        <TableHead>Jenis Barang</TableHead>
-        <TableHead>Karat</TableHead>
-        <TableHead>Berat</TableHead>
-        <TableHead>Catatan</TableHead>
-        <TableHead>QTY</TableHead>
-        <TableHead className="text-right">Nilai</TableHead>
-        <TableHead className="text-right">Maks Nilai Pinjaman</TableHead>
-        <TableHead></TableHead>
-      </TableRow>
-    </TableHeader>
-
-    {/* Body table */}
-    {data.length === 0 ? (
-      <TableBody>
+    <Table>
+      <TableHeader>
         <TableRow>
-          <TableCell className="text-center bg-muted" colSpan={6}>No Data</TableCell>
+          <TableHead>Kode</TableHead>
+          <TableHead>Product Photo</TableHead>
+          <TableHead>Jenis Barang</TableHead>
+          <TableHead>Karat</TableHead>
+          <TableHead>Berat</TableHead>
+          <TableHead>Catatan</TableHead>
+          <TableHead>QTY</TableHead>
+          <TableHead className="text-right">Nilai</TableHead>
+          <TableHead className="text-right">Maks Nilai Pinjaman</TableHead>
+          <TableHead></TableHead>
         </TableRow>
-      </TableBody>
-    ) : (
-    data.map((item) => (
-      <TableBody key={item.kode}>
-        <TableRow>
-          <TableCell>{item.kode}</TableCell>
-          <TableCell>
-            <PreviewImage 
-              src={item.foto}
-              alt={item.namabarang}
-            />
-          </TableCell>
-          <TableCell>{item.jenis}</TableCell>
-          <TableCell>{item.karat}</TableCell>
-          <TableCell>{item.berat}</TableCell>
-          <TableCell>{item.catatan}</TableCell>
-          <TableCell className="text-center">{item.qty}</TableCell>
-          <TableCell className="text-right">{formatRupiah(item.nilai)}</TableCell>
-          <TableCell className="text-right">{formatRupiah(item.makspinjaman)}</TableCell>
-          <TableCell className="p-2!">
-            <Button className="bg-btn-delete-bg text-btn-delete-text size-7 p-0">
-              <CircleX/>
-            </Button>
-          </TableCell>
-        </TableRow>
-      </TableBody>
-      ))
-    )}
+      </TableHeader>
 
-    {/* Footer total */}
-    <TableFooter>
-      <TableRow>
-        <TableCell className="text-right" colSpan={7}>Total</TableCell>
-        <TableCell className="text-right">{formatRupiah(totalNilai)}</TableCell>
-        <TableCell className="text-right">{formatRupiah(totalMaksPinjaman)}</TableCell>
-      </TableRow>
-    </TableFooter>
-  </Table>
+      {/* Body table */}
+      {data.length === 0 ? (
+        <TableBody>
+          <TableRow>
+            <TableCell className="text-center bg-muted" colSpan={6}>No Data</TableCell>
+          </TableRow>
+        </TableBody>
+      ) : (
+        <TableBody>
+          {data.map((item) => (
+            <TableRow key={item.pawn_item_code || item.id}>
+              <TableCell>{item.pawn_item_code}</TableCell>
+              <TableCell>
+                <PreviewImage
+                  src={item.photo || ""}
+                  alt={item.item_name}
+                />
+              </TableCell>
+              <TableCell>{item.itemType?.text || "-"} <span className="font-bold">({item.plu})</span></TableCell>
+              <TableCell>{item.carat}</TableCell>
+              <TableCell>{item.weight}</TableCell>
+              <TableCell>{item.remark}</TableCell>
+              <TableCell className="text-center">{item.quantity}</TableCell>
+              <TableCell className="text-right">{formatRupiah(item.appraisal)}</TableCell>
+              <TableCell className="text-right">{formatRupiah(item.max_loan_price)}</TableCell>
+              <TableCell className="p-2!">
+                <Button className="bg-btn-delete-bg text-btn-delete-text size-7 p-0">
+                  <CircleX />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      )}
+
+      {/* Footer total */}
+      <TableFooter>
+        <TableRow>
+          <TableCell className="text-right" colSpan={7}>Total</TableCell>
+          <TableCell className="text-right">{formatRupiah(totalNilai)}</TableCell>
+          <TableCell className="text-right">{formatRupiah(totalMaksPinjaman)}</TableCell>
+        </TableRow>
+      </TableFooter>
+    </Table>
   )
 }

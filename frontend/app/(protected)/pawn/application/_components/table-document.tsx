@@ -6,25 +6,23 @@ import PreviewImage from "@/components/shared/ImagePreview/ImagePreview";
 import { formatRupiah } from "@/lib/currency";
 
 // Interface data Barang
-import type { Barang } from "../../../_data/barang-data";
+import type { PawnItemSummary } from "@/app/(protected)/_data/data-summary";
 
-// Data Barang
-import { dataBarang } from "../../../_data/barang-data";
 
 interface BarangTableProps {
-  data: Barang[]
+  data: PawnItemSummary[]
 }
 
-export function TableDocument({ data }: BarangTableProps){
+export function TableDocument({ data }: BarangTableProps) {
   let totalNilai = 0;
   let totalMaksPinjaman = 0;
 
   data.forEach((item) => {
-    totalNilai += item.nilai || 0;
-    totalMaksPinjaman += item.makspinjaman || 0;
+    totalNilai += item.appraisal || 0;
+    totalMaksPinjaman += item.max_loan_price || 0;
   });
 
-  return(
+  return (
     <Table>
       <TableHeader>
         <TableRow>
@@ -41,26 +39,26 @@ export function TableDocument({ data }: BarangTableProps){
       </TableHeader>
 
       {/* Body table */}
-      {dataBarang.map((item, index) => (
-        <TableBody key={item.kode}>
-          <TableRow>
-            <TableCell>{index+1}</TableCell>
+      <TableBody>
+        {data.map((item, index) => (
+          <TableRow key={item.pawn_item_code || index}>
+            <TableCell>{index + 1}</TableCell>
             <TableCell>
-              <PreviewImage 
-                src={item.foto}
-                alt={item.namabarang}
+              <PreviewImage
+                src={item.photo || ""}
+                alt={item.item_name}
               />
             </TableCell>
-            <TableCell>{item.jenis}</TableCell>
-            <TableCell>{item.karat}</TableCell>
-            <TableCell>{item.berat}</TableCell>
-            <TableCell>{item.catatan}</TableCell>
-            <TableCell>{item.qty}</TableCell>
-            <TableCell className="text-right">{formatRupiah(item.nilai)}</TableCell>
-            <TableCell className="text-right">{formatRupiah(item.makspinjaman)}</TableCell>
+            <TableCell>{item.itemType?.text || "-"} <span className="font-bold">({item.plu})</span></TableCell>
+            <TableCell>{item.carat}</TableCell>
+            <TableCell>{item.weight}</TableCell>
+            <TableCell>{item.remark}</TableCell>
+            <TableCell>{item.quantity}</TableCell>
+            <TableCell className="text-right">{formatRupiah(item.appraisal)}</TableCell>
+            <TableCell className="text-right">{formatRupiah(item.max_loan_price)}</TableCell>
           </TableRow>
+        ))}
       </TableBody>
-      ))}
 
       {/* Footer total */}
       <TableFooter>

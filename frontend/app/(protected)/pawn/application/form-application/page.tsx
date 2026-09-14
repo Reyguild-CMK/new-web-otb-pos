@@ -8,9 +8,11 @@ import { BarangTable } from "./_components/barang-table";
 import { ModalLayout } from "./_form/FormLayout";
 
 // Data
-import { dataBarang } from "../../../_data/barang-data";
+import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
 
 export default function FormApplication() {
+  const pawnSummary = getPawnSummary(4);
+  const pawnItems = pawnSummary?.pawnItems || [];
   return (
     <div className={`${style_card} w-full`}>
       {/* Judul & Button*/}
@@ -22,7 +24,7 @@ export default function FormApplication() {
       </div>
 
       {/* Tabel Daftar Barang*/}
-      <BarangTable data={dataBarang} />
+      <BarangTable data={pawnItems} />
     </div>
   )
 }
