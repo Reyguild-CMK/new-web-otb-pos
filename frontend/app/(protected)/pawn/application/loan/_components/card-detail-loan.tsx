@@ -6,7 +6,7 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application
 import { Input } from "@/components/ui/input";
 import { CurrencyInput } from "@/components/ui/currency-input";
 
-export function CardDetailLown(){
+export function CardDetailLoan(){
     const [nilaiPinjaman, setNilaiPinjaman] = useState("");
     const [biayaAdmin, setBiayaAdmin] = useState("");
     const [biayaPerawatan, setBiayaPerawatan] = useState("");

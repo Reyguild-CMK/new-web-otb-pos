@@ -23,7 +23,7 @@ import { Download } from 'lucide-react';
 import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
 
 export default function CustomerApplication() {
-  const pawnSummary = getPawnSummary("J2CE432608310004")
+  const pawnSummary = getPawnSummary(1)
 
   if (!pawnSummary) {
     return <p>Data pinjaman tidak ditemukan.</p>;

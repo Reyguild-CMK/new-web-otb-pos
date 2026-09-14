@@ -13,21 +13,12 @@ import { PawnTable } from "./_components/pawn-table"
 
 // Data Dummy for Select
 import { pawnData } from "../../_data/data-pawn"
-import { dataCustomer } from "../../_data/data-customer";
+import { getPawnSummary } from "../../_data/data-summary";
 import { selectData } from "../../_data/status-take-over"
-
-const pawnTableData = pawnData.map((pawn) => {
-    const customer = dataCustomer.find((item) => String(item.idNumber) === pawn.customerId
-    );
-    return {
-        ...pawn,
-        customerName: customer?.nama ?? "-",
-    };
-});
-
 
 export default function PawnList(){
     const [searchQuery, setSearchQuery] = React.useState("")
+    const pawnTableData = pawnData.map((pawn)=>getPawnSummary(pawn.id)).filter((pawn)=>pawn!==undefined);
     const filteredApplications = pawnData.filter((application) => application.applicationNumber.toLowerCase().includes(searchQuery.toLowerCase()))
     return(
         <div>

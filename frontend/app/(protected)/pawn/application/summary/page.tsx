@@ -11,7 +11,9 @@ import { TableDocument } from "../_components/table-document";
 import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
 
 export default function SummaryPage(){
-    const summaryData = getPawnSummary("J2CE432608310004")
+    // hardcore aja
+    const pawnId = 1;
+    const summaryData = getPawnSummary(pawnId);
 
     if (!summaryData){
         return <p>Data Summary ga ada.</p>

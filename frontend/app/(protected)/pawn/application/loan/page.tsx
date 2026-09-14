@@ -13,7 +13,7 @@ import { TableDocument } from "../_components/table-document";
 // Form
 import { CardBank } from "./_components/card-bank";
 import { CardDayLoan } from "./_components/card-loan"
-import { CardDetailLown } from "./_components/card-detail-loan";
+import { CardDetailLoan } from "./_components/card-detail-loan";
 
 // Data
 import { dataBarang } from "../../../_data/barang-data"
@@ -44,7 +44,7 @@ export default function FormLoanApplication() {
                             </Field>
                         </FieldGroup>
                     </div>
-                    <CardDetailLown></CardDetailLown>
+                    <CardDetailLoan></CardDetailLoan>
                 </div>
             </div>
         </div>
