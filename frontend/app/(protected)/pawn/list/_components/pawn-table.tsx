@@ -9,6 +9,7 @@ import { Pawn, pawnData } from "../../../_data/data-pawn";
 
 // Icon
 import { FileText } from "lucide-react";
+import { PawnSummary } from "@/app/(protected)/_data/data-summary";
 
 // function dummy for last url
 const getLastStepUrl = (status: string) => {
@@ -26,12 +27,8 @@ const getLastStepUrl = (status: string) => {
     }
 }
 
-interface PawnTableRow extends Pawn {
-    customerName: string;
-}
-
 interface PawnTableProps {
-    data: PawnTableRow[];
+    data: PawnSummary[];
 }
 
 export function PawnTable({ data }: PawnTableProps) {
@@ -52,13 +49,19 @@ export function PawnTable({ data }: PawnTableProps) {
             </TableHeader>
             <TableBody>
                 {data.map((list) =>(
-                    <TableRow key={list.applicationNumber}>
-                        <TableCell>{list.no}</TableCell>
+                    <TableRow key={list.id}>
+                        <TableCell>{list.id}</TableCell>
                         <TableCell>{list.type}</TableCell>
                         <TableCell>{list.applicationNumber}</TableCell>
                         <TableCell>{list.oldApplication}</TableCell>
-                        <TableCell>{list.customerName}</TableCell>
-                        <TableCell>{list.jatuhTempo}</TableCell>
+                        <TableCell>{list.customer.name}</TableCell>
+                        <TableCell>
+                            {list.jatuhTempo instanceof Date && !isNaN(list.jatuhTempo.getTime())
+                                ? list.jatuhTempo.toLocaleDateString("id-ID")
+                                : list.jatuhTempo
+                                  ? new Date(list.jatuhTempo).toLocaleDateString("id-ID")
+                                  : "-"}
+                        </TableCell>
                         <TableCell>{list.dibuatOleh}</TableCell>
                         <TableCell>{list.status}</TableCell>
                         <TableCell>
