@@ -119,7 +119,7 @@ export function PGModalAuto() {
               disabled
             />
           </Field>
-          <Field>
+          <Field className="items-baseline">
             <FieldLabel htmlFor="remark">Remark<RequiredDot/></FieldLabel>
             <Textarea id="remark" name="remark" placeholder="Remark" className="lg:min-h-25 min-h-20.5" required></Textarea>
           </Field>

@@ -1,8 +1,3 @@
-export const itemType = [
-  { id: "DJ", value: "CMK Diamond Jewelry" },
-  { id: "PG", value: "CMK Plain Gold" },
-];
-
 export const conditionType = ["Excellent"];
 
 export const manualFineness = ["18K (75.0%)"];

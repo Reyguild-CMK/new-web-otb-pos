@@ -26,6 +26,7 @@ import { Check } from "lucide-react";
 export function DJModalAuto() {
   const [estimatedValue, setEstimatedValue] = useState("");
   const [maxLoan, setMaxLoan] = useState("");
+  const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
 
   return (
     <>
@@ -84,18 +85,17 @@ export function DJModalAuto() {
           </Field>
           <Field>
             <FieldLabel htmlFor="condition">Condition</FieldLabel>
-            <Combobox items={conditionType}>
-              <ComboboxInput placeholder="Choose Condition">
-                <ComboboxContent>
-                  <ComboboxList>
-                    {(item) => (
-                      <ComboboxItem key={item} value={item}>
-                        {item}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </ComboboxInput>
+            <Combobox name="condition" value={selectedCondition} onValueChange={setSelectedCondition} items={conditionType}>
+              <ComboboxInput placeholder="Choose Condition" />
+              <ComboboxContent>
+                <ComboboxList>
+                  {(item: any) => (
+                    <ComboboxItem key={item} value={item}>
+                      {item}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
             </Combobox>
           </Field>
 
@@ -162,7 +162,7 @@ export function DJModalAuto() {
               placeholder="0"
             />
           </Field>
-          <Field>
+          <Field className="items-baseline">
             <FieldLabel htmlFor="remark">Remark<RequiredDot/></FieldLabel>
             <Textarea id="remark" name="remark" placeholder="Remark" className="lg:min-h-20 min-h-10" required></Textarea>
           </Field>

@@ -5,7 +5,7 @@ import { style_card } from "@/components/shared/Stepper/Stepper";
 
 // Component
 import { BarangTable } from "./_components/barang-table";
-import { ModalLayout } from "./_form/form-layout";
+import { ModalLayout } from "./_form/FormLayout";
 
 // Data
 import { dataBarang } from "../../../_data/barang-data";
