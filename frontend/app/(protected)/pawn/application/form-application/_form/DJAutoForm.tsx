@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ItemAutoTable } from "../_components/item-auto-table";
+import { RequiredDot } from "@/components/ui/required-dot";
 
 // Components - label & field input
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,7 @@ import { Check } from "lucide-react";
 export function DJModalAuto() {
   const [estimatedValue, setEstimatedValue] = useState("");
   const [maxLoan, setMaxLoan] = useState("");
+  const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
 
   return (
     <>
@@ -83,18 +85,17 @@ export function DJModalAuto() {
           </Field>
           <Field>
             <FieldLabel htmlFor="condition">Condition</FieldLabel>
-            <Combobox items={conditionType}>
-              <ComboboxInput placeholder="Choose Condition">
-                <ComboboxContent>
-                  <ComboboxList>
-                    {(item) => (
-                      <ComboboxItem key={item} value={item}>
-                        {item}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </ComboboxInput>
+            <Combobox name="condition" value={selectedCondition} onValueChange={setSelectedCondition} items={conditionType}>
+              <ComboboxInput placeholder="Choose Condition" />
+              <ComboboxContent>
+                <ComboboxList>
+                  {(item: any) => (
+                    <ComboboxItem key={item} value={item}>
+                      {item}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
             </Combobox>
           </Field>
 
@@ -105,7 +106,7 @@ export function DJModalAuto() {
                 <Field orientation="vertical" className="">
                   
                   <div className="flex gap-2 justify-between">
-                    <FieldLabel htmlFor="resellValue" className="">Resell Value/ASP (*)</FieldLabel>
+                    <FieldLabel htmlFor="resellValue" className="">Resell Value/ASP<RequiredDot/></FieldLabel>
                     <div className="flex gap-2">
                       <Checkbox id="toggle-checkbox" name="toggle-checkbox" />
                       <FieldLabel htmlFor="toggle-checkbox">Free tax area</FieldLabel>
@@ -161,8 +162,8 @@ export function DJModalAuto() {
               placeholder="0"
             />
           </Field>
-          <Field>
-            <FieldLabel htmlFor="remark">Remark (*)</FieldLabel>
+          <Field className="items-baseline">
+            <FieldLabel htmlFor="remark">Remark<RequiredDot/></FieldLabel>
             <Textarea id="remark" name="remark" placeholder="Remark" className="lg:min-h-20 min-h-10" required></Textarea>
           </Field>
         </FieldGroup>
