@@ -1,4 +1,4 @@
-export interface Bank{
+export interface Bank {
     id: number,
     name: string,
     bank: string,
@@ -39,8 +39,18 @@ export const dataBank: Bank[] = [
         logo: "image/bank/bni.png",
         nomor_rek: "-",
         nama_rek: "-"
+    },
+    {
+        id: 6,
+        name: "Gopay",
+        bank: "Gopay",
+        bank_midtrans: "gopay",
+        instruksi_pembayaran: null,
+        logo: "image/bank/gopay.png",
+        nomor_rek: "-",
+        nama_rek: "-"
     }
-   
+
     //     [3, "Bank Negara Indonesia", "bni"],
     //     [4, "Bank Rakyat Indonesia", "bri"],
     //     [5, "Bank Permata", "permata"],
