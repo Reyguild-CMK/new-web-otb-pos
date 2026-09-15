@@ -39,7 +39,7 @@ const loanSchema = z.object({
     bankId: z.string({ error: "Bank tujuan harus dipilih" }).min(1, { message: "Bank tujuan harus dipilih" }),
     cabang: z.string().optional(),
     nomorRekening: z.string({ error: "Nomor rekening wajib diisi" })
-        .regex(/^[0-9]+$/, { message: "Hanya boleh berisi angka" })
+        .regex(/^[0-9]+$/)
         .min(10, { message: "Minimal 10 digit" })
         .max(16, { message: "Maksimal 16 digit" }),
     namaPemilikRekening: z.string().optional(),

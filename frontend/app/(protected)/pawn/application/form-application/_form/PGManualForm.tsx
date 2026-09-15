@@ -1,5 +1,6 @@
 // Global
 import { useEffect, useState } from "react";
+import { Controller, useFormContext } from "react-hook-form";
 
 // Components
 import { Combobox, ComboboxInput, ComboboxEmpty, ComboboxList, ComboboxItem, ComboboxContent } from "@/components/ui/combobox";
@@ -8,7 +9,7 @@ import { RequiredDot } from "@/components/ui/required-dot";
 // Components - label & field input
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { FieldGroup, FieldSeparator, Field, FieldLabel } from "@/components/ui/field-application";
+import { FieldGroup, FieldSeparator, Field, FieldLabel, FieldContent } from "@/components/ui/field-application";
 import { UploadSection } from "../../_components/upload-section";
 import { CurrencyInput } from "@/components/ui/currency-input";
 
@@ -18,9 +19,7 @@ import { pgfineness } from "../_data/other-data";
 import { fetchJawsReference, JawsMasterItem } from "@/app/(protected)/_data/jaws-dummy";
 
 export function PGModalManual() {
-  const [invoiceVal, setInvoiceVal] = useState("");
-  const [appraisal, setAppraisal] = useState("");
-  const [maxLoan, setMaxLoan] = useState("");
+  const { control, formState: { errors }, register } = useFormContext();
 
   const [productItems, setProductItems] = useState<JawsMasterItem[]>([]);
   const [productLevel, setProductLevel] = useState<JawsMasterItem[]>([]);
@@ -34,51 +33,56 @@ export function PGModalManual() {
   const [selectedGoldModel, setSelectedGoldModel] = useState<string | null>(null);
   const [selectedFrameColor, setSelectedFrameColor] = useState<string | null>(null);
   const [selectedFineness, setSelectedFineness] = useState<string | null>(null);
-  const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-      async function loadPawnManualJAWS() {
-        setIsLoading(true);
-        const [
-          resProductItems,
-          resProductLevel,
-          resTargetAge,
-          resGoldModel,
-          resFrameColor,
-        ] = await Promise.all([
-          fetchJawsReference('ProductItem'),
-          fetchJawsReference('ProductLevel'),
-          fetchJawsReference('TargetAge'),
-          fetchJawsReference('GoldModel'),
-          fetchJawsReference('FrameColor'),
-        ]);
-  
-        setProductItems(resProductItems);
-        setProductLevel(resProductLevel);
-        setTargetAge(resTargetAge);
-        setGoldModel(resGoldModel);
-        setFrameColor(resFrameColor);
-  
-        setIsLoading(false);
-      }
-      loadPawnManualJAWS();
-    }, []);
+    async function loadPawnManualJAWS() {
+      setIsLoading(true);
+      const [
+        resProductItems,
+        resProductLevel,
+        resTargetAge,
+        resGoldModel,
+        resFrameColor,
+      ] = await Promise.all([
+        fetchJawsReference('ProductItem'),
+        fetchJawsReference('ProductLevel'),
+        fetchJawsReference('TargetAge'),
+        fetchJawsReference('GoldModel'),
+        fetchJawsReference('FrameColor'),
+      ]);
+
+      setProductItems(resProductItems);
+      setProductLevel(resProductLevel);
+      setTargetAge(resTargetAge);
+      setGoldModel(resGoldModel);
+      setFrameColor(resFrameColor);
+
+      setIsLoading(false);
+    }
+    loadPawnManualJAWS();
+  }, []);
 
   return (
     <>
       {/* Input item PLU & name */}
       <FieldGroup>
         {/* 1. PLU */}
-        <Field>
-          <FieldLabel htmlFor="itemPlu">PLU Code</FieldLabel>
-          <Input id="itemPlu" name="itemPlu" required></Input>
+        <Field className="items-baseline">
+          <FieldLabel htmlFor="itemPlu">PLU Code<RequiredDot /></FieldLabel>
+          <FieldContent>
+            <Input id="itemPlu" {...register("itemPlu")}></Input>
+            {errors.itemPlu && <p className="text-red-500 text-xs">{String(errors.itemPlu.message)}</p>}
+          </FieldContent>
         </Field>
         {/* 2. Item Name */}
-        <Field>
+        <Field className="items-baseline">
           <FieldLabel htmlFor="itemName">Item Name</FieldLabel>
-          <Input id="itemName" name="itemName"></Input>
+          <FieldContent>
+            <Input id="itemName" {...register("itemName")}></Input>
+            {errors.itemName && <p className="text-red-500 text-xs">{String(errors.itemName.message)}</p>}
+          </FieldContent>
         </Field>
       </FieldGroup>
 
@@ -195,20 +199,22 @@ export function PGModalManual() {
           {/* 8. No Certificate */}
           <Field>
             <FieldLabel htmlFor="manualNoCertificate">No Certificate</FieldLabel>
-            <Input type="text" id="manualNoCertificate" name="manualNoCertificate" placeholder="Certificate Number"/>
+            <Input type="text" id="manualNoCertificate" placeholder="Certificate Number" {...register("manualNoCertificate")}/>
           </Field>
 
           <FieldSeparator/>
           {/* 9. Weight */}
-          <Field>
-            <FieldLabel htmlFor="manualWeight">Weight</FieldLabel>
-            <Input
-              id="manualWeight"
-              name="manualWeight"
-              type="number"
-              placeholder="0"
-              onWheel={(e) => e.currentTarget.blur()}>
-            </Input>
+          <Field className="items-baseline">
+            <FieldLabel htmlFor="manualWeight">Weight<RequiredDot/></FieldLabel>
+            <FieldContent>
+              <Input
+                id="manualWeight"
+                placeholder="0"
+                {...register("manualWeight")}
+                onWheel={(e) => e.currentTarget.blur()}>
+              </Input>
+              {errors.manualWeight && <p className="text-red-500 text-xs">{String(errors.manualWeight.message)}</p>}
+            </FieldContent>
           </Field>
           {/* 10. Fineness (%) */}
           <Field>
@@ -230,71 +236,87 @@ export function PGModalManual() {
                 )}
               </ComboboxContent>
             </Combobox>
-            {/* <Input
-              id="manualFineness"
-              name="manualFineness"
-              type="number"
-              placeholder="0"
-              onWheel={(e) => e.currentTarget.blur()}>
-            </Input> */}
           </Field>
           {/* 11. Invoice Value */}
-          <Field>
-            <FieldLabel htmlFor="manualinvoiceVal">Invoice Value</FieldLabel>
-            <CurrencyInput
-              id="manualinvoiceVal"
-              name="manualinvoiceVal"
-              value={invoiceVal}
-              onValueChange={setInvoiceVal}
-              placeholder="0"
-            />
+          <Field className="items-baseline">
+            <FieldLabel htmlFor="manualinvoiceVal">Invoice Value<RequiredDot/></FieldLabel>
+            <FieldContent>
+              <Controller control={control} name="manualinvoiceVal" render={({ field }) => (
+                <CurrencyInput
+                  id="manualinvoiceVal"
+                  name="manualinvoiceVal"
+                  value={field.value || ""}
+                  onValueChange={field.onChange}
+                  placeholder="0"
+                />
+              )} />
+              {errors.manualinvoiceVal && <p className="text-red-500 text-xs">{String(errors.manualinvoiceVal.message)}</p>}
+            </FieldContent>
           </Field>
           {/* 12. Appraisal */}
-          <Field>
-            <FieldLabel htmlFor="manualAppraisal">Appraisal</FieldLabel>
-            <CurrencyInput
-              id="manualAppraisal"
-              name="manualAppraisal"
-              value={appraisal}
-              onValueChange={setAppraisal}
-              placeholder="0"
-            />
+          <Field className="items-baseline">
+            <FieldLabel htmlFor="manualAppraisal">Appraisal<RequiredDot/></FieldLabel>
+            <FieldContent>
+              <Controller control={control} name="manualAppraisal" render={({ field }) => (
+                <CurrencyInput
+                  id="manualAppraisal"
+                  name="manualAppraisal"
+                  value={field.value || ""}
+                  onValueChange={field.onChange}
+                  placeholder="0"
+                />
+              )} />
+              {errors.manualAppraisal && <p className="text-red-500 text-xs">{String(errors.manualAppraisal.message)}</p>}
+            </FieldContent>
           </Field>
           {/* 13. Condition */}
-          <Field>
-            <FieldLabel htmlFor="itemType">Condition</FieldLabel>
-            <Combobox name="manualCondition" value={selectedCondition} onValueChange={setSelectedCondition} items={manualConditionType}>
-              <ComboboxInput placeholder="Choose Condition" />
-              <ComboboxContent>
-                <ComboboxList>
-                  {(item: any) => (
-                    <ComboboxItem key={item.id} value={item.value}>
-                      {item.value}
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
+          <Field className="items-baseline">
+            <FieldLabel htmlFor="manualCondition">Condition<RequiredDot/></FieldLabel>
+            <FieldContent>
+              <Controller control={control} name="manualCondition" render={({ field }) => (
+                <Combobox name="manualCondition" value={field.value || ""} onValueChange={field.onChange} items={manualConditionType}>
+                  <ComboboxInput placeholder="Choose Condition" />
+                  <ComboboxContent>
+                    <ComboboxList>
+                      {(item: any) => (
+                        <ComboboxItem key={item.id} value={item.value}>
+                          {item.value}
+                        </ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
+              )} />
+              {errors.manualCondition && <p className="text-red-500 text-xs">{String(errors.manualCondition.message)}</p>}
+            </FieldContent>
           </Field>
 
           <FieldSeparator/>
 
           {/* 14. Max Loan */}
-          <Field>
+          <Field className="items-baseline">
             <FieldLabel htmlFor="maxLoan">Max Loan</FieldLabel>
-            <CurrencyInput
-              id="maxLoan"
-              name="maxLoan"
-              value={maxLoan}
-              onValueChange={setMaxLoan}
-              disabled
-              placeholder="0"
-            />
+            <FieldContent>
+              <Controller control={control} name="maxLoan" render={({ field }) => (
+                <CurrencyInput
+                  id="maxLoan"
+                  name="maxLoan"
+                  value={field.value || ""}
+                  onValueChange={field.onChange}
+                  disabled
+                  placeholder="0"
+                />
+              )} />
+              {errors.maxLoan && <p className="text-red-500 text-xs">{String(errors.maxLoan.message)}</p>}
+            </FieldContent>
           </Field>
           {/* 15. Remark */}
           <Field className="items-baseline">
             <FieldLabel htmlFor="remark">Remark<RequiredDot/></FieldLabel>
-            <Textarea id="remark" name="remark" placeholder="Remark" className="lg:min-h-25 min-h-20.5" required></Textarea>
+            <FieldContent>
+              <Textarea id="remark" placeholder="Remark" className="lg:min-h-25 min-h-20.5" {...register("remark")}></Textarea>
+              {errors.remark && <p className="text-red-500 text-xs">{String(errors.remark.message)}</p>}
+            </FieldContent>
           </Field>
         </FieldGroup>
 

@@ -12,6 +12,8 @@ export interface FileFieldProps {
   imageAlt?: string;
   required?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onFileChange?: (file: File | null) => void;
+  error?: string;
 }
 
 export default function FileInput({
@@ -20,6 +22,9 @@ export default function FileInput({
   label,
   imageAlt,
   required = false,
+  onChange,
+  onFileChange,
+  error,
 }: FileFieldProps) {
   // Input
   const [selectedItem, setSelectedItem] = useState<File | null>(null);
@@ -37,6 +42,9 @@ export default function FileInput({
       setSelectedItem(null);
       setPreviewUrl(null);
     }
+
+    if (onFileChange) onFileChange(file || null);
+    if (onChange) onChange(e);
   }
 
   // previewUrl berubah setiap nilai berubah
@@ -55,9 +63,12 @@ export default function FileInput({
 
   return(
     <Field orientation="vertical">
-      <FieldLabel htmlFor={id}>
-        {label}
-      </FieldLabel>
+      <div className="flex justify-between items-center w-full">
+        <FieldLabel htmlFor={id}>
+          {label}
+        </FieldLabel>
+        <p className="text-xs text-alert-error-icon">*PNG, JPG, JPEG, or PDF.</p>
+      </div>
       
         {/* Input File */}
         <div className="w-full flex-1">
@@ -70,12 +81,10 @@ export default function FileInput({
             className="w-full cursor-pointer file:hover:bg-gray-200"
             required={required}
           />
-          <p className="text-xs text-alert-error-icon text-right">*PNG, JPG, JPEG, or PDF.</p>
-
         {/* Preview */}
         <div 
           onClick={handleOpenPreview}
-          className="relative lg:h-55 h-25 border border-dashed border-gray-300 rounded-lg bg-gray-50/50 w-full">
+          className="relative lg:h-55 h-25 border border-dashed border-gray-300 rounded-lg bg-gray-50/50 w-full mt-2">
             
           {/* Jika belum ada Unggahan File */}
           {!selectedItem && (
@@ -111,6 +120,13 @@ export default function FileInput({
             </Card>
           )}
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mt-1 w-full">
+            <p className="text-red-500 text-xs">{error}</p>
+          </div>
+        )}
       </div>
     </Field>
 )}

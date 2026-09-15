@@ -9,8 +9,10 @@ import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, 
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
+import { useFormContext } from "react-hook-form";
 
 export function DJProductChar() {
+  const { register, formState: { errors } } = useFormContext();
   const [productItems, setProductItems] = useState<JawsMasterItem[]>([]);
   const [categories, setCategories] = useState<JawsMasterItem[]>([]);
   const [productLevel, setProductLevel] = useState<JawsMasterItem[]>([]);
@@ -172,16 +174,19 @@ export function DJProductChar() {
       {/* Kolom Kanan */}
       <FieldGroup className="mt-4 md:mt-0">
         {/* 1. Gross Weight */}
-        <Field>
+        <Field className="items-baseline">
           <FieldLabel htmlFor="manualGrossWeight">
-            Gross Weight
+            Gross Weight<span className="text-red-500">*</span>
           </FieldLabel>
-          <InputGroup>
-            <InputGroupInput type="number" id="manualGrossWeight" name="manualGrossWeight" step="0.001" placeholder="e.g. 3.33" />
-            <InputGroupAddon align="inline-end">
-              <InputGroupText>Gram</InputGroupText>
-            </InputGroupAddon>
-          </InputGroup>
+          <div className="flex flex-col gap-1 w-full">
+            <InputGroup>
+              <InputGroupInput id="manualGrossWeight" step="0.001" placeholder="e.g. 3.33" {...register("manualGrossWeight")} />
+              <InputGroupAddon align="inline-end">
+                <InputGroupText>Gram</InputGroupText>
+              </InputGroupAddon>
+            </InputGroup>
+            {errors.manualGrossWeight && <p className="text-red-500 text-xs">{String(errors.manualGrossWeight.message)}</p>}
+          </div>
         </Field>
 
         {/* 2. Frame Material */}
