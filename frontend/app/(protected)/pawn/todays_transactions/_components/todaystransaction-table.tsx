@@ -50,7 +50,7 @@ export function TodaysTransactionsTable({ data }: TodaysDataProps) {
               <TableRow key={item.applicationNumber}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{item.applicationNumber}</TableCell>
-                <TableCell>{item.customer.nama}</TableCell>
+                <TableCell>{item.customer.name}</TableCell>
                 <TableCell>{item.jatuhTempo.toLocaleDateString("id-ID")}
                 </TableCell>
                 <TableCell className="text-right">

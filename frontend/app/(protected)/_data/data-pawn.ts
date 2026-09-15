@@ -11,6 +11,14 @@ export type PawnStatus =
    | "resell"
    | "waiting_approval";
 
+// status notification buat di due-date list
+export type PawnStatusNotification =
+   | "bayar_sebagian"
+   | "akan_lunas"
+   | "tanpa_status"
+   | "gadai_ulang" 
+   | "tidak_akan_lunas"
+
 export interface Pawn {
    id: number;
    type: string;
@@ -129,7 +137,6 @@ const emptyPawnFields = {
    isRestock: false,
    isTakeOver: false,
    isGadaiResell: false,
-   statusNotification: null,
    totalAppraisalPrice: 0,
    totalMaximumLoan: 0,
    disburseNominal: 0,
@@ -210,6 +217,7 @@ export const pawnData: Pawn[] = [
       storageInsuranceFeePercentage: 0.06,
       persentaseBiayaPerawatan: 0.06,
       tanggalTransaksi: new Date("2023-03-05T00:00:00"),
+      statusNotification: null,
       remark: null,
       appraisal: null,
       bankId: 1,
@@ -240,6 +248,7 @@ export const pawnData: Pawn[] = [
       biayaAdmin: 35000,
       storageInsuranceFeePercentage: 0.06,
       persentaseBiayaPerawatan: 0.06,
+      statusNotification: null,
       tanggalTransaksi: new Date("2026-09-10T00:00:00"),
       remark: null,
       appraisal: null,
@@ -271,6 +280,7 @@ export const pawnData: Pawn[] = [
       biayaAdmin: 0,
       storageInsuranceFeePercentage: 0.06,
       persentaseBiayaPerawatan: 0.06,
+      statusNotification: null,
       tanggalTransaksi: new Date("2026-01-08T00:00:00"),
       remark: null,
       appraisal: null,
@@ -302,6 +312,7 @@ export const pawnData: Pawn[] = [
       biayaAdmin: 35000,
       storageInsuranceFeePercentage: 0.06,
       persentaseBiayaPerawatan: 0.06,
+      statusNotification: "akan_lunas",
       tanggalTransaksi: new Date("2023-03-04T00:00:00"),
       remark: "Condition: Excellent",
       appraisal: 5726000,
@@ -325,7 +336,7 @@ export const pawnData: Pawn[] = [
       applicationNumber: "J2CE432608310005",
       pawnNumber: "PWN-260901-0005",
       dibuatOleh: "JR CMK",
-      status: "ready_disburse",
+      status: "disbursed",
       customerId: 5,
       barangCodes: ["ITEM-260901-0001"],
       totalAppraisalPrice: 5726000,
@@ -337,6 +348,7 @@ export const pawnData: Pawn[] = [
       biayaAdmin: 35000,
       storageInsuranceFeePercentage: 0.06,
       persentaseBiayaPerawatan: 0.06,
+      statusNotification: "gadai_ulang",
       tanggalTransaksi: new Date("2023-03-04T00:00:00"),
       remark: "Condition: Excellent",
       appraisal: 5726000,
