@@ -1,74 +1,97 @@
-// Global
-import { useState } from "react";
-
 // Components - label & field input
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application";
 import { Input } from "@/components/ui/input";
 import { CurrencyInput } from "@/components/ui/currency-input";
 
-export function CardDetailLoan(){
-    const [nilaiPinjaman, setNilaiPinjaman] = useState("");
-    const [biayaAdmin, setBiayaAdmin] = useState("");
-    const [biayaPerawatan, setBiayaPerawatan] = useState("");
-    const [totalNilaiPinjaman, setTotalNilaiPinjaman] = useState("");
+// React Hook Form
+import { Controller, useFormContext } from "react-hook-form";
 
-    return(
+export function CardDetailLoan() {
+    const { control, register } = useFormContext();
+
+    return (
         <div className="flex flex-col h-fit gap-2 border border-grey/50 rounded-xl p-4">
+            {/* 1. Kolom Jatuh Tempo */}
             <FieldGroup>
                 <Field>
-                    <FieldLabel>Tanggal Jatuh Tempo</FieldLabel>
-                    <Input id="tanggal-jatuh-tempo" type="date" disabled/>
-                </Field>
-            </FieldGroup>
-            <FieldGroup>
-                <Field>
-                    <FieldLabel>Nilai Pinjaman</FieldLabel>
-                    <CurrencyInput
-                        id="nilai-pinjaman"
-                        name="nilaiPinjaman"
-                        value={nilaiPinjaman}
-                        onValueChange={setNilaiPinjaman}
+                    <FieldLabel htmlFor="tanggal-jatuh-tempo">Tanggal Jatuh Tempo</FieldLabel>
+                    <Input
+                        id="tanggal-jatuh-tempo"
+                        type="date"
+                        {...register("tanggalJatuhTempo")}
                         disabled
-                        placeholder="0"
                     />
                 </Field>
             </FieldGroup>
+
+            {/* 2. Kolom Nilai Pinjaman */}
             <FieldGroup>
                 <Field>
-                    <FieldLabel>Biaya Admin</FieldLabel>
-                    <CurrencyInput
-                        id="biaya-admin"
-                        name="biayaAdmin"
-                        value={biayaAdmin}
-                        onValueChange={setBiayaAdmin}
-                        disabled
-                        placeholder="0"
+                    <FieldLabel htmlFor="nilai-pinjaman">Nilai Pinjaman</FieldLabel>
+                    <Controller control={control} name="calculatedNilaiPinjaman"
+                        render={({ field }) => (
+                            <CurrencyInput
+                                id="nilai-pinjaman"
+                                value={field.value ?? ""}
+                                onValueChange={field.onChange}
+                                disabled
+                                placeholder="0"
+                            />
+                        )}
                     />
                 </Field>
             </FieldGroup>
+
+            {/* 3. Kolom Biaya Admin */}
             <FieldGroup>
                 <Field>
-                    <FieldLabel>Biaya Perawatan</FieldLabel>
-                    <CurrencyInput
-                        id="biaya-perawatan"
-                        name="biayaPerawatan"
-                        value={biayaPerawatan}
-                        onValueChange={setBiayaPerawatan}
-                        disabled
-                        placeholder="0"
+                    <FieldLabel htmlFor="biaya-admin">Biaya Admin</FieldLabel>
+                    <Controller control={control} name="biayaAdmin"
+                        render={({ field }) => (
+                            <CurrencyInput
+                                id="biaya-admin"
+                                value={field.value ?? ""}
+                                onValueChange={field.onChange}
+                                disabled
+                                placeholder="0"
+                            />
+                        )}
                     />
                 </Field>
             </FieldGroup>
+
+            {/* 4. Kolom Biaya Perawatan */}
             <FieldGroup>
                 <Field>
-                    <FieldLabel>Nominal Ditransfer</FieldLabel>
-                    <CurrencyInput
-                        id="total-nilai-pinjaman"
-                        name="totalNilaiPinjaman"
-                        value={totalNilaiPinjaman}
-                        onValueChange={setTotalNilaiPinjaman}
-                        disabled
-                        placeholder="0"
+                    <FieldLabel htmlFor="biaya-perawatan">Biaya Perawatan</FieldLabel>
+                    <Controller control={control} name="biayaPerawatan"
+                        render={({ field }) => (
+                            <CurrencyInput
+                                id="biaya-perawatan"
+                                value={field.value ?? ""}
+                                onValueChange={field.onChange}
+                                disabled
+                                placeholder="0"
+                            />
+                        )}
+                    />
+                </Field>
+            </FieldGroup>
+
+            {/* 5. Kolom Nominal Ditransfer */}
+            <FieldGroup>
+                <Field>
+                    <FieldLabel htmlFor="total-nilai-pinjaman">Nominal Ditransfer</FieldLabel>
+                    <Controller control={control} name="totalNilaiPinjaman"
+                        render={({ field }) => (
+                            <CurrencyInput
+                                id="total-nilai-pinjaman"
+                                value={field.value ?? ""}
+                                onValueChange={field.onChange}
+                                disabled
+                                placeholder="0"
+                            />
+                        )}
                     />
                 </Field>
             </FieldGroup>
