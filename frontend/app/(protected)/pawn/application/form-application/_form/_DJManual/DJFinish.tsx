@@ -1,4 +1,5 @@
 // Global
+import { useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
 // Data
@@ -15,15 +16,30 @@ import { UploadSection } from "../../../_components/upload-section";
 import { Textarea } from "@/components/ui/textarea";
 
 export function DJFinish() {
-  const { control, formState: { errors }, register } = useFormContext();
+  const { control, formState: { errors }, register, watch, setValue } = useFormContext();
+
+  const appraisalValue = watch("appraisal");
+  const manualConditionValue = watch("manualCondition");
+
+  useEffect(() => {
+    const numericAppraisal = Number(appraisalValue) || 0;
+    if (numericAppraisal > 0 && manualConditionValue) {
+      const conditionObj = manualConditionType.find(c => c.value === manualConditionValue);
+      const percentage = conditionObj?.percentage || 90; // Default to 90 if not found for some reason
+      const calculatedMaxLoan = Math.ceil(numericAppraisal * (percentage / 100));
+      setValue("maxLoan", calculatedMaxLoan.toString());
+    } else {
+      setValue("maxLoan", "0");
+    }
+  }, [appraisalValue, manualConditionValue, setValue]);
 
   return (
     <div className="flex flex-col gap-4">
       <div className="md:flex gap-6">
         <FieldGroup>
-          <h2 className="pt-2">Loan</h2>
+          <h2 className="text-lg font-semibold pt-2">Loan</h2>
           <Field className="items-baseline">
-            <FieldLabel htmlFor="manualCondition">Condition<RequiredDot/></FieldLabel>
+            <FieldLabel htmlFor="manualCondition">Condition<RequiredDot /></FieldLabel>
             <FieldContent>
               <Controller control={control} name="manualCondition" render={({ field }) => (
                 <Combobox name="manualCondition" value={field.value || ""} onValueChange={field.onChange} items={manualConditionType}>
@@ -43,7 +59,7 @@ export function DJFinish() {
             </FieldContent>
           </Field>
           <Field className="items-baseline">
-            <FieldLabel htmlFor="invoiceVal">Invoice Value<RequiredDot/></FieldLabel>
+            <FieldLabel htmlFor="invoiceVal">Invoice Value<RequiredDot /></FieldLabel>
             <FieldContent>
               <Controller control={control} name="invoiceVal" render={({ field }) => (
                 <CurrencyInput
@@ -58,7 +74,7 @@ export function DJFinish() {
             </FieldContent>
           </Field>
           <Field className="items-baseline">
-            <FieldLabel htmlFor="appraisal">Appraisal<RequiredDot/></FieldLabel>
+            <FieldLabel htmlFor="appraisal">Appraisal<RequiredDot /></FieldLabel>
             <FieldContent>
               <Controller control={control} name="appraisal" render={({ field }) => (
                 <CurrencyInput
@@ -87,6 +103,7 @@ export function DJFinish() {
                   onValueChange={field.onChange}
                   disabled
                   placeholder="0"
+                  className="bg-gray-100 text-gray-500 font-semibold"
                 />
               )} />
               {errors.maxLoan && <p className="text-red-500 text-xs">{String(errors.maxLoan.message)}</p>}
@@ -103,7 +120,7 @@ export function DJFinish() {
 
         {/* Product & Invoice Photo */}
         <FieldGroup>
-          <h2 className="pt-2">Photos</h2>
+          <h2 className="text-lg font-semibold pt-2">Photos</h2>
           <UploadSection />
         </FieldGroup>
       </div>

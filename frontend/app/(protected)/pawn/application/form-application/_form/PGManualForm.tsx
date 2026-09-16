@@ -70,7 +70,7 @@ export function PGModalManual() {
       <FieldGroup>
         {/* 1. PLU */}
         <Field className="items-baseline">
-          <FieldLabel htmlFor="itemPlu">PLU Code<RequiredDot /></FieldLabel>
+          <FieldLabel htmlFor="itemPlu">PLU Code</FieldLabel>
           <FieldContent>
             <Input id="itemPlu" {...register("itemPlu")}></Input>
             {errors.itemPlu && <p className="text-red-500 text-xs">{String(errors.itemPlu.message)}</p>}
@@ -199,13 +199,13 @@ export function PGModalManual() {
           {/* 8. No Certificate */}
           <Field>
             <FieldLabel htmlFor="manualNoCertificate">No Certificate</FieldLabel>
-            <Input type="text" id="manualNoCertificate" placeholder="Certificate Number" {...register("manualNoCertificate")}/>
+            <Input type="text" id="manualNoCertificate" placeholder="Certificate Number" {...register("manualNoCertificate")} />
           </Field>
 
-          <FieldSeparator/>
+          <FieldSeparator />
           {/* 9. Weight */}
           <Field className="items-baseline">
-            <FieldLabel htmlFor="manualWeight">Weight<RequiredDot/></FieldLabel>
+            <FieldLabel htmlFor="manualWeight">Weight<RequiredDot /></FieldLabel>
             <FieldContent>
               <Input
                 id="manualWeight"
@@ -239,7 +239,7 @@ export function PGModalManual() {
           </Field>
           {/* 11. Invoice Value */}
           <Field className="items-baseline">
-            <FieldLabel htmlFor="manualinvoiceVal">Invoice Value<RequiredDot/></FieldLabel>
+            <FieldLabel htmlFor="manualinvoiceVal">Invoice Value<RequiredDot /></FieldLabel>
             <FieldContent>
               <Controller control={control} name="manualinvoiceVal" render={({ field }) => (
                 <CurrencyInput
@@ -255,7 +255,7 @@ export function PGModalManual() {
           </Field>
           {/* 12. Appraisal */}
           <Field className="items-baseline">
-            <FieldLabel htmlFor="manualAppraisal">Appraisal<RequiredDot/></FieldLabel>
+            <FieldLabel htmlFor="manualAppraisal">Appraisal<RequiredDot /></FieldLabel>
             <FieldContent>
               <Controller control={control} name="manualAppraisal" render={({ field }) => (
                 <CurrencyInput
@@ -271,7 +271,7 @@ export function PGModalManual() {
           </Field>
           {/* 13. Condition */}
           <Field className="items-baseline">
-            <FieldLabel htmlFor="manualCondition">Condition<RequiredDot/></FieldLabel>
+            <FieldLabel htmlFor="manualCondition">Condition<RequiredDot /></FieldLabel>
             <FieldContent>
               <Controller control={control} name="manualCondition" render={({ field }) => (
                 <Combobox name="manualCondition" value={field.value || ""} onValueChange={field.onChange} items={manualConditionType}>
@@ -291,7 +291,7 @@ export function PGModalManual() {
             </FieldContent>
           </Field>
 
-          <FieldSeparator/>
+          <FieldSeparator />
 
           {/* 14. Max Loan */}
           <Field className="items-baseline">
@@ -312,7 +312,7 @@ export function PGModalManual() {
           </Field>
           {/* 15. Remark */}
           <Field className="items-baseline">
-            <FieldLabel htmlFor="remark">Remark<RequiredDot/></FieldLabel>
+            <FieldLabel htmlFor="remark">Remark<RequiredDot /></FieldLabel>
             <FieldContent>
               <Textarea id="remark" placeholder="Remark" className="lg:min-h-25 min-h-20.5" {...register("remark")}></Textarea>
               {errors.remark && <p className="text-red-500 text-xs">{String(errors.remark.message)}</p>}
@@ -321,9 +321,9 @@ export function PGModalManual() {
         </FieldGroup>
 
         <FieldSeparator />
-        
+
         {/* Product & Invoice Photo */}
-        <UploadSection/>
+        <UploadSection />
       </div>
     </>
   )

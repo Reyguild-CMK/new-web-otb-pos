@@ -1,12 +1,13 @@
 // Global
 import { useState, useEffect } from "react";
+import { useFormContext } from "react-hook-form";
 import { Trash2 } from "lucide-react";
 
 // Style Card
 import { style_card } from "@/components/shared/Stepper/Stepper";
 
 // Data & Fetching Function
-import { fetchJawsReference, JawsMasterItem, STONE_CONFIG, AddedStone, checkStoneCombination } from "@/app/(protected)/_data/jaws-dummy";
+import { stone_type_options, stone_shape_options, stone_size_options, stone_color_options, stone_clarity_options } from "@/app/(protected)/_data/data-stone-parcel";
 
 // Components - label & field input
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application";
@@ -16,62 +17,54 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableFoo
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+export interface AddedStone {
+  id: string;
+  stoneDesc: string;
+  stoneType: string;
+  p: string;
+  l: string;
+  t: string;
+  caratPerButir: string;
+  totalButir: string;
+  totalCarat: string;
+}
+
 export function DJStone() {
-  // Menyimpan data pada state
-  const [stone, setStone] = useState<JawsMasterItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const { setValue, watch } = useFormContext();
+  const [selectedStoneValue, setSelectedStoneValue] = useState<string | null>(null);
+  const [filters, setFilters] = useState<Record<string, string | null>>({});
 
-  // State untuk form dinamis (Stone tab)
-  const [selectedStone, setSelectedStone] = useState<JawsMasterItem | null>(null);
-  const [filters, setFilters] = useState<Record<string, string | null>>({}); //menyimpan pilihan combobox
-
-  // State untuk mengecek kombinasi tipe stone (Stone tab)
   const [isChecking, setIsChecking] = useState(false);
   const [isNoData, setIsNoData] = useState(false);
+  
+  const addedStones: AddedStone[] = watch("manualAddedStones") || [];
 
-  // State untuk tabel stone yang ditambahkan
-  const [addedStones, setAddedStones] = useState<AddedStone[]>([]);
+  const fields = ["shape", "size", "color", "clarity"];
+  
+  const hasExtraFields = selectedStoneValue === "1B" || selectedStoneValue === "5";
+  if (hasExtraFields) {
+      fields.push("cutting", "brand", "category");
+  }
 
-  useEffect(() => {
-    async function loadPawnManualJAWS() {
-      setIsLoading(true);
-      const [resStone] = await Promise.all([
-        fetchJawsReference('Stone'),
-      ]);
+  const isComplete = selectedStoneValue && fields.every(f => filters[f]);
 
-      setStone(resStone);
-      setIsLoading(false);
-    }
-    loadPawnManualJAWS();
-  }, []);
-
-  // Konfigurasi field yang aktif
-  const currentConfig = selectedStone ? (STONE_CONFIG[selectedStone.nama] || STONE_CONFIG["DEFAULT"]) : null;
-  const fields = currentConfig?.fields || STONE_CONFIG["DEFAULT"].fields;
-  const optionsMap = currentConfig?.options || STONE_CONFIG["DEFAULT"].options;
-
-  // Validasi jika semua field sudah terisi
-  const isComplete = selectedStone && fields.every((configField: string) => filters[configField]);
-
-  // Simulasi hit API pengecekan kombinasi
   useEffect(() => {
     async function doCheckCombination() {
-      if (!isComplete || !selectedStone) {
+      if (!isComplete || !selectedStoneValue) {
         setIsNoData(false);
         return;
       }
       setIsChecking(true);
-      // Panggil fungsi dummy yang punya jeda waktu (simulasi fetch DB)
-      const isFound = await checkStoneCombination(selectedStone.nama, filters);
-      setIsNoData(!isFound);
+      await new Promise(r => setTimeout(r, 600));
+      setIsNoData(false); 
       setIsChecking(false);
     }
     doCheckCombination();
-  }, [isComplete, selectedStone, filters]);
+  }, [isComplete, selectedStoneValue, filters]);
 
-  const handleStoneSelect = (item: JawsMasterItem) => {
-    setSelectedStone(item);
-    setFilters({}); // Reset filter setiap kali ganti tipe stone
+  const handleStoneSelect = (val: string) => {
+    setSelectedStoneValue(val);
+    setFilters({});
   };
 
   const handleFilterChange = (field: string, val: string | null) => {
@@ -79,17 +72,16 @@ export function DJStone() {
   };
 
   const handleAddStone = () => {
-    if (!selectedStone) return;
+    if (!selectedStoneValue) return;
 
-    // Gabungkan detail stone untuk ditampilkan tanpa nama tipe stone
-    const details = fields.map((configField: string) => filters[configField]).filter(Boolean).join(" | ");
-    const desc = details;
-
-    setAddedStones(prev => [
-      ...prev,
+    const details = fields.map(f => filters[f]).filter(Boolean).join(" | ");
+    
+    const newStones = [
+      ...addedStones,
       {
         id: Math.random().toString(),
-        stoneDesc: desc,
+        stoneDesc: details,
+        stoneType: selectedStoneValue,
         p: "",
         l: "",
         t: "",
@@ -97,59 +89,79 @@ export function DJStone() {
         totalButir: "",
         totalCarat: ""
       }
-    ]);
+    ];
+    setValue("manualAddedStones", newStones);
   };
 
   const handleUpdateStone = (id: string, field: keyof AddedStone, value: string) => {
-    setAddedStones(prev => prev.map(addedStone => addedStone.id === id ? { ...addedStone, [field]: value } : addedStone));
+    const newStones = addedStones.map(stone => {
+      if (stone.id !== id) return stone;
+      
+      const updated = { ...stone, [field]: value };
+      
+      // Auto calculate caratPerButir
+      if (field === "totalButir" || field === "totalCarat") {
+         const tb = parseFloat(updated.totalButir) || 0;
+         const tc = parseFloat(updated.totalCarat) || 0;
+         if (tb > 0 && tc > 0 && !stone.caratPerButir) {
+             updated.caratPerButir = (tc / tb).toFixed(3);
+         }
+      }
+      return updated;
+    });
+    setValue("manualAddedStones", newStones);
   };
 
   const handleRemoveStone = (id: string) => {
-    setAddedStones(prev => prev.filter(addedStone => addedStone.id !== id));
+    const newStones = addedStones.filter(s => s.id !== id);
+    setValue("manualAddedStones", newStones);
   };
 
-  // Perhitungan Grand Total
-  const grandTotalButir = addedStones.reduce((total, currentStone) => total + (parseFloat(currentStone.totalButir) || 0), 0);
-  const grandTotalCarat = addedStones.reduce((total, currentStone) => total + (parseFloat(currentStone.totalCarat) || 0), 0);
+  const grandTotalButir = addedStones.reduce((tot, s) => tot + (parseFloat(s.totalButir) || 0), 0);
+  const grandTotalCarat = addedStones.reduce((tot, s) => tot + (parseFloat(s.totalCarat) || 0), 0);
+
+  const getOptions = (field: string) => {
+    switch (field) {
+        case "shape": return stone_shape_options;
+        case "size": return stone_size_options;
+        case "color": return stone_color_options;
+        case "clarity": return stone_clarity_options;
+        default: return [{value: "default", label: "Default"}];
+    }
+  }
 
   return (
     <div className="flex flex-col gap-8">
       <div className={`${style_card} w-full flex flex-col gap-8`}>
         <FieldGroup>
           <h2 className="text-lg font-semibold">Tipe Stone</h2>
-          {isLoading ? <span className="text-gray-500 text-sm">Memuat data...</span> : (
-            <div className="grid grid-flow-col gap-x-4 gap-y-3"
-              style={{
-                gridTemplateRows: `repeat(${Math.ceil(stone.length / 2)}, minmax(0, auto))`
-              }}
-            >
-              {stone.map((item) => (
-                <div className="flex gap-2 items-center" key={item.id}>
-                  <input
-                    type="radio"
-                    name="stoneType"
-                    id={`stone-${item.id}`}
-                    value={item.id}
-                    onChange={() => handleStoneSelect(item)}
-                    checked={selectedStone?.id === item.id}
-                    className="w-4 h-4 cursor-pointer text-primary focus:ring-primary border-gray-300"
-                  />
-                  <FieldLabel htmlFor={`stone-${item.id}`} className="cursor-pointer font-medium">
-                    {item.nama}
-                  </FieldLabel>
-                </div>
-              ))}
-            </div>
-          )}
+          <div className="grid grid-flow-col gap-x-4 gap-y-3"
+            style={{ gridTemplateRows: `repeat(${Math.ceil(stone_type_options.length / 2)}, minmax(0, auto))` }}
+          >
+            {stone_type_options.map((item) => (
+              <div className="flex gap-2 items-center" key={item.value}>
+                <input
+                  type="radio"
+                  name="stoneType"
+                  id={`stone-${item.value}`}
+                  value={item.value}
+                  onChange={() => handleStoneSelect(item.value)}
+                  checked={selectedStoneValue === item.value}
+                  className="w-4 h-4 cursor-pointer text-primary focus:ring-primary border-gray-300"
+                />
+                <FieldLabel htmlFor={`stone-${item.value}`} className="cursor-pointer font-medium">
+                  {item.label}
+                </FieldLabel>
+              </div>
+            ))}
+          </div>
         </FieldGroup>
 
-        {/* Render Combobox Dinamis */}
-        {selectedStone && (
+        {selectedStoneValue && (
           <FieldGroup>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {fields.map((configField: string) => {
-                const rawOptions = optionsMap[configField] || STONE_CONFIG["DEFAULT"].options[configField] || [];
-                const formattedOptions = rawOptions.map((optionName: string) => ({ id: optionName, nama: optionName }));
+                const options = getOptions(configField);
 
                 return (
                   <Field key={configField}>
@@ -158,7 +170,7 @@ export function DJStone() {
                       name={`stone-${configField}`}
                       value={filters[configField] || null}
                       onValueChange={(val) => handleFilterChange(configField, val)}
-                      items={formattedOptions}
+                      items={options.map(o => ({id: o.value, nama: o.label}))}
                     >
                       <ComboboxInput placeholder={`Choose ${configField}`} />
                       <ComboboxContent>
@@ -179,8 +191,7 @@ export function DJStone() {
           </FieldGroup>
         )}
 
-        {/* Render Tabel Parcel Selection */}
-        {selectedStone && (
+        {selectedStoneValue && (
           <FieldGroup>
             <Table>
               <TableHeader>
@@ -213,7 +224,7 @@ export function DJStone() {
                   <TableRow>
                     <TableCell>1</TableCell>
                     <TableCell>
-                      {fields.map((configField: string) => filters[configField]).filter(Boolean).join(" | ")}
+                      {fields.map(f => filters[f]).filter(Boolean).join(" | ")}
                     </TableCell>
                     <TableCell className="text-right">
                       <Button type="button" onClick={handleAddStone} size="sm" className="bg-btn-action-bg text-btn-action-text">
@@ -228,7 +239,6 @@ export function DJStone() {
         )}
       </div>
 
-      {/* Render Tabel Added Stones */}
       <div className={`${style_card} w-full flex flex-col gap-8`}>
         <FieldGroup>
           <h2 className="text-lg font-semibold mb-2">Added Stones</h2>
@@ -258,11 +268,11 @@ export function DJStone() {
                   addedStones.map((addedStone, index) => (
                     <TableRow key={addedStone.id}>
                       <TableCell>{index + 1}</TableCell>
-                      <TableCell className="text-xs">{addedStone.stoneDesc}</TableCell>
+                      <TableCell className="text-xs font-semibold">{addedStone.stoneDesc}</TableCell>
                       <TableCell><Input className="h-8 px-2 text-xs" value={addedStone.p} onChange={(e) => handleUpdateStone(addedStone.id, 'p', e.target.value)} /></TableCell>
                       <TableCell><Input className="h-8 px-2 text-xs" value={addedStone.l} onChange={(e) => handleUpdateStone(addedStone.id, 'l', e.target.value)} /></TableCell>
                       <TableCell><Input className="h-8 px-2 text-xs" value={addedStone.t} onChange={(e) => handleUpdateStone(addedStone.id, 't', e.target.value)} /></TableCell>
-                      <TableCell><Input className="h-8 px-2 text-xs" value={addedStone.caratPerButir} onChange={(e) => handleUpdateStone(addedStone.id, 'caratPerButir', e.target.value)} /></TableCell>
+                      <TableCell><Input type="number" step="0.001" className="h-8 px-2 text-xs" value={addedStone.caratPerButir} onChange={(e) => handleUpdateStone(addedStone.id, 'caratPerButir', e.target.value)} /></TableCell>
                       <TableCell><Input type="number" className="h-8 px-2 text-xs" value={addedStone.totalButir} onChange={(e) => handleUpdateStone(addedStone.id, 'totalButir', e.target.value)} /></TableCell>
                       <TableCell><Input type="number" step="0.001" className="h-8 px-2 text-xs" value={addedStone.totalCarat} onChange={(e) => handleUpdateStone(addedStone.id, 'totalCarat', e.target.value)} /></TableCell>
                       <TableCell className="text-right">

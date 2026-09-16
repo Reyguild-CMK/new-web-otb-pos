@@ -137,9 +137,9 @@ const djManualSchema = z.object({
   invoicePhoto: z.any().refine((val) => val, { message: "Invoice photo wajib diisi" }),
 });
 
-// DJ Manual
+// PG Manual
 const pgManualSchema = z.object({
-  itemPlu: z.string({ error: "Mohon isi PLU" }).min(1, { message: "Mohon isi PLU" }),
+  itemPlu: z.string({ error: "Mohon isi PLU" }).optional(),
   itemName: z.string({ error: "Mohon isi nama item" }).optional(),
   manualWeight: z.preprocess(parseDecimal, z.any()
     .refine((val) => typeof val === "number", { message: "Mohon isi weight" })
@@ -426,9 +426,9 @@ export function ModalLayout() {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger render={
-                      <Button 
-                        type="submit" 
-                        disabled={form.formState.isSubmitting} 
+                      <Button
+                        type="submit"
+                        disabled={form.formState.isSubmitting}
                         className="bg-btn-primary-bg text-btn-primary-text"
                       >
                         {form.formState.isSubmitting ? "Adding..." : "Add"}
