@@ -3,6 +3,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ItemAutoTable } from "../_components/item-auto-table";
 import { RequiredDot } from "@/components/ui/required-dot";
+import { toast } from "@/components/ui/toast";
 
 // Components - label & field input
 import { Input } from "@/components/ui/input";
@@ -15,14 +16,110 @@ import { Combobox, ComboboxInput, ComboboxList, ComboboxItem, ComboboxContent } 
 
 // Data dummy
 import { conditionType } from "../_data/other-data";
-import { dataBarang } from "../../../../_data/barang-data";
 
 // Icons
-import { Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Calculator, Check, Loader2 } from "lucide-react";
+
+// React hook form
 import { Controller, useFormContext } from "react-hook-form";
 
 export function DJModalAuto() {
-  const { control, formState: { errors }, register } = useFormContext();
+  const { control, formState: { errors }, register, getValues, setValue, watch } = useFormContext();
+  const [isLoading, setIsLoading] = useState(false);
+  const [autoTableData, setAutoTableData] = useState<any[]>([]);
+  const [baseData, setBaseData] = useState<{ netSales: number; ppnPembagi: number } | null>(null);
+  const [fetchedPlu, setFetchedPlu] = useState<string>("");
+
+  // Watch current PLU
+  const currentPlu = watch("itemPlu");
+
+  // Reset form jika PLU diubah setelah berhasil di-fetch
+  useEffect(() => {
+    if (fetchedPlu && currentPlu !== fetchedPlu) {
+      setAutoTableData([]);
+      setValue("itemName", "", { shouldValidate: true });
+      setFetchedPlu(""); // Reset state
+    }
+  }, [currentPlu, fetchedPlu, setValue]);
+
+  const resellValue = watch("resellValue");
+  const isFreeTaxArea = watch("isFreeTaxArea");
+
+  useEffect(() => {
+    if (baseData) {
+      const rvPercent = parseFloat(resellValue) || 0;
+      let est = 0;
+      if (isFreeTaxArea) {
+        est = Math.trunc(baseData.netSales * (rvPercent / 100));
+      } else {
+        est = Math.trunc((baseData.netSales / baseData.ppnPembagi) * (rvPercent / 100));
+      }
+      setValue("estimatedValue", est.toString(), { shouldValidate: true });
+      setValue("maxLoan", Math.trunc(est * 0.85).toString(), { shouldValidate: true });
+    }
+  }, [baseData, resellValue, isFreeTaxArea, setValue]);
+
+  const handleCheckPlu = async () => {
+    const plu = getValues("itemPlu");
+    if (!plu) return;
+
+    setIsLoading(true);
+    try {
+      // TODO: Ganti URL endpoint
+      const response = await fetch(`/api/pawn/check-plu?plu=${plu}&type=DJ`);
+      const result = await response.json();
+
+      if (result.statusCode === 200 && result.data) {
+        const item = result.data;
+        setFetchedPlu(plu); // Simpan PLU yang berhasil diverifikasi
+        setValue("itemName", item.namaitem, { shouldValidate: true });
+        setValue("itemWeight", item.beratnet.toString(), { shouldValidate: true });
+        setValue("itemFineness", item.kadar.replace('K', ''), { shouldValidate: true });
+        setValue("itemQty", "1", { shouldValidate: true });
+
+        // Untuk perhitungan estimasi nilai
+        setBaseData({ netSales: item.netsales, ppnPembagi: item.PPNPembagi });
+
+        // Memasukan datastone ke tabel barang
+        if (item.datastone && item.datastone !== "-") {
+          const parts = item.datastone.split(" ");
+          if (parts.length >= 5) {
+            setAutoTableData([{
+              kode: "stone-1",
+              qty: parseInt(parts[0]) || 1,
+              shape: parts[1] || "-",
+              fineness: parts[2] || item.kadar,
+              color: [parts[3] || "-"],
+              clarity: parts[4] || "-",
+              brand: getValues("brand") || "-",
+              foto: "", jenis: "", namabarang: "", karat: "", berat: 0, catatan: "", nilai: 0, makspinjaman: 0
+            }]);
+          } else {
+            setAutoTableData([{
+              kode: "stone-1",
+              qty: 1,
+              shape: "-",
+              fineness: item.kadar,
+              color: ["-"],
+              clarity: "-",
+              brand: getValues("brand") || "-",
+              foto: "", jenis: "", namabarang: "", karat: "", berat: 0, catatan: "", nilai: 0, makspinjaman: 0
+            }]);
+          }
+        } else {
+          setAutoTableData([]);
+        }
+        setValue("resellValue", "", { shouldValidate: true });
+      } else {
+        toast.add({ title: "Gagal!", description: result.message || "PLU tidak ditemukan!", type: "error" });
+      }
+    } catch (error) {
+      toast.add({ title: "Gagal!", description: "Terjadi kesalahan saat mengecek PLU.", type: "error" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -33,7 +130,9 @@ export function DJModalAuto() {
           <div className="flex flex-col gap-1 w-full">
             <div className="flex">
               <Input id="itemPlu" {...register("itemPlu")}></Input>
-              <Button type="button" className="bg-btn-primary-bg text-btn-primary-text justify-end"><Check /></Button>
+              <Button type="button" onClick={handleCheckPlu} disabled={isLoading} className="bg-btn-primary-bg text-btn-primary-text justify-end">
+                {isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : <Check />}
+              </Button>
             </div>
             {errors.itemPlu && <p className="text-red-500 text-xs">{String(errors.itemPlu.message)}</p>}
           </div>
@@ -59,6 +158,7 @@ export function DJModalAuto() {
               <Input
                 id="itemWeight"
                 placeholder="0"
+                disabled
                 {...register("itemWeight")}
                 onWheel={(e) => e.currentTarget.blur()}>
               </Input>
@@ -204,7 +304,9 @@ export function DJModalAuto() {
 
       {/* Tabel Informasi Produk*/}
       <div className="overflow-x max-w-[calc(95vw-16px)] w-full">
-        <ItemAutoTable data={dataBarang} />
+        <Card className="p-4 mt-6">
+          <ItemAutoTable data={autoTableData} />
+        </Card>
       </div>
     </>
   )

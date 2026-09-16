@@ -12,6 +12,9 @@ import { CircleX } from "lucide-react";
 // Interface data Barang
 import type { PawnItemSummary } from "@/app/(protected)/_data/data-summary";
 
+// Store
+import { usePawnStore } from "@/app/(protected)/_store/usePawnStore";
+
 interface BarangTableProps {
   data: PawnItemSummary[]
 }
@@ -19,6 +22,8 @@ interface BarangTableProps {
 export function BarangTable({ data }: BarangTableProps) {
   let totalNilai = 0;
   let totalMaksPinjaman = 0;
+
+  const removePawnItem = usePawnStore((state) => state.removePawnItem);
 
   data.forEach((item) => {
     totalNilai += item.appraisal || 0;
@@ -46,7 +51,7 @@ export function BarangTable({ data }: BarangTableProps) {
       {data.length === 0 ? (
         <TableBody>
           <TableRow>
-            <TableCell className="text-center bg-muted" colSpan={6}>No Data</TableCell>
+            <TableCell className="text-center bg-muted" colSpan={10}>No Data</TableCell>
           </TableRow>
         </TableBody>
       ) : (
@@ -60,15 +65,24 @@ export function BarangTable({ data }: BarangTableProps) {
                   alt={item.item_name}
                 />
               </TableCell>
-              <TableCell>{item.itemType?.text || "-"} <span className="font-bold">({item.plu})</span></TableCell>
+              <TableCell>
+                <div>{item.itemType?.text || "-"}</div>
+                <div className="font-semibold">({item.plu})</div>
+              </TableCell>
               <TableCell>{item.carat}</TableCell>
               <TableCell>{item.weight}</TableCell>
-              <TableCell>{item.remark}</TableCell>
+              <TableCell>
+                <div>{item.remark}</div>
+                <div className="font-semibold">({item.condition})</div>
+              </TableCell>
               <TableCell className="text-center">{item.quantity}</TableCell>
               <TableCell className="text-right">{formatRupiah(item.appraisal)}</TableCell>
               <TableCell className="text-right">{formatRupiah(item.max_loan_price)}</TableCell>
               <TableCell className="p-2!">
-                <Button className="bg-btn-delete-bg text-btn-delete-text size-7 p-0">
+                <Button
+                  onClick={() => removePawnItem(item.id)}
+                  className="bg-btn-delete-bg text-btn-delete-text size-7 p-0"
+                >
                   <CircleX />
                 </Button>
               </TableCell>

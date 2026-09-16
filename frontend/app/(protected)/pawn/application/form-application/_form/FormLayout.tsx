@@ -13,6 +13,7 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogT
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsTrigger, TabsList, TabsContent } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { toast } from "@/components/ui/toast";
 
 // Icon
 import { Plus, AlertCircle } from "lucide-react";
@@ -23,6 +24,9 @@ import { form_type } from "@/app/(protected)/_data/form_type";
 
 // Lib
 import { parseDecimal } from "@/lib/utils";
+
+// Store
+import { usePawnStore } from "@/app/(protected)/_store/usePawnStore";
 
 // Components - label & field input
 import { Field, FieldLabel, FieldSeparator, FieldContent } from "@/components/ui/field-application";
@@ -73,6 +77,7 @@ const djAutoSchema = z.object({
   resellValue: z.preprocess(parseDecimal, z.any()
     .refine((val) => typeof val === "number", { message: "Mohon isi resell value" })
     .refine((val) => val <= 80, { message: "Value must be less than or equal to 80" })
+    .refine((val) => val >= 0, { message: "Value must be at least 0" })
   ),
   isFreeTaxArea: z.boolean().optional(),
   estimatedValue: z.preprocess(parseDecimal, z.any()
@@ -86,6 +91,7 @@ const djAutoSchema = z.object({
   invoicePhoto: z.any().refine((val) => val, { message: "Invoice photo wajib diisi" }),
 });
 
+// PG Auto
 const pgAutoSchema = z.object({
   itemPlu: z.string({ error: "Mohon isi PLU" }).min(1, { message: "Mohon isi PLU" }),
   itemName: z.string({ error: "Mohon isi nama item" }).optional(),
@@ -113,6 +119,7 @@ const pgAutoSchema = z.object({
   invoicePhoto: z.any().refine((val) => val, { message: "Invoice photo wajib diisi" }),
 });
 
+// DJ Manual
 const djManualSchema = z.object({
   manualGrossWeight: z.preprocess(parseDecimal, z.any()
     .refine((val) => typeof val === "number", { message: "Mohon isi gross weight" })
@@ -130,6 +137,7 @@ const djManualSchema = z.object({
   invoicePhoto: z.any().refine((val) => val, { message: "Invoice photo wajib diisi" }),
 });
 
+// DJ Manual
 const pgManualSchema = z.object({
   itemPlu: z.string({ error: "Mohon isi PLU" }).min(1, { message: "Mohon isi PLU" }),
   itemName: z.string({ error: "Mohon isi nama item" }).optional(),
@@ -149,6 +157,7 @@ const pgManualSchema = z.object({
   invoicePhoto: z.any().refine((val) => val, { message: "Invoice photo wajib diisi" }),
 });
 
+// Type untuk form
 type FormAppValues = z.infer<typeof baseSchema> & Partial<z.infer<typeof djAutoSchema>> & Partial<z.infer<typeof pgAutoSchema>> & Partial<z.infer<typeof djManualSchema>> & Partial<z.infer<typeof pgManualSchema>>;
 
 export function ModalLayout() {
@@ -163,14 +172,15 @@ export function ModalLayout() {
         const isPG = selected.type.includes("_pg");
         const isAuto = !selected.type.includes("cmk_manual");
 
+        // Merge schema berdasarkan jenis item dan mode input
         if (isDJ && isAuto) {
-          currentSchema = baseSchema.merge(djAutoSchema);
+          currentSchema = baseSchema.extend(djAutoSchema.shape);
         } else if (isPG && isAuto) {
-          currentSchema = baseSchema.merge(pgAutoSchema);
+          currentSchema = baseSchema.extend(pgAutoSchema.shape);
         } else if (isDJ && !isAuto) {
-          currentSchema = baseSchema.merge(djManualSchema);
+          currentSchema = baseSchema.extend(djManualSchema.shape);
         } else if (isPG && !isAuto) {
-          currentSchema = baseSchema.merge(pgManualSchema);
+          currentSchema = baseSchema.extend(pgManualSchema.shape);
         }
       }
       return zodResolver(currentSchema)(data, context, options);
@@ -182,7 +192,12 @@ export function ModalLayout() {
     },
   })
 
+  // Global State
+  const addPawnItem = usePawnStore((state) => state.addPawnItem);
+  const pawnItems = usePawnStore((state) => state.pawnItems);
+
   // State
+  const [open, setOpen] = useState(false);
   const [inputMode, setInputMode] = useState<"normal" | "manual">("normal");
   const selectedItemType = form.watch("itemType");
 
@@ -213,12 +228,67 @@ export function ModalLayout() {
       : null;
 
   // On Submit
-  const onSubmit = (data: FormAppValues) => {
-    console.log("Data Valid:", data);
+  const onSubmit = async (data: FormAppValues) => {
+    try {
+      // TODO: Backend - Ganti endpoint, ganti body dgn form data
+      const response = await fetch('/api/pawn/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      // Mapping response
+      const result = await response.json();
+
+      if (response.ok) {
+        // Deteksi jenis barang (DJ / PG)
+        const isDJ = data.itemType.includes("Diamond");
+
+        // Mock data
+        // TODO: Backend -Hapus mock data
+        const newItem: any = {
+          id: Math.floor(Math.random() * 10000),
+          pawn_id: 4,
+          pawn_item_code: "MOCK-" + Math.floor(Math.random() * 10000),
+          pawn_item_type_id: isDJ ? 9 : 8,
+          item_name: data.itemName || "Item Baru",
+          status: "stored",
+          plu: data.itemPlu || "MOCK-PLU",
+          weight: data.itemWeight || data.manualWeight || data.manualGrossWeight || 0,
+          weight_current: data.itemWeight || 0,
+          carat: data.itemFineness || 0,
+          carat_current: data.itemFineness || 0,
+          photo: data.productPhoto ? URL.createObjectURL(data.productPhoto as unknown as Blob) : "/image/jewelry.jpg",
+          quantity: data.itemQty || 1,
+          condition: data.condition || data.manualCondition || "Excellent",
+          appraisal: data.appraisal || data.estimatedValue || data.manualAppraisal || 0,
+          max_loan_price: data.maxLoan || 0,
+          remark: data.remark || "",
+          itemType: { id: isDJ ? 9 : 8, type: isDJ ? "dj" : "pg", text: data.itemType, status: 1 }
+        };
+        addPawnItem(newItem);
+        toast.add({ title: "Sukses!", description: result.message + " Transaction ID: " + result.data.transactionId, type: "success" });
+        form.reset();
+        setOpen(false);
+      } else {
+        toast.add({ title: "Gagal!", description: "Error: " + result.message, type: "error" });
+      }
+    } catch (error) {
+      toast.add({ title: "Gagal!", description: "An error occurred while submitting.", type: "error" });
+    }
   };
 
+  // Membatasi 1 item per application
+  if (pawnItems.length >= 1) {
+    return (
+      <Button disabled className="bg-btn-primary-bg text-btn-primary-text flex">
+        <Plus /><span className="text-xs">Add Item</span>
+      </Button>
+    );
+  }
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <FormProvider {...form}>
         <DialogTrigger render={<Button className="bg-btn-primary-bg text-btn-primary-text flex" />}>
           <Plus /><span className="text-xs">Add Item</span>
@@ -234,7 +304,9 @@ export function ModalLayout() {
             <Tabs
               value={inputMode}
               onValueChange={(value) => {
+                // Ganti input mode
                 setInputMode(value as "normal" | "manual");
+                // Reset form
                 form.setValue("itemType", "");
                 form.clearErrors("itemType");
                 form.clearErrors("brand");
@@ -289,7 +361,7 @@ export function ModalLayout() {
                 )} />
               </Field>
 
-              {/* Brand */}
+              {/* Combobox Brand */}
               <Field className="items-baseline">
                 <FieldLabel>Brand</FieldLabel>
                 <Controller control={form.control} name="brand" render={({ field, fieldState }) => (
@@ -353,9 +425,18 @@ export function ModalLayout() {
               <div className="flex flex-row gap-2">
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger render={<Button type="submit" className="bg-btn-primary-bg text-btn-primary-text">Add</Button>} />
+                    <TooltipTrigger render={
+                      <Button 
+                        type="submit" 
+                        disabled={form.formState.isSubmitting} 
+                        className="bg-btn-primary-bg text-btn-primary-text"
+                      >
+                        {form.formState.isSubmitting ? "Adding..." : "Add"}
+                      </Button>
+                    } />
+                    {/* Menampilkan tooltip jika ada form yang error */}
                     {Object.keys(form.formState.errors).length > 0 && (
-                      <TooltipContent className="bg-red-50 text-red-600 border border-red-200" side="top">
+                      <TooltipContent side="left">
                         <div className="flex items-center gap-2">
                           <AlertCircle className="w-4 h-4" />
                           <p>Terdapat form yang belum lengkap/salah</p>

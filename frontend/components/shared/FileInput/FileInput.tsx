@@ -107,17 +107,17 @@ export default function FileInput({
           )}
           {/* Jika PDF */}
           {selectedItem?.type === 'application/pdf' && (
-            <Card className="flex items-center p-4 text-center py-12">
-              <div className="bg-alert-info-bg p-3 rounded-md mb-3 text-alert-info-icon">
-                <FileIcon size={48} />
+            <div className="flex flex-col justify-center items-center h-full w-full p-2">
+              <div className="bg-alert-info-bg p-2 lg:p-3 rounded-md mb-1 lg:mb-2 text-alert-info-icon">
+                <FileIcon className="w-6 h-6 lg:w-10 lg:h-10" />
               </div>
-              <p className="text-sm! line-clamp-2">
+              <p className="text-xs lg:text-sm line-clamp-1 lg:line-clamp-2 text-center font-medium px-2">
                 {selectedItem.name}
               </p>
-              <p className="text-gray-500 mt-1">
+              <p className="text-[10px] lg:text-xs text-gray-500 mt-1">
                 {(selectedItem.size / 1024 / 1024).toFixed(2)} MB • PDF Document
               </p>
-            </Card>
+            </div>
           )}
         </div>
 
