@@ -64,7 +64,7 @@ export function AppSidebar() {
           {/* pembayaran */}
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Pembayaran"
-              render={<Link href="/payment" />}
+              render={<Link href="/repayment" />}
               className={`flex items-center group-data-[collapsible=icon]:p-1! ${isCollapsed ? "mx-auto" : "px-5"}`}>
               <CreditCard className={isCollapsed ? "size-6!" : "size-5!"} />
               {!isCollapsed && <span>Pembayaran</span>}

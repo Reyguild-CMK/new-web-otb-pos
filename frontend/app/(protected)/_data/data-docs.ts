@@ -10,7 +10,7 @@ export interface Docs{
     titip_jual_form: string,
     bukti_transaksi:string, 
     nota_pembayaran:string,
-    nota_tanda_terima:string,
+    nota_tanda_terima:string | null,
     perjanjian_take_over:string,
     permintaan_dana_take_over:string,   
 }
@@ -29,6 +29,22 @@ export const dataDocs: Docs[]=[
         bukti_transaksi: "/image/document/sgk_jabar.png", 
         nota_pembayaran: "/image/document/sgk_jabar.png",
         nota_tanda_terima: "/image/document/sgk_jabar.png",
+        perjanjian_take_over: "/image/document/sgk_jabar.png",
+        permintaan_dana_take_over: "/image/document/sgk_jabar.png"
+    },
+    {
+        id: 1,
+        pawn_id : 3,
+        form_perjanjian: "/image/document/sgk_jabar.png",
+        application_form: "/image/document/sgk_jabar.png",
+        sbg_form: "/image/document/sgk_jabar.png",
+        bukti_kepemilikan: "/image/document/sgk_jabar.png",
+        pawn_form: "/image/document/sgk_jabar.png",
+        surat_kuasa_form: "/image/document/sgk_jabar.png",
+        titip_jual_form: "/image/document/sgk_jabar.png",
+        bukti_transaksi: "/image/document/sgk_jabar.png", 
+        nota_pembayaran: "/image/document/sgk_jabar.png",
+        nota_tanda_terima: null,
         perjanjian_take_over: "/image/document/sgk_jabar.png",
         permintaan_dana_take_over: "/image/document/sgk_jabar.png"
     }

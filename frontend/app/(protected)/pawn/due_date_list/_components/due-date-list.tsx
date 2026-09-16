@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PawnSummary } from "@/app/(protected)/_data/data-summary"; 
-import { DropDownDueDate, statusOptions } from "./dropdown-due-date";
+import { DropDownStatus, statusOptions } from "./dropdown-due-date";
 import { PawnStatusNotification } from "@/app/(protected)/_data/data-pawn";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -74,11 +74,11 @@ export function DueDateListsTable({data}: dueDateListDataProps){
                     <TableCell>{pawn.nilaiPinjaman}</TableCell>
                     <TableCell>{pawn.jatuhTempo?.toLocaleDateString("id-ID")}</TableCell>
                     <TableCell className="flex justify-center gap-0.5">
-                    <DropDownDueDate
-                        value={currentStatus}
-                        onChange={(value) => handleStatusChange(String(pawn.id), value)}
-                    />
-                    <Button onClick={() => handleSaveStatus(String(pawn.id))}>Save</Button>
+                        <DropDownStatus
+                            value={currentStatus}
+                            onChange={(value) => handleStatusChange(String(pawn.id), value)}
+                        />
+                        <Button onClick={() => handleSaveStatus(String(pawn.id))}>Save</Button>
                     </TableCell>
                 </TableRow>
                 );
