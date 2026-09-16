@@ -1,6 +1,3 @@
-// Global
-import { useState } from "react";
-
 // Components
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,7 +8,7 @@ import { RequiredDot } from "@/components/ui/required-dot";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { FieldGroup, FieldSeparator, Field, FieldLabel } from "@/components/ui/field-application";
+import { FieldGroup, FieldSeparator, Field, FieldLabel, FieldContent } from "@/components/ui/field-application";
 import { UploadSection } from "../../_components/upload-section";
 import { CurrencyInput } from "@/components/ui/currency-input";
 import { Combobox, ComboboxInput, ComboboxList, ComboboxItem, ComboboxContent } from "@/components/ui/combobox";
@@ -22,26 +19,31 @@ import { dataBarang } from "../../../../_data/barang-data";
 
 // Icons
 import { Check } from "lucide-react";
+import { Controller, useFormContext } from "react-hook-form";
 
 export function DJModalAuto() {
-  const [estimatedValue, setEstimatedValue] = useState("");
-  const [maxLoan, setMaxLoan] = useState("");
-  const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
+  const { control, formState: { errors }, register } = useFormContext();
 
   return (
     <>
       {/* Input item PLU & name */}
       <FieldGroup>
-        <Field>
-          <FieldLabel htmlFor="itemPlu">PLU</FieldLabel>
-          <div className="flex">
-            <Input id="itemPlu" name="itemPlu" required></Input>
-            <Button className="bg-btn-primary-bg text-btn-primary-text justify-end"><Check /></Button>
+        <Field className="items-baseline">
+          <FieldLabel htmlFor="itemPlu">PLU<RequiredDot /></FieldLabel>
+          <div className="flex flex-col gap-1 w-full">
+            <div className="flex">
+              <Input id="itemPlu" {...register("itemPlu")}></Input>
+              <Button type="button" className="bg-btn-primary-bg text-btn-primary-text justify-end"><Check /></Button>
+            </div>
+            {errors.itemPlu && <p className="text-red-500 text-xs">{String(errors.itemPlu.message)}</p>}
           </div>
         </Field>
         <Field>
           <FieldLabel htmlFor="itemName">Item Name</FieldLabel>
-          <Input id="itemName" name="itemName"></Input>
+          <FieldContent>
+            <Input id="itemName" {...register("itemName")}></Input>
+            {errors.itemName && <p className="text-red-500 text-xs mt-1">{String(errors.itemName.message)}</p>}
+          </FieldContent>
         </Field>
       </FieldGroup>
 
@@ -51,24 +53,25 @@ export function DJModalAuto() {
       <div className="md:flex gap-6">
         {/* Detail Item */}
         <FieldGroup>
-          <Field>
+          <Field className="items-baseline">
             <FieldLabel htmlFor="itemWeight">Weight</FieldLabel>
-            <Input
-              id="itemWeight"
-              name="itemWeight"
-              type="number"
-              placeholder="0"
-              onWheel={(e) => e.currentTarget.blur()}>
-            </Input>
+            <FieldContent>
+              <Input
+                id="itemWeight"
+                placeholder="0"
+                {...register("itemWeight")}
+                onWheel={(e) => e.currentTarget.blur()}>
+              </Input>
+              {errors.itemWeight && <p className="text-red-500 text-xs">{String(errors.itemWeight.message)}</p>}
+            </FieldContent>
           </Field>
           <Field>
             <FieldLabel htmlFor="itemFineness">Fineness</FieldLabel>
             <Input
               id="itemFineness"
-              name="itemFineness"
-              type="number"
               placeholder="0"
               disabled
+              {...register("itemFineness")}
               onWheel={(e) => e.currentTarget.blur()}>
             </Input>
           </Field>
@@ -76,27 +79,35 @@ export function DJModalAuto() {
             <FieldLabel htmlFor="itemQty">Quantity</FieldLabel>
             <Input
               id="itemQty"
-              name="itemQty"
-              type="number"
               placeholder="1"
               disabled
+              {...register("itemQty")}
               onWheel={(e) => e.currentTarget.blur()}>
             </Input>
           </Field>
           <Field>
             <FieldLabel htmlFor="condition">Condition</FieldLabel>
-            <Combobox name="condition" value={selectedCondition} onValueChange={setSelectedCondition} items={conditionType}>
-              <ComboboxInput placeholder="Choose Condition" />
-              <ComboboxContent>
-                <ComboboxList>
-                  {(item: any) => (
-                    <ComboboxItem key={item} value={item}>
-                      {item}
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
+            <FieldContent>
+              <Controller
+                control={control}
+                name="condition"
+                render={({ field }) => (
+                  <Combobox value={field.value || "Excellent"} onValueChange={(val) => field.onChange(val || "Excellent")} items={conditionType}>
+                    <ComboboxInput placeholder="Choose Condition" />
+                    <ComboboxContent>
+                      <ComboboxList>
+                        {(item: any) => (
+                          <ComboboxItem key={item} value={item}>
+                            {item}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
+                )}
+              />
+              {errors.condition && <p className="text-red-500 text-xs">{String(errors.condition.message)}</p>}
+            </FieldContent>
           </Field>
 
           {/* Card Resell Value */}
@@ -104,25 +115,25 @@ export function DJModalAuto() {
             <CardContent>
               <div>
                 <Field orientation="vertical" className="">
-                  
                   <div className="flex gap-2 justify-between">
-                    <FieldLabel htmlFor="resellValue" className="">Resell Value/ASP<RequiredDot/></FieldLabel>
+                    <FieldLabel htmlFor="resellValue" className="">Resell Value/ASP<RequiredDot /></FieldLabel>
                     <div className="flex gap-2">
-                      <Checkbox id="toggle-checkbox" name="toggle-checkbox" />
+                      <Controller control={control} name="isFreeTaxArea" render={({ field }) => (
+                        <Checkbox id="toggle-checkbox" checked={field.value || false} onCheckedChange={field.onChange} />
+                      )} />
                       <FieldLabel htmlFor="toggle-checkbox">Free tax area</FieldLabel>
                     </div>
                   </div>
                   <Input
                     id="resellValue"
-                    name="resellValue"
-                    type="number"
                     placeholder="0"
+                    {...register("resellValue")}
                     onWheel={(e) => e.currentTarget.blur()}
-                    className="flex-1" required>
+                    className="flex-1">
                   </Input>
-                
+                  {errors.resellValue && <p className="text-red-500 text-xs">{String(errors.resellValue.message)}</p>}
+
                 </Field>
-                <p className="text-red-medium md:text-right mt-1">*Value must be less than or equal to 80</p>
               </div>
               <CardFooter className="py-4">
                 <div>
@@ -142,36 +153,51 @@ export function DJModalAuto() {
           {/* Value */}
           <Field>
             <FieldLabel htmlFor="estimatedValue">Estimated Value</FieldLabel>
-            <CurrencyInput
-              id="estimatedValue"
+            <Controller
+              control={control}
               name="estimatedValue"
-              value={estimatedValue}
-              onValueChange={setEstimatedValue}
-              disabled
-              placeholder="0"
+              render={({ field }) => (
+                <CurrencyInput
+                  id="estimatedValue"
+                  value={field.value || ""}
+                  onValueChange={field.onChange}
+                  disabled
+                  placeholder="0"
+                />
+              )}
             />
           </Field>
           <Field>
             <FieldLabel htmlFor="maxLoan">Max Loan</FieldLabel>
-            <CurrencyInput
-              id="maxLoan"
+            <Controller
+              control={control}
               name="maxLoan"
-              value={maxLoan}
-              onValueChange={setMaxLoan}
-              disabled
-              placeholder="0"
+              render={({ field }) => (
+                <CurrencyInput
+                  id="maxLoan"
+                  value={field.value || ""}
+                  onValueChange={field.onChange}
+                  disabled
+                  placeholder="0"
+                />
+              )}
             />
           </Field>
           <Field className="items-baseline">
-            <FieldLabel htmlFor="remark">Remark<RequiredDot/></FieldLabel>
-            <Textarea id="remark" name="remark" placeholder="Remark" className="lg:min-h-20 min-h-10" required></Textarea>
+            <div className="flex">
+              <FieldLabel htmlFor="remark">Remark<RequiredDot /></FieldLabel>
+            </div>
+            <FieldContent>
+              <Textarea id="remark" placeholder="Remark" className="lg:min-h-20 min-h-10" {...register("remark")}></Textarea>
+              {errors.remark && <p className="text-red-500 text-xs">{String(errors.remark.message)}</p>}
+            </FieldContent>
           </Field>
         </FieldGroup>
 
         <FieldSeparator />
-        
+
         {/* Product & Invoice Photo */}
-        <UploadSection/>
+        <UploadSection />
       </div>
 
       <FieldSeparator className="my-2" />
