@@ -21,7 +21,7 @@ type DropdownDueDateProps = {
     onChange: (value: PawnStatusNotification) => void;
 }
 
-export function DropDownDueDate({
+export function DropDownStatus({
     value,
     onChange,
 }: DropdownDueDateProps) {

@@ -268,7 +268,7 @@ export const pawnData: Pawn[] = [
       applicationNumber: "J2CE432608310003",
       pawnNumber: "PWN-260901-0003",
       dibuatOleh: "JR CMK",
-      status: "approved",
+      status: "done",
       customerId: 3,
       barangCodes: ["ITEM-260901-0001"],
       totalAppraisalPrice: 9835366,

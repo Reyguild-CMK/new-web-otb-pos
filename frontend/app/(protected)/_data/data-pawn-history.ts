@@ -53,19 +53,65 @@ export interface PawnHistory {
     status: string;
     form_application: string | null;
     bukti_transaksi: string | null;
+    remark: string;
+    nota_tanda_terima: string | null;
 }
 
 export const dataPawnHistory: PawnHistory[] = [
     {
         id: 1,
         pawn_id: 4,
+        extend_number: 0,
+        due_date: "26 Feb 26",
+        storage_insurance_fee_nominal: 258701,
+        admin_fee: 0,
+        total_payment: 258701,
+        status: "completed",
+        remark:"Pengajuan Gadai",
+        form_application: "/image/document/sgk_jabar.png",
+        bukti_transaksi: "/image/document/sgk_jabar.png",
+        nota_tanda_terima: null
+    },
+    {
+        id: 2,
+        pawn_id: 4,
         extend_number: 1,
         due_date: "26 Feb 26",
         storage_insurance_fee_nominal: 258701,
         admin_fee: 0,
         total_payment: 258701,
-        status: "Paid Off (Repawn)",
+        status: "completed",
+        remark:"Perpanjangan Gadai 1",
         form_application: "/image/document/sgk_jabar.png",
-        bukti_transaksi: "/image/document/sgk_jabar.png"
+        bukti_transaksi: "/image/document/sgk_jabar.png",
+        nota_tanda_terima: null
+    },
+    {
+        id: 3,
+        pawn_id: 3,
+        extend_number: 0,
+        due_date: "26 Feb 26",
+        storage_insurance_fee_nominal: 258701,
+        admin_fee: 0,
+        total_payment: 258701,
+        status: "completed",
+        remark:"Pengajuan Gadai",
+        form_application: "/image/document/sgk_jabar.png",
+        bukti_transaksi: "/image/document/sgk_jabar.png",
+        nota_tanda_terima: null
+    },
+    {
+        id: 4,
+        pawn_id: 3,
+        extend_number: 1,
+        due_date: "26 Feb 26",
+        storage_insurance_fee_nominal: 258701,
+        admin_fee: 0,
+        total_payment: 258701,
+        status: "completed",
+        remark:"Perpanjangan Gadai 1",
+        form_application: "/image/document/sgk_jabar.png",
+        bukti_transaksi: "/image/document/sgk_jabar.png",
+        nota_tanda_terima: null
     },
 ];
