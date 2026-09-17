@@ -7,7 +7,7 @@ import { manualConditionType } from "../../_data/other-data";
 
 // Component
 import { RequiredDot } from "@/components/ui/required-dot";
-import { calculateManualMaxLoan } from "@/lib/pawn-calculator";
+import { calculateManualMaxLoan } from "@/lib/math-formulas";
 
 // Components - label & field input
 import { Field, FieldGroup, FieldLabel, FieldSeparator, FieldContent } from "@/components/ui/field-application";

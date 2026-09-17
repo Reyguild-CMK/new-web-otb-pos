@@ -5,7 +5,7 @@ import { RequiredDot } from "@/components/ui/required-dot";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/toast";
 import { DummyCMKProduct } from "@/app/(protected)/_data/data-cmkproduct";
-import { calculatePGAutoAppraisal, calculatePGAutoMaxLoan } from "@/lib/pawn-calculator";
+import { calculatePGAutoAppraisal, calculatePGAutoMaxLoan } from "@/lib/math-formulas";
 
 // Components - label & field input
 import { FieldGroup, FieldSeparator, Field, FieldLabel, FieldContent } from "@/components/ui/field-application";

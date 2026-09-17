@@ -5,7 +5,7 @@ import { ItemAutoTable } from "../_components/item-auto-table";
 import { RequiredDot } from "@/components/ui/required-dot";
 import { toast } from "@/components/ui/toast";
 import { DummyCMKProduct } from "@/app/(protected)/_data/data-cmkproduct";
-import { calculateDJAutoEstimatedValue, calculateDJAutoMaxLoan } from "@/lib/pawn-calculator";
+import { calculateDJAutoEstimatedValue, calculateDJAutoMaxLoan } from "@/lib/math-formulas";
 
 // Components - label & field input
 import { Input } from "@/components/ui/input";

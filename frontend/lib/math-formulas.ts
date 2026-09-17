@@ -1,3 +1,8 @@
+/*
+ * Rumus umum untuk ekosistem Gadai (Pawn).
+ * Kalkulasi nilai gadai PG/DJ Auto, dan kalkulasi biaya refinancing
+ */
+
 // Kalkulasi PG Auto
 export function calculatePGAutoAppraisal(weight: number, qty: number, pricePerGram: number): number {
   return Math.ceil(weight * qty * pricePerGram);
@@ -48,10 +53,30 @@ export function calculateCaratPerButir(totalCarat: number, totalButir: number): 
 export function calculateTotalStones(stones: { totalButir: string | number, totalCarat: string | number }[]) {
   const grandTotalButir = stones.reduce((tot, s) => tot + (parseFloat(s.totalButir as string) || 0), 0);
   const grandTotalCarat = stones.reduce((tot, s) => tot + (parseFloat(s.totalCarat as string) || 0), 0);
-  
+
   return {
     grandTotalButir,
     grandTotalCarat,
     grandTotalCaratFormatted: grandTotalCarat.toFixed(3)
+  };
+}
+
+// Kalkulasi Refinancing Loan
+export function calculateRefinancingDueDate(transactionDate: string, tenorDays: number): string {
+  if (!transactionDate || !tenorDays) return "";
+  const date = new Date(transactionDate);
+  date.setDate(date.getDate() + tenorDays);
+  return date.toISOString().split('T')[0];
+}
+
+export function calculateRefinancingFees(nilaiPinjaman: number, rate: number, biayaAdmin: number = 0) {
+  const np = Number(nilaiPinjaman) || 0;
+  const ba = Number(biayaAdmin) || 0;
+  const biayaPerawatan = (np * rate) / 100;
+  const nominalDitransfer = np - biayaPerawatan - ba;
+
+  return {
+    biayaPerawatan,
+    nominalDitransfer
   };
 }

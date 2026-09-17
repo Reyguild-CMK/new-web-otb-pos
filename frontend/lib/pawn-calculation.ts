@@ -1,10 +1,16 @@
-export type PawnCalculationMode = 
+/*
+ * Fungsi agregasi utama (calculatePawnItem)
+ * untuk kalkulasi Pawn Item berdasarkan mode
+ * (normal-dj, normal-pg, manual-dj, manual-pg).
+ */
+
+export type PawnCalculationMode =
     | "normal-dj"
     | "normal-pg"
     | "manual-dj"
     | "manual-pg"
 
-export interface PawnCalculationInput{
+export interface PawnCalculationInput {
     mode: PawnCalculationMode;
     weight: number;
     quantity: number;
@@ -27,7 +33,7 @@ export interface PawnCalculationInput{
     isTakeOver?: boolean;
 }
 
-export interface PawnCalculationResult{
+export interface PawnCalculationResult {
     estimatedUnitAppraisalPrice: number,
     estimatedTotalAppraisalPrice: number,
     appraisal: number;
@@ -39,22 +45,22 @@ function calculateMaxLoan(
     conditionRate: number,
     maxLoanRate: number,
     ltv: number,
-    isTakeOver: boolean): number{
-        if (isTakeOver){
-            return Math.ceil((appraisal * ltv)/100);
-        }
-        return Math.floor((appraisal * conditionRate)/100);
+    isTakeOver: boolean): number {
+    if (isTakeOver) {
+        return Math.ceil((appraisal * ltv) / 100);
     }
+    return Math.floor((appraisal * conditionRate) / 100);
+}
 
-export function calculatePawnItem(input: PawnCalculationInput): PawnCalculationResult{
-    const { 
+export function calculatePawnItem(input: PawnCalculationInput): PawnCalculationResult {
+    const {
         mode,
         weight,
         quantity = 1,
         appraisalInput = 0,
         invoiceValue = 0,
         netSales = 0,
-        ppnDivider =1.02,
+        ppnDivider = 1.02,
         percentagePrice = 0,
         freeTaxArea = false,
         isPPN11 = false,
@@ -70,19 +76,19 @@ export function calculatePawnItem(input: PawnCalculationInput): PawnCalculationR
     let appraisal = 0;
     let maxLoan = 0;
 
-    if (mode === "normal-dj"){
+    if (mode === "normal-dj") {
         let divisor = ppnDivider;
-        if (ppnDivider !== 1.02 && !isPPN11){
+        if (ppnDivider !== 1.02 && !isPPN11) {
             divisor = 1.02;
         }
-        if (ppnDivider === 1.02 && isPPN11){
+        if (ppnDivider === 1.02 && isPPN11) {
             divisor = 1.022;
         }
 
-        estimatedUnit = freeTaxArea 
+        estimatedUnit = freeTaxArea
             ? netSales * (percentagePrice / 100)
             : (netSales / divisor) * (percentagePrice / 100);
-        
+
         estimatedUnit = Math.trunc(estimatedUnit);
         estimatedTotal = estimatedUnit * quantity;
 
@@ -93,7 +99,7 @@ export function calculatePawnItem(input: PawnCalculationInput): PawnCalculationR
             : Math.trunc(appraisal * 0.85)
     }
 
-    if (mode === "normal-pg"){
+    if (mode === "normal-pg") {
         estimatedUnit = Math.ceil(pricePerGram * weight);
         estimatedTotal = Math.ceil(estimatedUnit * quantity);
         appraisal = estimatedTotal;
@@ -103,7 +109,7 @@ export function calculatePawnItem(input: PawnCalculationInput): PawnCalculationR
             : Math.ceil((appraisal * maxLoanRate) / 100);
     }
 
-    if (mode === "manual-dj" || mode === "manual-pg"){
+    if (mode === "manual-dj" || mode === "manual-pg") {
         appraisal = appraisalInput;
         estimatedUnit = appraisal;
         estimatedTotal = appraisal;
@@ -117,7 +123,7 @@ export function calculatePawnItem(input: PawnCalculationInput): PawnCalculationR
         );
     }
 
-    return{
+    return {
         estimatedUnitAppraisalPrice: estimatedUnit,
         estimatedTotalAppraisalPrice: estimatedTotal,
         appraisal,

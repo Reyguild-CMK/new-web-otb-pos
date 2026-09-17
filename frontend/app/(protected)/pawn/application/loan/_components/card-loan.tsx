@@ -1,8 +1,9 @@
 // Global
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 // Data
 import { Tenor } from "../../../../_data/data-tenor"
+import { calculateRefinancingDueDate, calculateRefinancingFees } from "@/lib/math-formulas";
 
 // Components - label & field input
 import { Input } from "@/components/ui/input"
@@ -17,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
 // React Hook Form
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 
 // Interface berdasarkan tipe data Tenor
 interface LoanProps {
@@ -27,6 +28,20 @@ interface LoanProps {
 export function CardDayLoan({ data }: LoanProps) {
     const { control, register, getValues, setValue, trigger, formState: { errors } } = useFormContext();
     const [isLoading, setIsLoading] = useState(false);
+
+    // Watchers to reset calculated status when inputs change
+    const watchNilai = useWatch({ control, name: "nilaiPinjaman" });
+    const watchTenor = useWatch({ control, name: "tenor" });
+    const watchTanggal = useWatch({ control, name: "tanggalTransaksi" });
+    const isFirstRender = useRef(true);
+
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+        setValue("isCalculated", false);
+    }, [watchNilai, watchTenor, watchTanggal, setValue]);
 
     // Fungsi kalkulasi
     const handleCalculate = async () => {
@@ -47,9 +62,7 @@ export function CardDayLoan({ data }: LoanProps) {
 
         // kalkulasi tanggal jatuh tempo
         if (selectedTenor && tanggalTransaksi) {
-            const date = new Date(tanggalTransaksi);
-            date.setDate(date.getDate() + selectedTenor.tenor);
-            const jatuhTempo = date.toISOString().split('T')[0];
+            const jatuhTempo = calculateRefinancingDueDate(tanggalTransaksi, selectedTenor.tenor);
             setValue("tanggalJatuhTempo", jatuhTempo, { shouldValidate: true, shouldDirty: true });
         }
 
@@ -57,19 +70,17 @@ export function CardDayLoan({ data }: LoanProps) {
         const rate = selectedTenor ? (selectedTenor.rate || 0) : 0;
         setValue("persentaseBiayaPerawatan", rate, { shouldValidate: true });
 
-        // kalkulasi biaya perawatas
+        // kalkulasi biaya perawatan dan admin
         const np = Number(nilaiPinjaman) || 0;
-        const biayaPerawatan = (np * rate) / 100;
-
-        // kalkulasi nominal ditransfer
         const ba = Number(biayaAdmin) || 0;
-        const nominalDitransfer = np - biayaPerawatan - ba;
+        const { biayaPerawatan, nominalDitransfer } = calculateRefinancingFees(np, rate, ba);
 
         // update value hasil kalkulasi ke dalam form
         setValue("biayaPerawatan", biayaPerawatan, { shouldValidate: true, shouldDirty: true });
         setValue("biayaAdmin", ba, { shouldValidate: true, shouldDirty: true });
         setValue("totalNilaiPinjaman", nominalDitransfer, { shouldValidate: true, shouldDirty: true });
         setValue("calculatedNilaiPinjaman", np, { shouldValidate: true, shouldDirty: true });
+        setValue("isCalculated", true, { shouldValidate: true });
 
         setIsLoading(false);
     };
@@ -193,13 +204,16 @@ export function CardDayLoan({ data }: LoanProps) {
             {/* 6. Tombol Calculate */}
             <Field>
                 <div></div>
-                <Button
-                    type="button"
-                    disabled={isLoading}
-                    onClick={handleCalculate}
-                    className="shrink-0 px-2 bg-btn-action-bg text-[11px]! w-24">
-                    {isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : "Calculate"}
-                </Button>
+                <div className="flex flex-col gap-1 w-full items-start">
+                    <Button
+                        type="button"
+                        disabled={isLoading}
+                        onClick={handleCalculate}
+                        className="shrink-0 px-2 bg-btn-action-bg text-[11px]! w-24">
+                        {isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : "Calculate"}
+                    </Button>
+                    {errors.isCalculated && <span className="text-red-500 text-[10px] mt-1">{errors.isCalculated.message as string}</span>}
+                </div>
             </Field>
         </FieldGroup>
     )

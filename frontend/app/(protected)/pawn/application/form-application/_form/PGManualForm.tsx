@@ -17,7 +17,7 @@ import { CurrencyInput } from "@/components/ui/currency-input";
 import { manualConditionType } from "../_data/other-data";
 import { pgfineness } from "../_data/other-data";
 import { fetchJawsReference, JawsMasterItem } from "@/app/(protected)/_data/jaws-dummy";
-import { calculateManualMaxLoan } from "@/lib/pawn-calculator";
+import { calculateManualMaxLoan } from "@/lib/math-formulas";
 
 export function PGModalManual() {
   const { control, formState: { errors }, register, watch, setValue } = useFormContext();

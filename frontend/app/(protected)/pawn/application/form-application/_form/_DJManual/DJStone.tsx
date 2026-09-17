@@ -8,7 +8,7 @@ import { style_card } from "@/components/shared/Stepper/Stepper";
 
 // Data & Fetching Function
 import { stone_type_options, stone_shape_options, stone_size_options, stone_color_options, stone_clarity_options } from "@/app/(protected)/_data/data-stone-parcel";
-import { calculateCaratPerButir, calculateTotalStones } from "@/lib/pawn-calculator";
+import { calculateCaratPerButir, calculateTotalStones } from "@/lib/math-formulas";
 
 // Components - label & field input
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application";

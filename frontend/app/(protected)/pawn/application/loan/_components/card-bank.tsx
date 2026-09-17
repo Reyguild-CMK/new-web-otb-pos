@@ -6,7 +6,8 @@ import { Combobox, ComboboxInput, ComboboxList, ComboboxItem, ComboboxContent } 
 // Component
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { toast } from "@/components/ui/toast";
 
 // React Hook Form
 import { Controller, useFormContext, useWatch } from "react-hook-form";
@@ -30,19 +31,37 @@ export function CardBank({ data }: BankProps) {
     const isEWallet = selectedBank ? ["gopay", "ovo", "dana", "linkaja", "shopeepay"].some(ew => selectedBank.name.toLowerCase().includes(ew)) : false;
     const labelRekening = isEWallet ? "Nomor E-Wallet" : "Nomor Rekening";
 
+    const watchRekening = useWatch({ control, name: "nomorRekening" });
+    const isFirstRender = useRef(true);
+
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+        setValue("isRekeningChecked", false);
+    }, [watchRekening, bankId, setValue]);
+
     const handleCekRekening = async () => {
+        const bankIdValue = getValues("bankId");
+        if (!bankIdValue) {
+            toast.add({ title: "Peringatan", description: "Pilih Bank/E-Wallet terlebih dahulu!", type: "warning" });
+            return;
+        }
+
         const isValid = await trigger(["bankId", "nomorRekening"]);
         if (!isValid) return;
 
         setIsLoading(true);
         // Simulasi request API external
         await new Promise(r => setTimeout(r, 800));
-        
+
         const accountNum = getValues("nomorRekening");
         const foundAccount = dummyBankAccounts.accounts.find(a => a.number === accountNum);
         const nameToSet = foundAccount ? foundAccount.name : dummyBankAccounts.getRandomVerifiedName();
-        
+
         setValue("namaPemilikRekening", nameToSet, { shouldValidate: true, shouldDirty: true });
+        setValue("isRekeningChecked", true, { shouldValidate: true });
         setIsLoading(false);
     };
 
@@ -110,6 +129,7 @@ export function CardBank({ data }: BankProps) {
                         </Button>
                     </div>
                     {errors.nomorRekening && <span className="text-red-500 text-[10px]">{errors.nomorRekening.message as string}</span>}
+                    {errors.isRekeningChecked && <span className="text-red-500 text-[10px]">{errors.isRekeningChecked.message as string}</span>}
                 </div>
             </Field>
             {/* 4. Kolom Nama Pemilik Rekening */}
