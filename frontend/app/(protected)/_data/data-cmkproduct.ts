@@ -17,7 +17,7 @@ export interface CMKProduct {
 export const DummyCMKProduct: CMKProduct[] = [
   {
     id: "1",
-    plu: "DJ-001",
+    plu: "DJ001",
     item_category: "DJ",
     namaitem: "Cincin Berlian Solitaire 18K",
     beratnet: 3.5,
@@ -32,7 +32,7 @@ export const DummyCMKProduct: CMKProduct[] = [
   },
   {
     id: "2",
-    plu: "PG-002",
+    plu: "PG002",
     item_category: "PG",
     namaitem: "Kalung Emas Polos 24K",
     beratnet: 10.0,
@@ -47,7 +47,7 @@ export const DummyCMKProduct: CMKProduct[] = [
   },
   {
     id: "3",
-    plu: "DJ-003",
+    plu: "DJ003",
     item_category: "DJ",
     namaitem: "Anting Berlian Pear Shape 18K",
     beratnet: 4.2,
@@ -62,7 +62,7 @@ export const DummyCMKProduct: CMKProduct[] = [
   },
   {
     id: "4",
-    plu: "DJ-004",
+    plu: "DJ004",
     item_category: "DJ",
     namaitem: "Gelang Tennis Diamond 18K",
     beratnet: 8.5,

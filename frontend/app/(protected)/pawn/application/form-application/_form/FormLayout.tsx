@@ -62,7 +62,7 @@ const baseSchema = z.object({
 // DJ Auto
 const djAutoSchema = z.object({
   itemPlu: z.string({ error: "Mohon isi PLU" }).min(1, { message: "Mohon isi PLU" }),
-  itemName: z.string({ error: "Mohon isi nama item" }).optional(),
+  itemName: z.string({ error: "Mohon isi nama item" }).min(1, { message: "Mohon isi nama item" }),
   itemWeight: z.preprocess(parseDecimal, z.any()
     .refine((val) => typeof val === "number", { message: "Mohon isi berat item" })
     .refine((val) => val >= 0.001, { message: "Value must be greater than or equal to 0.001" })
@@ -94,7 +94,7 @@ const djAutoSchema = z.object({
 // PG Auto
 const pgAutoSchema = z.object({
   itemPlu: z.string({ error: "Mohon isi PLU" }).min(1, { message: "Mohon isi PLU" }),
-  itemName: z.string({ error: "Mohon isi nama item" }).optional(),
+  itemName: z.string({ error: "Mohon isi nama item" }).min(1, { message: "Mohon isi nama item" }),
   itemWeight: z.preprocess(parseDecimal, z.any()
     .refine((val) => typeof val === "number", { message: "Mohon isi berat item" })
     .refine((val) => val >= 0.001, { message: "Value must be greater than or equal to 0.001" })
@@ -230,22 +230,21 @@ export function ModalLayout() {
   // On Submit
   const onSubmit = async (data: FormAppValues) => {
     try {
-      // TODO: Backend - Ganti endpoint, ganti body dgn form data
-      const response = await fetch('/api/pawn/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+      await new Promise(resolve => setTimeout(resolve, 800));
 
-      // Mapping response
-      const result = await response.json();
+      const result = {
+        statusCode: 200,
+        message: "Data berhasil disimpan",
+        data: {
+          transactionId: "TRX-" + Math.floor(Math.random() * 100000)
+        }
+      };
 
-      if (response.ok) {
+      if (result.statusCode === 200) {
         // Deteksi jenis barang (DJ / PG)
         const isDJ = data.itemType.includes("Diamond");
 
         // Mock data
-        // TODO: Backend -Hapus mock data
         const newItem: any = {
           id: Math.floor(Math.random() * 10000),
           pawn_id: 4,

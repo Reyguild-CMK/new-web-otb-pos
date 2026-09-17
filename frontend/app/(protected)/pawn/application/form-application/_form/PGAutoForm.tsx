@@ -4,6 +4,7 @@ import { ItemAutoTable } from "../_components/item-auto-table";
 import { RequiredDot } from "@/components/ui/required-dot";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/toast";
+import { DummyCMKProduct } from "@/app/(protected)/_data/data-cmkproduct";
 
 // Components - label & field input
 import { FieldGroup, FieldSeparator, Field, FieldLabel, FieldContent } from "@/components/ui/field-application";
@@ -29,7 +30,6 @@ export function PGModalAuto() {
   const [baseData, setBaseData] = useState<{ maxLoanRatio: number } | null>(null);
   const [fetchedPlu, setFetchedPlu] = useState<string>("");
 
-  // Watch current PLU
   const currentPlu = watch("itemPlu");
 
   // Reset form jika PLU diubah setelah berhasil di-fetch
@@ -48,13 +48,21 @@ export function PGModalAuto() {
 
     setIsLoading(true);
     try {
-      // TODO: Ganti URL endpoint
-      const response = await fetch(`/api/pawn/check-plu?plu=${plu}&type=PG`);
-      const result = await response.json();
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      const pluInput = plu.toUpperCase();
+      const mockData = DummyCMKProduct.find(
+        (item) => item.item_category === "PG" && item.plu.toUpperCase() === pluInput
+      );
+
+      const result = {
+        statusCode: mockData ? 200 : 404,
+        data: mockData || null
+      };
 
       if (result.statusCode === 200 && result.data) {
         const item = result.data;
-        setFetchedPlu(plu); // Simpan PLU yang berhasil diverifikasi
+        setFetchedPlu(plu);
         setValue("itemName", item.namaitem, { shouldValidate: true });
         setValue("itemWeight", item.beratnet.toString(), { shouldValidate: true });
         setValue("itemFineness", item.kadar.replace('K', ''), { shouldValidate: true });
@@ -99,7 +107,7 @@ export function PGModalAuto() {
           setAutoTableData([]);
         }
       } else {
-        toast.add({ title: "Gagal!", description: result.message || "PLU tidak ditemukan!", type: "error" });
+        toast.add({ title: "Gagal!", description: "PLU tidak ditemukan!", type: "error" });
       }
     } catch (error) {
       toast.add({ title: "Gagal!", description: "Terjadi kesalahan saat mengecek PLU.", type: "error" });
@@ -108,7 +116,7 @@ export function PGModalAuto() {
     }
   };
 
-  // Watch input fields for auto-calculation
+  // Watch input fields untuk auto-calculation
   const watchWeight = watch("itemWeight");
   const watchQty = watch("itemQty");
   const watchPricePerGram = watch("pricePerGram");

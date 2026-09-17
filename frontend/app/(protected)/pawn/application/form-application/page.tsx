@@ -1,5 +1,6 @@
 "use client"
 
+
 // Style card
 import { style_card } from "@/components/shared/Stepper/Stepper";
 
@@ -10,8 +11,21 @@ import { ModalLayout } from "./_form/FormLayout";
 // Store
 import { usePawnStore } from "@/app/(protected)/_store/usePawnStore";
 
+import { StepNavigation } from "@/components/shared/Stepper/StepNavigation";
+import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/toast";
+
 export default function FormApplication() {
   const pawnItems = usePawnStore((state) => state.pawnItems);
+  const router = useRouter();
+
+  const handleNext = () => {
+    if (pawnItems.length === 0) {
+      toast.add({ title: "Barang Belum Ditambahkan", description: "Silakan masukkan minimal 1 barang jaminan terlebih dahulu.", type: "error" });
+      return;
+    }
+    router.push("/pawn/application/loan");
+  };
 
   return (
     <div className={`${style_card} w-full`}>
@@ -25,11 +39,18 @@ export default function FormApplication() {
 
       {/* Tabel Daftar Barang*/}
       {pawnItems.length > 0 && (
-        <div className="bg-red-100 text-red-600 border border-red-200 p-4 rounded-md my-4 text-sm">
+        <div className="bg-red-100 text-red-600 p-4 rounded-md my-4 text-sm">
           * Untuk penginputan transaksi Gold Tunai hanya dapat dilakukan per 1 item. Apabila barang Gold Tunai ada lebih dari 1 maka silahkan menyelesaikan penginputan hingga tahap "Waiting Approval" lalu melakukan penginputan lagi
         </div>
       )}
       <BarangTable data={pawnItems} />
+
+      <StepNavigation
+        currentStep={1}
+        totalSteps={5}
+        isFirstStep
+        onNext={handleNext}
+      />
     </div>
   )
 }

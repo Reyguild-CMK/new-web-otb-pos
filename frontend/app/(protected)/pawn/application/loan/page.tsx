@@ -25,6 +25,9 @@ import { dataBank } from "../../../_data/data-bank";
 import { tenor } from "../../../_data/data-tenor";
 import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
 
+import { StepNavigation } from "@/components/shared/Stepper/StepNavigation";
+import { useRouter } from "next/navigation";
+
 // =========== SKEMA VALIDASI (ZOD) ===========
 const loanSchema = z.object({
     // Card Day Loan
@@ -85,6 +88,7 @@ const loanSchema = z.object({
 type FormValues = z.infer<typeof loanSchema>;
 
 export default function FormLoanApplication() {
+    const router = useRouter();
 
     // Data statis
     const pawnSummary = getPawnSummary(4);
@@ -115,6 +119,11 @@ export default function FormLoanApplication() {
 
     const onSubmit = (data: FormValues) => {
         console.log("Data Valid:", data);
+        router.push("/pawn/application/customer_data");
+    };
+
+    const handleBack = () => {
+        router.push("/pawn/application/form-application");
     };
 
     return (
@@ -147,6 +156,15 @@ export default function FormLoanApplication() {
 
                         {/* Hasil Perhitungan Loan */}
                         <CardDetailLoan />
+                    </div>
+
+                    <div className="col-span-1 md:col-span-2">
+                        <StepNavigation
+                            currentStep={2}
+                            totalSteps={5}
+                            onBack={handleBack}
+                            nextButtonType="submit"
+                        />
                     </div>
                 </form>
             </FormProvider>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ItemAutoTable } from "../_components/item-auto-table";
 import { RequiredDot } from "@/components/ui/required-dot";
 import { toast } from "@/components/ui/toast";
+import { DummyCMKProduct } from "@/app/(protected)/_data/data-cmkproduct";
 
 // Components - label & field input
 import { Input } from "@/components/ui/input";
@@ -66,9 +67,17 @@ export function DJModalAuto() {
 
     setIsLoading(true);
     try {
-      // TODO: Ganti URL endpoint
-      const response = await fetch(`/api/pawn/check-plu?plu=${plu}&type=DJ`);
-      const result = await response.json();
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      const pluInput = plu.toUpperCase();
+      const mockData = DummyCMKProduct.find(
+        (item) => item.item_category === "DJ" && item.plu.toUpperCase() === pluInput
+      );
+
+      const result = {
+        statusCode: mockData ? 200 : 404,
+        data: mockData || null
+      };
 
       if (result.statusCode === 200 && result.data) {
         const item = result.data;
@@ -110,9 +119,9 @@ export function DJModalAuto() {
         } else {
           setAutoTableData([]);
         }
-        setValue("resellValue", "", { shouldValidate: true });
+        setValue("resellValue", "65", { shouldValidate: true });
       } else {
-        toast.add({ title: "Gagal!", description: result.message || "PLU tidak ditemukan!", type: "error" });
+        toast.add({ title: "Gagal!", description: "PLU tidak ditemukan!", type: "error" });
       }
     } catch (error) {
       toast.add({ title: "Gagal!", description: "Terjadi kesalahan saat mengecek PLU.", type: "error" });
@@ -225,6 +234,7 @@ export function DJModalAuto() {
                     </div>
                   </div>
                   <Input
+                    type="number"
                     id="resellValue"
                     placeholder="0"
                     {...register("resellValue")}

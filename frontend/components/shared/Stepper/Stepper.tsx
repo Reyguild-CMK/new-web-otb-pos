@@ -5,14 +5,10 @@ import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import {
   Check,
-  ChevronLeft,
-  ChevronRight,
   LucideIcon,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { stepItems } from "@/app/(protected)/_data/stepper";
 
 export interface Step {
@@ -33,33 +29,6 @@ export function Stepper({ children }: { children: React.ReactNode }) {
 
   const isFirstStep = activeStep === 0;
   const isLastStep = activeStep === stepItems.length - 1;
-
-  const handleSubmit = () => {
-    router.push("/pawn/list");
-  };
-  
-  const handleNext = () => {
-    if (isLastStep) {
-      handleSubmit();
-      return;
-    }
-
-    const nextStep = stepItems[activeStep + 1];
-
-    if (nextStep?.href) {
-      router.push(nextStep.href);
-    }
-  };
-
-  const handleBack = () => {
-    if (!isFirstStep) {
-      const prevStep = stepItems[activeStep - 1];
-
-      if (prevStep?.href) {
-        router.push(prevStep.href);
-      }
-    }
-  };
 
   const handleStepClick = (index: number) => {
     const targetStep = stepItems[index];
@@ -216,30 +185,6 @@ export function Stepper({ children }: { children: React.ReactNode }) {
         {/* Content */}
         <div className="my-5">
           {children}
-        </div>
-        {/* Separator */}
-        <Separator />
-        <div className="flex items-center justify-between my-5">
-          {/* Button action */}
-          <Button
-            variant="outline"
-            onClick={handleBack}
-            disabled={activeStep === 0}
-            className="cursor-pointer w-25 h-8"
-          >
-            <ChevronLeft />
-            Back
-          </Button>
-          <p className="text-sm text-muted-foreground">
-            {activeStep + 1} dari {stepItems.length}
-          </p>
-          <Button
-            onClick={handleNext}
-            className="cursor-pointer bg-btn-next-bg text-btn-next-text w-25 h-8 hover:bg-btn-next-bg/80"
-          >
-            {activeStep === stepItems.length - 1 ? "Submit" : "Next"}
-            <ChevronRight />
-          </Button>
         </div>
       </div>
     </div>

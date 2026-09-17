@@ -18,6 +18,8 @@ export function UploadSection() {
         name="productPhoto"
         label="Product Photo"
         imageAlt="Product Thumbnail"
+        accept=".jpg, .jpeg, .png"
+        fileHint="*PNG, JPG, or JPEG only."
         onFileChange={(f) => handleFile("productPhoto", f)}
         error={errors.productPhoto?.message as string}
       />
@@ -26,6 +28,8 @@ export function UploadSection() {
         name="invoicePhoto"
         label="Invoice Photo"
         imageAlt="Invoice Photo"
+        accept=".jpg, .jpeg, .png"
+        fileHint="*PNG, JPG, or JPEG only."
         onFileChange={(f) => handleFile("invoicePhoto", f)}
         error={errors.invoicePhoto?.message as string}
       />

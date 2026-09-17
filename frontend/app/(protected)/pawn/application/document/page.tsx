@@ -22,51 +22,79 @@ import { Download } from 'lucide-react';
 // Function getPawnSummary
 import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
 
+import { StepNavigation } from "@/components/shared/Stepper/StepNavigation";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 export default function CustomerApplication() {
+  const router = useRouter();
+  const [isWaitingApproval, setIsWaitingApproval] = useState(false);
+
+  const handleNext = async () => {
+    setIsWaitingApproval(true);
+  };
+
+  const handleBack = () => {
+    router.push("/pawn/application/customer_data");
+  };
+
   const pawnSummary = getPawnSummary(1)
 
   if (!pawnSummary) {
     return <p>Data pinjaman tidak ditemukan.</p>;
   }
 
-    return (
-      <>
+  return (
+    <>
       {/* Card */}
       <div className={`${style_card} w-full`}>
         {/* Judul */}
         <h1 className="font-bold">Dokumen</h1>
-        
+
 
         {/* Tabel Dokumen*/}
         <div className="flex flex-col gap-2">
           <h3>Daftar Barang</h3>
-          <TableDocument data={pawnSummary.barang}/>
+          <TableDocument data={pawnSummary.pawnItems} />
         </div>
-        
+
         {/* Form Informasi Pembayaran*/}
         <div className="flex flex-col gap-2">
           <h3>Detail Informasi Pinjaman</h3>
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Tenor, Bank ,dll */}
-            <FieldNominal data={pawnSummary}/>
+            <FieldNominal data={pawnSummary} />
             {/* Informasi Dokumen */}
-            <FieldDokumen data={pawnSummary}/>
+            <FieldDokumen data={pawnSummary} />
           </div>
         </div>
-        
-        <Separator/>
 
-        {/* Loading untuk menunggu approval */}
-        <WaitingApproval/>
+        <Separator />
 
         <div className="text-center">
           {/* Button Download Document */}
-          <Button className="mb-8 bg-btn-primary-bg text-btn-primary-text"><Download/>Download Document</Button>
+          <Button className="my-8 bg-btn-primary-bg text-btn-primary-text"><Download className="mr-2 h-4 w-4" />Download Document</Button>
 
           {/* Section Input File */}
-          <InputFile/>
+          <InputFile />
+
+          {/* Loading untuk menunggu approval */}
+          {isWaitingApproval && (
+            <div className="mt-8 text-left">
+              <WaitingApproval />
+            </div>
+          )}
         </div>
-      </div> 
+
+        <StepNavigation
+          currentStep={4}
+          totalSteps={5}
+          onNext={handleNext}
+          onBack={handleBack}
+          nextLabel="Ajukan Approval"
+          hideNext={isWaitingApproval}
+        />
+      </div>
     </>
   )
 }

@@ -14,6 +14,8 @@ export interface FileFieldProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFileChange?: (file: File | null) => void;
   error?: string;
+  accept?: string;
+  fileHint?: string;
 }
 
 export default function FileInput({
@@ -25,6 +27,8 @@ export default function FileInput({
   onChange,
   onFileChange,
   error,
+  accept = ".jpg, .jpeg, .png, .pdf",
+  fileHint = "*PNG, JPG, JPEG, or PDF.",
 }: FileFieldProps) {
   // Input
   const [selectedItem, setSelectedItem] = useState<File | null>(null);
@@ -67,7 +71,7 @@ export default function FileInput({
         <FieldLabel htmlFor={id}>
           {label}
         </FieldLabel>
-        <p className="text-xs text-alert-error-icon">*PNG, JPG, JPEG, or PDF.</p>
+        <p className="text-xs text-alert-error-icon">{fileHint}</p>
       </div>
       
         {/* Input File */}
@@ -76,7 +80,7 @@ export default function FileInput({
             id={id} 
             name={name} 
             type="file" 
-            accept=".jpg, .jpeg, .png, .pdf"
+            accept={accept}
             onChange={handleFileChange}
             className="w-full cursor-pointer file:hover:bg-gray-200"
             required={required}
