@@ -38,7 +38,7 @@ export default function FileInput({
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
-    if (file){
+    if (file) {
       setSelectedItem(file); //set file yang dipilih
       const objectUrl = URL.createObjectURL(file); //membuat url sementara
       setPreviewUrl(objectUrl);
@@ -52,20 +52,20 @@ export default function FileInput({
   }
 
   // previewUrl berubah setiap nilai berubah
-  useEffect(()=>{
-    return() => {
-      if(previewUrl) URL.revokeObjectURL(previewUrl)
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
     }
   }, [previewUrl]);
 
   // Function untuk buka file saat klik preview
   const handleOpenPreview = () => {
-    if(previewUrl){
+    if (previewUrl) {
       window.open(previewUrl, '_blank');
     }
   }
 
-  return(
+  return (
     <Field orientation="vertical">
       <div className="flex justify-between items-center w-full">
         <FieldLabel htmlFor={id}>
@@ -73,26 +73,26 @@ export default function FileInput({
         </FieldLabel>
         <p className="text-xs text-alert-error-icon">{fileHint}</p>
       </div>
-      
-        {/* Input File */}
-        <div className="w-full flex-1">
-          <Input 
-            id={id} 
-            name={name} 
-            type="file" 
-            accept={accept}
-            onChange={handleFileChange}
-            className="w-full cursor-pointer file:hover:bg-gray-200"
-            required={required}
-          />
+
+      {/* Input File */}
+      <div className="w-full flex-1">
+        <Input
+          id={id}
+          name={name}
+          type="file"
+          accept={accept}
+          onChange={handleFileChange}
+          className="w-full cursor-pointer file:hover:bg-gray-200"
+          required={required}
+        />
         {/* Preview */}
-        <div 
+        <div
           onClick={handleOpenPreview}
           className="relative lg:h-55 h-25 border border-dashed border-gray-300 rounded-lg bg-gray-50/50 w-full mt-2">
-            
+
           {/* Jika belum ada Unggahan File */}
           {!selectedItem && (
-            <Image 
+            <Image
               src="/image/image_placeholder.png"
               alt="Photo Preview"
               fill
@@ -101,13 +101,13 @@ export default function FileInput({
           )}
 
           {selectedItem?.type.startsWith('image/') && previewUrl && (
-            <Image 
-            src={previewUrl}
-            alt={imageAlt || "Photo Preview"}
-            fill
-            className="object-contain p-2"
-            unoptimized
-          />
+            <Image
+              src={previewUrl}
+              alt={imageAlt || "Photo Preview"}
+              fill
+              className="object-contain p-2"
+              unoptimized
+            />
           )}
           {/* Jika PDF */}
           {selectedItem?.type === 'application/pdf' && (
@@ -133,4 +133,5 @@ export default function FileInput({
         )}
       </div>
     </Field>
-)}
+  )
+}

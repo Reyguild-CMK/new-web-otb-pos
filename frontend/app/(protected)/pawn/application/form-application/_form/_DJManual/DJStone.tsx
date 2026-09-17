@@ -8,6 +8,7 @@ import { style_card } from "@/components/shared/Stepper/Stepper";
 
 // Data & Fetching Function
 import { stone_type_options, stone_shape_options, stone_size_options, stone_color_options, stone_clarity_options } from "@/app/(protected)/_data/data-stone-parcel";
+import { calculateCaratPerButir, calculateTotalStones } from "@/lib/pawn-calculator";
 
 // Components - label & field input
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application";
@@ -30,7 +31,7 @@ export interface AddedStone {
 }
 
 export function DJStone() {
-  const { setValue, watch } = useFormContext();
+  const { setValue, watch, formState: { errors } } = useFormContext();
   const [selectedStoneValue, setSelectedStoneValue] = useState<string | null>(null);
   const [filters, setFilters] = useState<Record<string, string | null>>({});
 
@@ -104,7 +105,7 @@ export function DJStone() {
          const tb = parseFloat(updated.totalButir) || 0;
          const tc = parseFloat(updated.totalCarat) || 0;
          if (tb > 0 && tc > 0 && !stone.caratPerButir) {
-             updated.caratPerButir = (tc / tb).toFixed(3);
+             updated.caratPerButir = calculateCaratPerButir(tc, tb);
          }
       }
       return updated;
@@ -117,8 +118,7 @@ export function DJStone() {
     setValue("manualAddedStones", newStones);
   };
 
-  const grandTotalButir = addedStones.reduce((tot, s) => tot + (parseFloat(s.totalButir) || 0), 0);
-  const grandTotalCarat = addedStones.reduce((tot, s) => tot + (parseFloat(s.totalCarat) || 0), 0);
+  const { grandTotalButir, grandTotalCaratFormatted } = calculateTotalStones(addedStones as any[]);
 
   const getOptions = (field: string) => {
     switch (field) {
@@ -289,12 +289,13 @@ export function DJStone() {
                   <TableRow>
                     <TableCell colSpan={6} className="text-right font-semibold pr-4">Grand Total</TableCell>
                     <TableCell className="font-semibold px-4">{grandTotalButir}</TableCell>
-                    <TableCell className="font-semibold px-4">{grandTotalCarat.toFixed(3)}</TableCell>
+                    <TableCell className="font-semibold px-4">{grandTotalCaratFormatted}</TableCell>
                     <TableCell></TableCell>
                   </TableRow>
                 </TableFooter>
               )}
             </Table>
+            {errors.manualAddedStones && <p className="text-red-500 text-sm mt-2 font-medium">{String(errors.manualAddedStones.message)}</p>}
           </div>
         </FieldGroup>
       </div>

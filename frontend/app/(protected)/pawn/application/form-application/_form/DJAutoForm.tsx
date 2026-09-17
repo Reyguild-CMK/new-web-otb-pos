@@ -5,6 +5,7 @@ import { ItemAutoTable } from "../_components/item-auto-table";
 import { RequiredDot } from "@/components/ui/required-dot";
 import { toast } from "@/components/ui/toast";
 import { DummyCMKProduct } from "@/app/(protected)/_data/data-cmkproduct";
+import { calculateDJAutoEstimatedValue, calculateDJAutoMaxLoan } from "@/lib/pawn-calculator";
 
 // Components - label & field input
 import { Input } from "@/components/ui/input";
@@ -51,22 +52,19 @@ export function DJModalAuto() {
   useEffect(() => {
     if (baseData) {
       const rvPercent = parseFloat(resellValue) || 0;
-      let estOriginal = 0;
-
-      // Kalkulasi net sales
-      if (isFreeTaxArea) {
-        estOriginal = baseData.netSales * (rvPercent / 100);
-      } else {
-        estOriginal = (baseData.netSales / baseData.ppnPembagi) * (rvPercent / 100);
-      }
-
-      // Kalkulasi berat baru
       const currentWeight = parseFloat(watchWeight) || 0;
-      const estPerGram = baseData.originalWeight > 0 ? estOriginal / baseData.originalWeight : 0;
-      const estFinal = Math.trunc(estPerGram * currentWeight);
+
+      const estFinal = calculateDJAutoEstimatedValue(
+        baseData.netSales,
+        baseData.ppnPembagi,
+        baseData.originalWeight,
+        currentWeight,
+        rvPercent,
+        isFreeTaxArea
+      );
 
       setValue("estimatedValue", estFinal.toString(), { shouldValidate: true });
-      setValue("maxLoan", Math.trunc(estFinal * 0.85).toString(), { shouldValidate: true });
+      setValue("maxLoan", calculateDJAutoMaxLoan(estFinal).toString(), { shouldValidate: true });
     }
   }, [baseData, resellValue, isFreeTaxArea, watchWeight, setValue]);
 
@@ -110,7 +108,7 @@ export function DJModalAuto() {
               fineness: parts[2] || item.kadar,
               color: [parts[3] || "-"],
               clarity: parts[4] || "-",
-              brand: getValues("brand") || "-",
+              brand: "-",
               foto: "", jenis: "", namabarang: "", karat: "", berat: 0, catatan: "", nilai: 0, makspinjaman: 0
             }]);
           } else {
@@ -121,7 +119,7 @@ export function DJModalAuto() {
               fineness: item.kadar,
               color: ["-"],
               clarity: "-",
-              brand: getValues("brand") || "-",
+              brand: "-",
               foto: "", jenis: "", namabarang: "", karat: "", berat: 0, catatan: "", nilai: 0, makspinjaman: 0
             }]);
           }

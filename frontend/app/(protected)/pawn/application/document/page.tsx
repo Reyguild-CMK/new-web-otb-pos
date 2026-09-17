@@ -73,7 +73,7 @@ export default function CustomerApplication() {
 
         <div className="text-center">
           {/* Button Download Document */}
-          <Button className="my-8 bg-btn-primary-bg text-btn-primary-text"><Download className="mr-2 h-4 w-4" />Download Document</Button>
+          <Button className="mb-6 bg-btn-primary-bg text-btn-primary-text"><Download className="mr-2 h-4 w-4" />Download Document</Button>
 
           {/* Section Input File */}
           <InputFile />

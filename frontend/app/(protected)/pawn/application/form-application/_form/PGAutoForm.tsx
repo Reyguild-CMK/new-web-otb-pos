@@ -5,6 +5,7 @@ import { RequiredDot } from "@/components/ui/required-dot";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/toast";
 import { DummyCMKProduct } from "@/app/(protected)/_data/data-cmkproduct";
+import { calculatePGAutoAppraisal, calculatePGAutoMaxLoan } from "@/lib/pawn-calculator";
 
 // Components - label & field input
 import { FieldGroup, FieldSeparator, Field, FieldLabel, FieldContent } from "@/components/ui/field-application";
@@ -70,7 +71,7 @@ export function PGModalAuto() {
         setValue("pricePerGram", item.acuan_resell_per_gram.toString(), { shouldValidate: true });
 
         // Perhitungan
-        const appraisal = Math.ceil(item.acuan_resell_per_gram * item.beratnet * 1);
+        const appraisal = calculatePGAutoAppraisal(item.beratnet, 1, item.acuan_resell_per_gram);
         const maxLoanRatio = item.acuanresell ? (item.max_loan / item.acuanresell) : 0.95;
 
         setBaseData({ maxLoanRatio });
@@ -88,7 +89,7 @@ export function PGModalAuto() {
               fineness: parts[2] || item.kadar,
               color: [parts[3] || "-"],
               clarity: parts[4] || "-",
-              brand: getValues("brand") || "-",
+              brand: "-",
               foto: "", jenis: "", namabarang: "", karat: "", berat: 0, catatan: "", nilai: 0, makspinjaman: 0
             }]);
           } else {
@@ -99,7 +100,7 @@ export function PGModalAuto() {
               fineness: item.kadar,
               color: ["-"],
               clarity: "-",
-              brand: getValues("brand") || "-",
+              brand: "-",
               foto: "", jenis: "", namabarang: "", karat: "", berat: 0, catatan: "", nilai: 0, makspinjaman: 0
             }]);
           }
@@ -126,8 +127,8 @@ export function PGModalAuto() {
     const qty = parseFloat(watchQty || "1");
     const pricePerGram = parseFloat(watchPricePerGram || "0");
 
-    const appraisal = Math.ceil(weight * qty * pricePerGram);
-    const maxLoan = Math.ceil(appraisal * (baseData?.maxLoanRatio || 0.95));
+    const appraisal = calculatePGAutoAppraisal(weight, qty, pricePerGram);
+    const maxLoan = calculatePGAutoMaxLoan(appraisal, baseData?.maxLoanRatio || 0.95);
 
     setValue("appraisal", appraisal.toString(), { shouldValidate: true });
     setValue("maxLoan", maxLoan.toString(), { shouldValidate: true });

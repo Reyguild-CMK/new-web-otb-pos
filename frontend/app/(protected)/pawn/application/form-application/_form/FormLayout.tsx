@@ -121,9 +121,20 @@ const pgAutoSchema = z.object({
 
 // DJ Manual
 const djManualSchema = z.object({
+  manualPlu: z.string({ error: "Mohon isi PLU" }).min(1, { message: "Mohon isi PLU" }),
+  manualProductItem: z.string({ error: "Mohon pilih product item" }).min(1, { message: "Mohon pilih product item" }),
+  manualProductCategory: z.string({ error: "Mohon pilih product category" }).min(1, { message: "Mohon pilih product category" }),
+  manualProductLevel: z.string({ error: "Mohon pilih product level" }).min(1, { message: "Mohon pilih product level" }),
+  manualStoneDist: z.string({ error: "Mohon pilih stone distribution" }).min(1, { message: "Mohon pilih stone distribution" }),
+  manualFrameMaterial: z.string({ error: "Mohon pilih frame material" }).min(1, { message: "Mohon pilih frame material" }),
+  manualFrameFinishing: z.string({ error: "Mohon pilih frame finishing" }).min(1, { message: "Mohon pilih frame finishing" }),
+  manualFrameColor: z.string({ error: "Mohon pilih frame color" }).min(1, { message: "Mohon pilih frame color" }),
+  manualConstructionProcess: z.string({ error: "Mohon pilih construction process" }).min(1, { message: "Mohon pilih construction process" }),
+  manualProcessFinishing: z.array(z.string()).optional(),
+  manualAddedStones: z.array(z.any()).min(1, { message: "Mohon tambahkan minimal 1 batu ke dalam tabel" }),
   manualGrossWeight: z.preprocess(parseDecimal, z.any()
     .refine((val) => typeof val === "number", { message: "Mohon isi gross weight" })
-    .refine((val) => val >= 0.001, { message: "Berat harus >= (lebih besar atau sama dengan) 0.001" })
+    .refine((val) => val >= 0.001, { message: "Berat harus lebih besar atau sama dengan 0.001" })
   ),
   manualCondition: z.string({ error: "Mohon pilih kondisi item" }).min(1, { message: "Mohon pilih kondisi item" }),
   invoiceVal: z.preprocess(parseDecimal, z.any()
@@ -139,11 +150,18 @@ const djManualSchema = z.object({
 
 // PG Manual
 const pgManualSchema = z.object({
-  itemPlu: z.string({ error: "Mohon isi PLU" }).optional(),
-  itemName: z.string({ error: "Mohon isi nama item" }).optional(),
+  itemPlu: z.string({ error: "Mohon isi PLU" }).min(1, { message: "Mohon isi PLU" }),
+  itemName: z.string({ error: "Mohon isi nama item" }).min(1, { message: "Mohon isi nama item" }),
+  manualProductLevel: z.string({ error: "Mohon pilih product level" }).min(1, { message: "Mohon pilih product level" }),
+  manualProductItem: z.string({ error: "Mohon pilih product item" }).min(1, { message: "Mohon pilih product item" }),
+  manualTargetAge: z.string({ error: "Mohon pilih target age" }).min(1, { message: "Mohon pilih target age" }),
+  manualGoldModel: z.string({ error: "Mohon pilih gold model" }).min(1, { message: "Mohon pilih gold model" }),
+  manualFrameColor: z.string({ error: "Mohon pilih frame color" }).min(1, { message: "Mohon pilih frame color" }),
+  manualNoCertificate: z.string().optional(),
+  manualFineness: z.string({ error: "Mohon pilih fineness/carat" }).min(1, { message: "Mohon pilih fineness/carat" }),
   manualWeight: z.preprocess(parseDecimal, z.any()
     .refine((val) => typeof val === "number", { message: "Mohon isi weight" })
-    .refine((val) => val >= 0.001, { message: "Berat harus >= (lebih besar atau sama dengan) 0.001" })
+    .refine((val) => val >= 0.001, { message: "Berat harus >= 0.001" })
   ),
   manualCondition: z.string({ error: "Mohon pilih kondisi item" }).min(1, { message: "Mohon pilih kondisi item" }),
   manualinvoiceVal: z.preprocess(parseDecimal, z.any()
@@ -250,13 +268,13 @@ export function ModalLayout() {
           pawn_id: 4,
           pawn_item_code: "MOCK-" + Math.floor(Math.random() * 10000),
           pawn_item_type_id: isDJ ? 9 : 8,
-          item_name: data.itemName || "Item Baru",
+          item_name: data.itemName || data.manualProductItem || "Item Baru",
           status: "stored",
-          plu: data.itemPlu || "MOCK-PLU",
+          plu: data.itemPlu || data.manualPlu || "MOCK-PLU",
           weight: data.itemWeight || data.manualWeight || data.manualGrossWeight || 0,
-          weight_current: data.itemWeight || 0,
-          carat: data.itemFineness || 0,
-          carat_current: data.itemFineness || 0,
+          weight_current: data.itemWeight || data.manualWeight || data.manualGrossWeight || 0,
+          carat: data.itemFineness || data.manualFineness || 0,
+          carat_current: data.itemFineness || data.manualFineness || 0,
           photo: data.productPhoto ? URL.createObjectURL(data.productPhoto as unknown as Blob) : "/image/jewelry.jpg",
           quantity: data.itemQty || 1,
           condition: data.condition || data.manualCondition || "Excellent",

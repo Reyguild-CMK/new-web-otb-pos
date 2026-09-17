@@ -7,6 +7,7 @@ import { manualConditionType } from "../../_data/other-data";
 
 // Component
 import { RequiredDot } from "@/components/ui/required-dot";
+import { calculateManualMaxLoan } from "@/lib/pawn-calculator";
 
 // Components - label & field input
 import { Field, FieldGroup, FieldLabel, FieldSeparator, FieldContent } from "@/components/ui/field-application";
@@ -26,8 +27,8 @@ export function DJFinish() {
     if (numericAppraisal > 0 && manualConditionValue) {
       const conditionObj = manualConditionType.find(c => c.value === manualConditionValue);
       const percentage = conditionObj?.percentage || 90; // Default to 90 if not found for some reason
-      const calculatedMaxLoan = Math.ceil(numericAppraisal * (percentage / 100));
-      setValue("maxLoan", calculatedMaxLoan.toString());
+      const calculatedMaxLoan = calculateManualMaxLoan(numericAppraisal, percentage);
+      setValue("maxLoan", calculatedMaxLoan.toString(), { shouldValidate: true });
     } else {
       setValue("maxLoan", "0");
     }

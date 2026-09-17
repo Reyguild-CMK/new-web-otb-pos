@@ -40,7 +40,7 @@ export default function FormApplication() {
       {/* Tabel Daftar Barang*/}
       {pawnItems.length > 0 && (
         <div className="bg-red-100 text-red-600 p-4 rounded-md my-4 text-sm">
-          * Untuk penginputan transaksi Gold Tunai hanya dapat dilakukan per 1 item. Apabila barang Gold Tunai ada lebih dari 1 maka silahkan menyelesaikan penginputan hingga tahap "Waiting Approval" lalu melakukan penginputan lagi
+          * Untuk penginputan transaksi hanya dapat dilakukan per 1 item. Apabila barang ada lebih dari 1 maka silahkan menyelesaikan penginputan hingga tahap "Waiting Approval" lalu melakukan penginputan lagi
         </div>
       )}
       <BarangTable data={pawnItems} />

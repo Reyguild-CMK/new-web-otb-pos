@@ -7,9 +7,10 @@ import { fetchJawsReference, JawsMasterItem } from "@/app/(protected)/_data/jaws
 
 // Components - label & field input
 import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList } from "@/components/ui/combobox";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application";
+import { Field, FieldGroup, FieldLabel, FieldContent } from "@/components/ui/field-application";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
+import { RequiredDot } from "@/components/ui/required-dot";
 
 export function DJProductChar() {
   const { register, setValue, watch, formState: { errors } } = useFormContext();
@@ -74,84 +75,99 @@ export function DJProductChar() {
     <div className="md:flex gap-6">
       <FieldGroup>
         <Field>
-          <FieldLabel htmlFor="manualPlu">PLU</FieldLabel>
-          <Input type="text" id="manualPlu" {...register("manualPlu")} />
+          <FieldLabel htmlFor="manualPlu">PLU<RequiredDot /></FieldLabel>
+          <FieldContent>
+            <Input type="text" id="manualPlu" {...register("manualPlu")} />
+            {errors.manualPlu && <p className="text-red-500 text-xs mt-1">{String(errors.manualPlu.message)}</p>}
+          </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="manualProductItem">Product Item</FieldLabel>
-          <Combobox name="manualProductItem" value={manualProductItem || null} onValueChange={(val) => setValue("manualProductItem", val)} items={productItems}>
-            <ComboboxInput placeholder="Choose Product Item"></ComboboxInput>
-            <ComboboxContent>
-              {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
-                <>
-                  <ComboboxEmpty>No product item found.</ComboboxEmpty>
-                  <ComboboxList>
-                    {(item: any) => (
-                      <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </>
-              )}
-            </ComboboxContent>
-          </Combobox>
+          <FieldLabel htmlFor="manualProductItem">Product Item<RequiredDot /></FieldLabel>
+          <FieldContent>
+            <Combobox name="manualProductItem" value={manualProductItem || null} onValueChange={(val) => { setValue("manualProductItem", val, { shouldValidate: !!val }); }} items={productItems}>
+              <ComboboxInput placeholder="Choose Product Item"></ComboboxInput>
+              <ComboboxContent>
+                {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
+                  <>
+                    <ComboboxEmpty>No product item found.</ComboboxEmpty>
+                    <ComboboxList>
+                      {(item: any) => (
+                        <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </>
+                )}
+              </ComboboxContent>
+            </Combobox>
+            {errors.manualProductItem && <p className="text-red-500 text-xs mt-1">{String(errors.manualProductItem.message)}</p>}
+          </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="manualProductCategory">Product Category</FieldLabel>
-          <Combobox name="manualProductCategory" value={manualProductCategory || null} onValueChange={(val) => setValue("manualProductCategory", val)} items={categories}>
-            <ComboboxInput placeholder="Choose Product Category"></ComboboxInput>
-            <ComboboxContent>
-              {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
-                <>
-                  <ComboboxEmpty>No product category found.</ComboboxEmpty>
-                  <ComboboxList>
-                    {(item: any) => (
-                      <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </>
-              )}
-            </ComboboxContent>
-          </Combobox>
+          <FieldLabel htmlFor="manualProductCategory">Product Category<RequiredDot /></FieldLabel>
+          <FieldContent>
+            <Combobox name="manualProductCategory" value={manualProductCategory || null} onValueChange={(val) => { setValue("manualProductCategory", val, { shouldValidate: !!val }); }} items={categories}>
+              <ComboboxInput placeholder="Choose Product Category"></ComboboxInput>
+              <ComboboxContent>
+                {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
+                  <>
+                    <ComboboxEmpty>No product category found.</ComboboxEmpty>
+                    <ComboboxList>
+                      {(item: any) => (
+                        <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </>
+                )}
+              </ComboboxContent>
+            </Combobox>
+            {errors.manualProductCategory && <p className="text-red-500 text-xs mt-1">{String(errors.manualProductCategory.message)}</p>}
+          </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="manualProductLevel">Product Level</FieldLabel>
-          <Combobox name="manualProductLevel" value={manualProductLevel || null} onValueChange={(val) => setValue("manualProductLevel", val)} items={productLevel}>
-            <ComboboxInput placeholder="Choose Product Level"></ComboboxInput>
-            <ComboboxContent>
-              {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
-                <>
-                  <ComboboxEmpty>No product level found.</ComboboxEmpty>
-                  <ComboboxList>
-                    {(item: any) => (
-                      <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </>
-              )}
-            </ComboboxContent>
-          </Combobox>
+          <FieldLabel htmlFor="manualProductLevel">Product Level<RequiredDot /></FieldLabel>
+          <FieldContent>
+            <Combobox name="manualProductLevel" value={manualProductLevel || null} onValueChange={(val) => { setValue("manualProductLevel", val, { shouldValidate: !!val }); }} items={productLevel}>
+              <ComboboxInput placeholder="Choose Product Level"></ComboboxInput>
+              <ComboboxContent>
+                {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
+                  <>
+                    <ComboboxEmpty>No product level found.</ComboboxEmpty>
+                    <ComboboxList>
+                      {(item: any) => (
+                        <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </>
+                )}
+              </ComboboxContent>
+            </Combobox>
+            {errors.manualProductLevel && <p className="text-red-500 text-xs mt-1">{String(errors.manualProductLevel.message)}</p>}
+          </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="manualStoneDist">Stone Distribution</FieldLabel>
-          <Combobox name="manualStoneDist" value={manualStoneDist || null} onValueChange={(val) => setValue("manualStoneDist", val)} items={stoneDist}>
-            <ComboboxInput placeholder="Choose Stone Distribution"></ComboboxInput>
-            <ComboboxContent>
-              {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
-                <>
-                  <ComboboxEmpty>No stone distribution found.</ComboboxEmpty>
-                  <ComboboxList>
-                    {(item: any) => (
-                      <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </>
-              )}
-            </ComboboxContent>
-          </Combobox>
+          <FieldLabel htmlFor="manualStoneDist">Stone Distribution<RequiredDot /></FieldLabel>
+          <FieldContent>
+            <Combobox name="manualStoneDist" value={manualStoneDist || null} onValueChange={(val) => { setValue("manualStoneDist", val, { shouldValidate: !!val }); }} items={stoneDist}>
+              <ComboboxInput placeholder="Choose Stone Distribution"></ComboboxInput>
+              <ComboboxContent>
+                {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
+                  <>
+                    <ComboboxEmpty>No stone distribution found.</ComboboxEmpty>
+                    <ComboboxList>
+                      {(item: any) => (
+                        <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </>
+                )}
+              </ComboboxContent>
+            </Combobox>
+            {errors.manualStoneDist && <p className="text-red-500 text-xs mt-1">{String(errors.manualStoneDist.message)}</p>}
+          </FieldContent>
         </Field>
       </FieldGroup>
 
@@ -172,79 +188,91 @@ export function DJProductChar() {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="manualFrameMaterial">Frame Material</FieldLabel>
-          <Combobox name="manualFrameMaterial" value={manualFrameMaterial || null} onValueChange={(val) => setValue("manualFrameMaterial", val)} items={frameMaterial}>
-            <ComboboxInput placeholder="Choose Frame Material"></ComboboxInput>
-            <ComboboxContent>
-              {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
-                <>
-                  <ComboboxEmpty>No frame material found.</ComboboxEmpty>
-                  <ComboboxList>
-                    {(item: any) => (
-                      <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </>
-              )}
-            </ComboboxContent>
-          </Combobox>
+          <FieldLabel htmlFor="manualFrameMaterial">Frame Material<RequiredDot /></FieldLabel>
+          <FieldContent>
+            <Combobox name="manualFrameMaterial" value={manualFrameMaterial || null} onValueChange={(val) => { setValue("manualFrameMaterial", val, { shouldValidate: !!val }); }} items={frameMaterial}>
+              <ComboboxInput placeholder="Choose Frame Material"></ComboboxInput>
+              <ComboboxContent>
+                {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
+                  <>
+                    <ComboboxEmpty>No frame material found.</ComboboxEmpty>
+                    <ComboboxList>
+                      {(item: any) => (
+                        <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </>
+                )}
+              </ComboboxContent>
+            </Combobox>
+            {errors.manualFrameMaterial && <p className="text-red-500 text-xs mt-1">{String(errors.manualFrameMaterial.message)}</p>}
+          </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="manualFrameFinishing">Frame Finishing</FieldLabel>
-          <Combobox name="manualFrameFinishing" value={manualFrameFinishing || null} onValueChange={(val) => setValue("manualFrameFinishing", val)} items={frameFinishing}>
-            <ComboboxInput placeholder="Choose Frame Finishing"></ComboboxInput>
-            <ComboboxContent>
-              {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
-                <>
-                  <ComboboxEmpty>No frame finishing found.</ComboboxEmpty>
-                  <ComboboxList>
-                    {(item: any) => (
-                      <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </>
-              )}
-            </ComboboxContent>
-          </Combobox>
+          <FieldLabel htmlFor="manualFrameFinishing">Frame Finishing<RequiredDot /></FieldLabel>
+          <FieldContent>
+            <Combobox name="manualFrameFinishing" value={manualFrameFinishing || null} onValueChange={(val) => { setValue("manualFrameFinishing", val, { shouldValidate: !!val }); }} items={frameFinishing}>
+              <ComboboxInput placeholder="Choose Frame Finishing"></ComboboxInput>
+              <ComboboxContent>
+                {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
+                  <>
+                    <ComboboxEmpty>No frame finishing found.</ComboboxEmpty>
+                    <ComboboxList>
+                      {(item: any) => (
+                        <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </>
+                )}
+              </ComboboxContent>
+            </Combobox>
+            {errors.manualFrameFinishing && <p className="text-red-500 text-xs mt-1">{String(errors.manualFrameFinishing.message)}</p>}
+          </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="manualFrameColor">Frame Color</FieldLabel>
-          <Combobox name="manualFrameColor" value={manualFrameColor || null} onValueChange={(val) => setValue("manualFrameColor", val)} items={frameColor}>
-            <ComboboxInput placeholder="Choose Frame Color"></ComboboxInput>
-            <ComboboxContent>
-              {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
-                <>
-                  <ComboboxEmpty>No frame color found.</ComboboxEmpty>
-                  <ComboboxList>
-                    {(item: any) => (
-                      <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </>
-              )}
-            </ComboboxContent>
-          </Combobox>
+          <FieldLabel htmlFor="manualFrameColor">Frame Color<RequiredDot /></FieldLabel>
+          <FieldContent>
+            <Combobox name="manualFrameColor" value={manualFrameColor || null} onValueChange={(val) => { setValue("manualFrameColor", val, { shouldValidate: !!val }); }} items={frameColor}>
+              <ComboboxInput placeholder="Choose Frame Color"></ComboboxInput>
+              <ComboboxContent>
+                {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
+                  <>
+                    <ComboboxEmpty>No frame color found.</ComboboxEmpty>
+                    <ComboboxList>
+                      {(item: any) => (
+                        <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </>
+                )}
+              </ComboboxContent>
+            </Combobox>
+            {errors.manualFrameColor && <p className="text-red-500 text-xs mt-1">{String(errors.manualFrameColor.message)}</p>}
+          </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="manualConstructionProcess">Construction Process</FieldLabel>
-          <Combobox name="manualConstructionProcess" value={manualConstructionProcess || null} onValueChange={(val) => setValue("manualConstructionProcess", val)} items={processCons}>
-            <ComboboxInput placeholder="Choose Construction Process"></ComboboxInput>
-            <ComboboxContent>
-              {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
-                <>
-                  <ComboboxEmpty>No construction process found.</ComboboxEmpty>
-                  <ComboboxList>
-                    {(item: any) => (
-                      <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </>
-              )}
-            </ComboboxContent>
-          </Combobox>
+          <FieldLabel htmlFor="manualConstructionProcess">Construction Process<RequiredDot /></FieldLabel>
+          <FieldContent>
+            <Combobox name="manualConstructionProcess" value={manualConstructionProcess || null} onValueChange={(val) => { setValue("manualConstructionProcess", val, { shouldValidate: !!val }); }} items={processCons}>
+              <ComboboxInput placeholder="Choose Construction Process"></ComboboxInput>
+              <ComboboxContent>
+                {isLoading ? <span className="block p-2 text-sm text-muted-foreground text-center">Memuat data...</span> : (
+                  <>
+                    <ComboboxEmpty>No construction process found.</ComboboxEmpty>
+                    <ComboboxList>
+                      {(item: any) => (
+                        <ComboboxItem key={item.id} value={item.nama}>{item.nama}</ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </>
+                )}
+              </ComboboxContent>
+            </Combobox>
+            {errors.manualConstructionProcess && <p className="text-red-500 text-xs mt-1">{String(errors.manualConstructionProcess.message)}</p>}
+          </FieldContent>
         </Field>
       </FieldGroup>
     </div>
