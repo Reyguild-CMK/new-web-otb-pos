@@ -1,5 +1,5 @@
 // Global
-import React from "react";
+import React, { useState } from "react";
 
 // Data
 import { Tenor } from "../../../../_data/data-tenor"
@@ -14,6 +14,7 @@ import { Combobox, ComboboxInput, ComboboxContent, ComboboxList, ComboboxItem } 
 
 // Component
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 // React Hook Form
 import { Controller, useFormContext } from "react-hook-form";
@@ -25,11 +26,16 @@ interface LoanProps {
 
 export function CardDayLoan({ data }: LoanProps) {
     const { control, register, getValues, setValue, trigger, formState: { errors } } = useFormContext();
+    const [isLoading, setIsLoading] = useState(false);
+
     // Fungsi kalkulasi
     const handleCalculate = async () => {
         // cek jika sudah terisi
         const isValid = await trigger(["tenor", "nilaiPinjaman", "tanggalTransaksi"]);
         if (!isValid) return;
+
+        setIsLoading(true);
+        await new Promise(r => setTimeout(r, 800));
 
         // mengambil data yang sudah di input
         const values = getValues();
@@ -64,6 +70,8 @@ export function CardDayLoan({ data }: LoanProps) {
         setValue("biayaAdmin", ba, { shouldValidate: true, shouldDirty: true });
         setValue("totalNilaiPinjaman", nominalDitransfer, { shouldValidate: true, shouldDirty: true });
         setValue("calculatedNilaiPinjaman", np, { shouldValidate: true, shouldDirty: true });
+
+        setIsLoading(false);
     };
 
     return (
@@ -123,7 +131,12 @@ export function CardDayLoan({ data }: LoanProps) {
                             <CurrencyInput
                                 id="nilaiPinjaman"
                                 value={field.value ?? ""}
-                                onValueChange={field.onChange}
+                                onValueChange={(val) => {
+                                    field.onChange(val);
+                                    if (val !== getValues("maksNilaiPinjaman")) {
+                                        setValue("setMaksimalPinjaman", false);
+                                    }
+                                }}
                             />
                         )}
                     />
@@ -170,6 +183,7 @@ export function CardDayLoan({ data }: LoanProps) {
                     <Input
                         id="tanggalTransaksi"
                         type="date"
+                        max={new Date().toISOString().split('T')[0]}
                         {...register("tanggalTransaksi")}
                     />
                     {errors.tanggalTransaksi && <span className="text-red-500 text-[10px]">{errors.tanggalTransaksi.message as string}</span>}
@@ -181,8 +195,10 @@ export function CardDayLoan({ data }: LoanProps) {
                 <div></div>
                 <Button
                     type="button"
+                    disabled={isLoading}
                     onClick={handleCalculate}
-                    className="shrink-0 px-2 bg-btn-action-bg text-[11px]!">Calculate
+                    className="shrink-0 px-2 bg-btn-action-bg text-[11px]! w-24">
+                    {isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : "Calculate"}
                 </Button>
             </Field>
         </FieldGroup>

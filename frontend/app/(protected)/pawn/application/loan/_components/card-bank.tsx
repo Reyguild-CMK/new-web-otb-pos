@@ -5,12 +5,15 @@ import { Combobox, ComboboxInput, ComboboxList, ComboboxItem, ComboboxContent } 
 
 // Component
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
 
 // React Hook Form
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 
 // Data
 import { Bank } from "../../../../_data/data-bank"
+import { dummyBankAccounts } from "@/app/(protected)/_data/data-bank-account";
 
 // Interface berdasarkan tipe data Bank
 interface BankProps {
@@ -18,13 +21,30 @@ interface BankProps {
 }
 
 export function CardBank({ data }: BankProps) {
-    const { control, register, formState: { errors }, trigger } = useFormContext();
+    const { control, register, getValues, setValue, formState: { errors }, trigger } = useFormContext();
+    const [isLoading, setIsLoading] = useState(false);
 
     // untuk menentukan label nomor rekening
     const bankId = useWatch({ control, name: "bankId" });
     const selectedBank = data.find((b) => String(b.id) === String(bankId));
     const isEWallet = selectedBank ? ["gopay", "ovo", "dana", "linkaja", "shopeepay"].some(ew => selectedBank.name.toLowerCase().includes(ew)) : false;
     const labelRekening = isEWallet ? "Nomor E-Wallet" : "Nomor Rekening";
+
+    const handleCekRekening = async () => {
+        const isValid = await trigger(["bankId", "nomorRekening"]);
+        if (!isValid) return;
+
+        setIsLoading(true);
+        // Simulasi request API external
+        await new Promise(r => setTimeout(r, 800));
+        
+        const accountNum = getValues("nomorRekening");
+        const foundAccount = dummyBankAccounts.accounts.find(a => a.number === accountNum);
+        const nameToSet = foundAccount ? foundAccount.name : dummyBankAccounts.getRandomVerifiedName();
+        
+        setValue("namaPemilikRekening", nameToSet, { shouldValidate: true, shouldDirty: true });
+        setIsLoading(false);
+    };
 
     return (
         <FieldGroup className="md:flex h-fit gap-6 border border-grey/50 rounded-lg p-4">
@@ -82,9 +102,12 @@ export function CardBank({ data }: BankProps) {
                         />
                         <Button
                             type="button"
-                            className="shrink-0 px-2 bg-btn-action-bg text-[11px]!"
-                            onClick={() => trigger(["bankId", "nomorRekening"])}
-                        >Cek {isEWallet ? "Nomor" : "No Rekening"}</Button>
+                            disabled={isLoading}
+                            className="shrink-0 px-2 bg-btn-action-bg text-[11px]! w-32"
+                            onClick={handleCekRekening}
+                        >
+                            {isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : `Cek ${isEWallet ? "Nomor" : "No Rekening"}`}
+                        </Button>
                     </div>
                     {errors.nomorRekening && <span className="text-red-500 text-[10px]">{errors.nomorRekening.message as string}</span>}
                 </div>

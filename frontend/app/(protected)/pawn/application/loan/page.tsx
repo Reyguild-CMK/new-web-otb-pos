@@ -4,6 +4,7 @@
 import { z } from "zod";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "@/components/ui/toast";
 
 // Style Card
 import { style_card } from "@/components/shared/Stepper/Stepper";
@@ -24,6 +25,8 @@ import { CardDetailLoan } from "./_components/card-detail-loan";
 import { dataBank } from "../../../_data/data-bank";
 import { tenor } from "../../../_data/data-tenor";
 import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
+import { dummyBankAccounts } from "@/app/(protected)/_data/data-bank-account";
+import { usePawnStore } from "@/app/(protected)/_store/usePawnStore";
 
 import { StepNavigation } from "@/components/shared/Stepper/StepNavigation";
 import { useRouter } from "next/navigation";
@@ -33,10 +36,15 @@ const loanSchema = z.object({
     // Card Day Loan
     tenor: z.string({ error: "Pilih tenor pinjaman" }).min(1, { message: "Pilih tenor pinjaman" }),
     maksNilaiPinjaman: z.coerce.number().optional(),
-    nilaiPinjaman: z.coerce.number().min(1000, { message: "Nilai pinjaman wajib diisi (Lebih besar dari 1.000)" }),
+    nilaiPinjaman: z.coerce.number().min(1, { message: "Nilai pinjaman wajib diisi (minimal 1)" }),
     setMaksimalPinjaman: z.boolean().default(false),
-    persentaseBiayaPerawatan: z.coerce.number().min(0, { message: "Persentase biaya perawatan tidak boleh kurang dari 0" }),
-    tanggalTransaksi: z.string({ error: "Tanggal transaksi wajib diisi" }).min(1, { message: "Tanggal transaksi wajib diisi" }),
+    persentaseBiayaPerawatan: z.coerce.number().min(0, { message: "Persentase biaya perawatan tidak boleh kurang dari 0" }).optional(),
+    tanggalTransaksi: z.string({ error: "Tanggal transaksi wajib diisi" })
+        .min(1, { message: "Tanggal transaksi wajib diisi" })
+        .refine((val) => {
+            const today = new Date().toISOString().split('T')[0];
+            return val <= today;
+        }, { message: "Tanggal transaksi tidak boleh melebihi hari ini" }),
 
     // Card Bank
     bankId: z.string({ error: "Bank tujuan harus dipilih" }).min(1, { message: "Bank tujuan harus dipilih" }),
@@ -90,16 +98,18 @@ type FormValues = z.infer<typeof loanSchema>;
 export default function FormLoanApplication() {
     const router = useRouter();
 
-    // Data statis
-    const pawnSummary = getPawnSummary(4);
-    const pawnItems = pawnSummary?.pawnItems || [];
+    const pawnItems = usePawnStore((state) => state.pawnItems);
+    const loanDetails = usePawnStore((state) => state.loanDetails);
+    const setLoanDetails = usePawnStore((state) => state.setLoanDetails);
+
+    const totalMaximumLoan = pawnItems.reduce((acc, item) => acc + item.max_loan_price, 0);
 
     // =========== INISIALISASI FORM (REACT-HOOK-FORM) ===========
     const form = useForm<FormValues>({
         resolver: zodResolver(loanSchema) as any,
-        defaultValues: {
+        defaultValues: loanDetails || {
             tenor: tenor.find(t => t.tenor === 120)?.id || "",
-            maksNilaiPinjaman: pawnSummary?.totalMaximumLoan || 0,
+            maksNilaiPinjaman: totalMaximumLoan,
             nilaiPinjaman: 0,
             setMaksimalPinjaman: false,
             persentaseBiayaPerawatan: undefined,
@@ -107,7 +117,7 @@ export default function FormLoanApplication() {
             bankId: "",
             cabang: "",
             nomorRekening: "",
-            namaPemilikRekening: "External Account Inquiry Simulator",
+            namaPemilikRekening: dummyBankAccounts.defaultName,
             tanggalJatuhTempo: "",
             biayaAdmin: undefined,
             biayaPerawatan: undefined,
@@ -117,12 +127,31 @@ export default function FormLoanApplication() {
         }
     });
 
-    const onSubmit = (data: FormValues) => {
-        console.log("Data Valid:", data);
+    const onSubmit = async (data: FormValues) => {
+        // Construct Payload for dummy API
+        const payload = {
+            loan_details: data,
+            items: pawnItems,
+            total_appraisal: pawnItems.reduce((acc, item) => acc + item.appraisal, 0),
+            total_max_loan: totalMaximumLoan
+        };
+
+        console.log("POST /api/dummy/loan/process_ajax payload:", payload);
+
+        setLoanDetails(data);
+        await new Promise(r => setTimeout(r, 600));
+
+        toast.add({
+            title: "Success",
+            description: "Transaksi berhasil disimpan dengan status Waiting Approval",
+            type: "success"
+        });
         router.push("/pawn/application/customer_data");
     };
 
     const handleBack = () => {
+        const currentValues = form.getValues();
+        setLoanDetails(currentValues);
         router.push("/pawn/application/form-application");
     };
 
