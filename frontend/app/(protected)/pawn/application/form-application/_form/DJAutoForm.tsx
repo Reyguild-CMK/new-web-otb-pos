@@ -29,7 +29,7 @@ export function DJModalAuto() {
   const { control, formState: { errors }, register, getValues, setValue, watch } = useFormContext();
   const [isLoading, setIsLoading] = useState(false);
   const [autoTableData, setAutoTableData] = useState<any[]>([]);
-  const [baseData, setBaseData] = useState<{ netSales: number; ppnPembagi: number } | null>(null);
+  const [baseData, setBaseData] = useState<{ netSales: number; ppnPembagi: number; originalWeight: number } | null>(null);
   const [fetchedPlu, setFetchedPlu] = useState<string>("");
 
   // Watch current PLU
@@ -46,20 +46,29 @@ export function DJModalAuto() {
 
   const resellValue = watch("resellValue");
   const isFreeTaxArea = watch("isFreeTaxArea");
+  const watchWeight = watch("itemWeight");
 
   useEffect(() => {
     if (baseData) {
       const rvPercent = parseFloat(resellValue) || 0;
-      let est = 0;
+      let estOriginal = 0;
+
+      // Kalkulasi net sales
       if (isFreeTaxArea) {
-        est = Math.trunc(baseData.netSales * (rvPercent / 100));
+        estOriginal = baseData.netSales * (rvPercent / 100);
       } else {
-        est = Math.trunc((baseData.netSales / baseData.ppnPembagi) * (rvPercent / 100));
+        estOriginal = (baseData.netSales / baseData.ppnPembagi) * (rvPercent / 100);
       }
-      setValue("estimatedValue", est.toString(), { shouldValidate: true });
-      setValue("maxLoan", Math.trunc(est * 0.85).toString(), { shouldValidate: true });
+
+      // Kalkulasi berat baru
+      const currentWeight = parseFloat(watchWeight) || 0;
+      const estPerGram = baseData.originalWeight > 0 ? estOriginal / baseData.originalWeight : 0;
+      const estFinal = Math.trunc(estPerGram * currentWeight);
+
+      setValue("estimatedValue", estFinal.toString(), { shouldValidate: true });
+      setValue("maxLoan", Math.trunc(estFinal * 0.85).toString(), { shouldValidate: true });
     }
-  }, [baseData, resellValue, isFreeTaxArea, setValue]);
+  }, [baseData, resellValue, isFreeTaxArea, watchWeight, setValue]);
 
   const handleCheckPlu = async () => {
     const plu = getValues("itemPlu");
@@ -88,7 +97,7 @@ export function DJModalAuto() {
         setValue("itemQty", "1", { shouldValidate: true });
 
         // Untuk perhitungan estimasi nilai
-        setBaseData({ netSales: item.netsales, ppnPembagi: item.PPNPembagi });
+        setBaseData({ netSales: item.netsales, ppnPembagi: item.PPNPembagi, originalWeight: item.beratnet });
 
         // Memasukan datastone ke tabel barang
         if (item.datastone && item.datastone !== "-") {
@@ -162,12 +171,11 @@ export function DJModalAuto() {
         {/* Detail Item */}
         <FieldGroup>
           <Field className="items-baseline">
-            <FieldLabel htmlFor="itemWeight">Weight</FieldLabel>
+            <FieldLabel htmlFor="itemWeight">Weight<RequiredDot /></FieldLabel>
             <FieldContent>
               <Input
                 id="itemWeight"
                 placeholder="0"
-                disabled
                 {...register("itemWeight")}
                 onWheel={(e) => e.currentTarget.blur()}>
               </Input>
