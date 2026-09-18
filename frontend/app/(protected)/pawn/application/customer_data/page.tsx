@@ -97,7 +97,7 @@ export default function CustomerApplication() {
     const handleNext = () => {
         const validation = customerDataSchema.safeParse(customerData);
         if (!validation.success) {
-            const firstError = validation.error.errors[0].message;
+            const firstError = validation.error.issues[0].message;
             toast.add({ title: "Validasi Gagal", description: firstError, type: "error" });
             return;
         }
