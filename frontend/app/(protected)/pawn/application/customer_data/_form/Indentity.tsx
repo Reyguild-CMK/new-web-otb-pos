@@ -2,7 +2,7 @@
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field-application";
 import { Input } from "@/components/ui/input";
 
-export function FieldIdentity() {
+export function FieldIdentity({ formData, setFormData }: { formData: any, setFormData: any }) {
     return (
         <>
         <FieldGroup>
@@ -12,7 +12,10 @@ export function FieldIdentity() {
                 id="customerName"
                 name="customerName"
                 placeholder="Name"
-                required>
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                required
+                disabled>
             </Input>
         </Field>
 
@@ -23,7 +26,10 @@ export function FieldIdentity() {
                 name="birthDate"
                 type="date"
                 placeholder="dd/mm/yyyy"
-                required>
+                value={formData.birthDate}
+                onChange={(e) => setFormData({...formData, birthDate: e.target.value})}
+                required
+                disabled>
             </Input>
         </Field>
         <Field>
@@ -32,7 +38,10 @@ export function FieldIdentity() {
                 id="customerAddress"
                 name="customerAddress"
                 placeholder="Address"
-                required>
+                value={formData.address}
+                onChange={(e) => setFormData({...formData, address: e.target.value})}
+                required
+                disabled>
             </Input>
         </Field>
         <Field>
@@ -42,7 +51,10 @@ export function FieldIdentity() {
                 name="phoneNumber"
                 type="tel"
                 placeholder="Handphone"
+                value={formData.handphone}
+                onChange={(e) => setFormData({...formData, handphone: e.target.value})}
                 required
+                disabled
                 >
             </Input>
         </Field>
@@ -53,15 +65,21 @@ export function FieldIdentity() {
                 name="email"
                 type="email"
                 placeholder="Email"
-                required>
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                required
+                disabled>
             </Input>
         </Field>
         <Field>
-            <FieldLabel htmlFor="birthDate">Pekerjaan</FieldLabel>
+            <FieldLabel htmlFor="occupation">Pekerjaan</FieldLabel>
             <Input
                 id="occupation"
                 name="occupation"
-                placeholder="Occupation">
+                placeholder="Occupation"
+                value={formData.occupation}
+                onChange={(e) => setFormData({...formData, occupation: e.target.value})}
+                >
             </Input>
         </Field>
         </FieldGroup>

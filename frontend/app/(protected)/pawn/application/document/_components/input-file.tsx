@@ -52,7 +52,7 @@ const dataInputField: FileFieldProps[] = [
   {
     id: "lainnya",
     name: "lainnya",
-    label: "Lainnya",
+    label: "Lainnya (Opsional)",
     imageAlt: "Lainnya",
   }
 ]

@@ -3,9 +3,9 @@ import { Field, FieldLabel } from "@/components/ui/field-application";
 import { Input } from "@/components/ui/input";
 
 // Image
-import Image from "next/image";
+import PreviewImage from "@/components/shared/ImagePreview/ImagePreview";
 
-export function FieldKTP() {
+export function FieldKTP({ customer, formData, setFormData }: { customer?: any, formData: any, setFormData: any }) {
     return (
         <>
         {/* KTP */}
@@ -18,19 +18,28 @@ export function FieldKTP() {
                     name="ktpNumber"
                     type="text"
                     placeholder="No KTP"
+                    value={formData.ktpNumber}
+                    onChange={(e) => setFormData({...formData, ktpNumber: e.target.value})}
                     required>
                 </Input>
             </Field>
 
-            {/* Foto KTP */}
-            <div className="sm:mt-0 mt-4 w-full sm:grid sm:grid-cols-2 text-center">
-                <div></div>
-                <div className="relative h-64 pt-4">
-                    <Image 
-                        src="/image/image_placeholder.png"
-                        className="object-contain"
+            {/* Foto KTP & Selfie */}
+            <div className="mt-6 w-full flex flex-row gap-4">
+                <div className="flex-1 text-center">
+                    <p className="font-semibold text-sm mb-2 text-gray-600">Customer</p>
+                    <PreviewImage 
+                        src={customer?.image_selfie || "/image/image_placeholder.png"}
+                        alt="Preview Customer"
+                        className="h-48 border border-gray-300 rounded-lg overflow-hidden bg-gray-50 hover:opacity-80 transition-opacity"
+                    />
+                </div>
+                <div className="flex-1 text-center">
+                    <p className="font-semibold text-sm mb-2 text-gray-600">KTP</p>
+                    <PreviewImage 
+                        src={customer?.image_tanda_pengenal || "/image/image_placeholder.png"}
                         alt="Preview KTP"
-                        fill
+                        className="h-48 border border-gray-300 rounded-lg overflow-hidden bg-gray-50 hover:opacity-80 transition-opacity"
                     />
                 </div>
             </div>
