@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card";
+import { compressImage } from "@/lib/image-compression";
 import { Field, FieldLabel } from "@/components/ui/field-application";
 import { Input } from "@/components/ui/input";
 import { FileIcon } from "lucide-react";
@@ -35,19 +35,34 @@ export default function FileInput({
   // Preview
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const rawFile = e.target.files?.[0];
 
-    if (file) {
-      setSelectedItem(file); //set file yang dipilih
-      const objectUrl = URL.createObjectURL(file); //membuat url sementara
+    if (rawFile) {
+      let fileToUse = rawFile;
+
+      // Compress jika image
+      if (rawFile.type.startsWith('image/')) {
+        try {
+          const compressedBlob = await compressImage(rawFile, 1000, 1000);
+          // Convert blob kembali menjadi File
+          fileToUse = new File([compressedBlob], rawFile.name, { type: 'image/jpeg' });
+        } catch (error) {
+          console.error("Compression failed", error);
+        }
+      }
+
+      setSelectedItem(fileToUse); //set file yang dipilih
+      const objectUrl = URL.createObjectURL(fileToUse); //membuat url sementara
       setPreviewUrl(objectUrl);
+
+      if (onFileChange) onFileChange(fileToUse);
     } else {
       setSelectedItem(null);
       setPreviewUrl(null);
+      if (onFileChange) onFileChange(null);
     }
 
-    if (onFileChange) onFileChange(file || null);
     if (onChange) onChange(e);
   }
 
