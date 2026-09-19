@@ -18,10 +18,11 @@ import { dummyBankAccounts } from "@/app/(protected)/_data/data-bank-account";
 
 // Interface berdasarkan tipe data Bank
 interface BankProps {
-    data: Bank[]
+    data: Bank[],
+    isSubmitting?: boolean
 }
 
-export function CardBank({ data }: BankProps) {
+export function CardBank({ data, isSubmitting = false }: BankProps) {
     const { control, register, getValues, setValue, formState: { errors }, trigger } = useFormContext();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -53,7 +54,6 @@ export function CardBank({ data }: BankProps) {
         if (!isValid) return;
 
         setIsLoading(true);
-        // Simulasi request API external
         await new Promise(r => setTimeout(r, 800));
 
         const accountNum = getValues("nomorRekening");
@@ -68,31 +68,34 @@ export function CardBank({ data }: BankProps) {
     return (
         <FieldGroup className="md:flex h-fit gap-6 border border-grey/50 rounded-lg p-4">
             {/* 1. Kolom Bank/E-wallet */}
-            <Field>
-                <FieldLabel htmlFor="bankId">Bank/E-Wallet</FieldLabel>
-                <Controller control={control} name="bankId"
-                    render={({ field }) => (
-                        <Combobox
-                            items={data}
-                            value={typeof field.value === 'string' ? (data.find(b => String(b.id) === String(field.value)) ?? null) : (field.value ?? null)}
-                            onValueChange={(val: any) => field.onChange(val ? String(val.id) : "")}
-                            itemToStringLabel={(item) => item.name}
-                            itemToStringValue={(item) => String(item.id)}
-                        >
-                            <ComboboxInput id="bankId" placeholder="Choose Bank">
-                                <ComboboxContent>
-                                    <ComboboxList>
-                                        {(item) => (
-                                            <ComboboxItem key={item.id} value={item}>
-                                                {item.name}
-                                            </ComboboxItem>
-                                        )}
-                                    </ComboboxList>
-                                </ComboboxContent>
-                            </ComboboxInput>
-                        </Combobox>
-                    )}
-                />
+            <Field className="items-baseline">
+                <FieldLabel htmlFor="bankId">Bank/E-Wallet <span className="text-red-500">*</span></FieldLabel>
+                <div className="flex flex-col gap-1 w-full">
+                    <Controller control={control} name="bankId"
+                        render={({ field }) => (
+                            <Combobox
+                                items={data}
+                                value={typeof field.value === 'string' ? (data.find(b => String(b.id) === String(field.value)) ?? null) : (field.value ?? null)}
+                                onValueChange={(val: any) => field.onChange(val ? String(val.id) : "")}
+                                itemToStringLabel={(item) => item.name}
+                                itemToStringValue={(item) => String(item.id)}
+                            >
+                                <ComboboxInput id="bankId" placeholder="Choose Bank">
+                                    <ComboboxContent>
+                                        <ComboboxList>
+                                            {(item) => (
+                                                <ComboboxItem key={item.id} value={item}>
+                                                    {item.name}
+                                                </ComboboxItem>
+                                            )}
+                                        </ComboboxList>
+                                    </ComboboxContent>
+                                </ComboboxInput>
+                            </Combobox>
+                        )}
+                    />
+                    {errors.bankId && <span className="text-red-500 text-[10px]">{errors.bankId.message as string}</span>}
+                </div>
             </Field>
             {/* 2. Kolom Cabang */}
             <Field>
@@ -121,11 +124,11 @@ export function CardBank({ data }: BankProps) {
                         />
                         <Button
                             type="button"
-                            disabled={isLoading}
+                            disabled={isLoading || isSubmitting}
                             className="shrink-0 px-2 bg-btn-action-bg text-[11px]! w-32"
                             onClick={handleCekRekening}
                         >
-                            {isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : `Cek ${isEWallet ? "Nomor" : "No Rekening"}`}
+                            {(isLoading || isSubmitting) ? <Loader2 className="animate-spin h-4 w-4" /> : `Cek ${isEWallet ? "Nomor" : "No Rekening"}`}
                         </Button>
                     </div>
                     {errors.nomorRekening && <span className="text-red-500 text-[10px]">{errors.nomorRekening.message as string}</span>}

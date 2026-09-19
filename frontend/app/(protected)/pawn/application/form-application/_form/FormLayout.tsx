@@ -121,11 +121,14 @@ export function ModalLayout() {
       ? form_type[inputMode][itemCategory]
       : null;
 
-  // On Submit
-  const onSubmit = async (data: FormAppValues) => {
-    try {
-      await new Promise(resolve => setTimeout(resolve, 800));
+  const setLoanDetails = usePawnStore((state) => state.setLoanDetails);
+  const loanDetails = usePawnStore((state) => state.loanDetails);
 
+  // Define logic form submission
+  const onSubmit = async (data: any) => {
+    // Jika tidak ada mode form, hindari submit
+    if (inputMode === "normal" && !data.itemType) return;
+    try {
       const result = {
         statusCode: 200,
         message: "Data berhasil disimpan",
@@ -138,11 +141,31 @@ export function ModalLayout() {
         // Deteksi jenis barang (DJ / PG)
         const isDJ = data.itemType.includes("Diamond");
 
+        // Generate pawn_item_code and applicationNumber
+        const date = new Date();
+        const yy = date.getFullYear().toString().slice(-2);
+        const mm = (date.getMonth() + 1).toString().padStart(2, '0');
+        const dd = date.getDate().toString().padStart(2, '0');
+        const dateKey = `${yy}${mm}${dd}`;
+
+        const storageKey = `mock_pawn_counter_${dateKey}`;
+        let currentCount = parseInt(localStorage.getItem(storageKey) || "0", 10);
+        currentCount += 1;
+        localStorage.setItem(storageKey, currentCount.toString());
+
+        const iteration = currentCount.toString().padStart(4, '0');
+        const generatedAppCode = `J2CE43${dateKey}${iteration}`;
+        const generatedItemCode = `ITEM-${dateKey}-${iteration}`;
+
+        if (!loanDetails || !loanDetails.applicationNumber) {
+          setLoanDetails({ ...loanDetails, applicationNumber: generatedAppCode });
+        }
+
         // Mock data
         const newItem: any = {
           id: Math.floor(Math.random() * 10000),
           pawn_id: 4,
-          pawn_item_code: "MOCK-" + Math.floor(Math.random() * 10000),
+          pawn_item_code: generatedItemCode,
           pawn_item_type_id: isDJ ? 9 : 8,
           item_name: data.itemName || data.manualProductItem || "Item Baru",
           status: "stored",

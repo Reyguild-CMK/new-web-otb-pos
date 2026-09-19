@@ -52,7 +52,7 @@ export function TableDocument({ data }: BarangTableProps) {
             <TableCell>{item.itemType?.text || "-"} <span className="font-bold">({item.plu})</span></TableCell>
             <TableCell>{item.carat}</TableCell>
             <TableCell>{item.weight}</TableCell>
-            <TableCell>{item.remark}</TableCell>
+            <TableCell className="max-w-xs whitespace-pre-wrap break-words">{item.remark}</TableCell>
             <TableCell>{item.quantity}</TableCell>
             <TableCell className="text-right">{formatRupiah(item.appraisal)}</TableCell>
             <TableCell className="text-right">{formatRupiah(item.max_loan_price)}</TableCell>

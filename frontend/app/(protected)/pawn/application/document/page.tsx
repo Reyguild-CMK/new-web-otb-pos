@@ -15,6 +15,7 @@ import { TableDocument } from "../_components/table-document";
 import { FieldNominal } from "./_components/field-nominal";
 import { WaitingApproval } from "./_components/waiting-approval";
 import { FieldDokumen } from "./_components/field-dokumen";
+import { SuratPerjanjian } from "./_components/surat-perjanjian";
 
 // Icon
 import { Download } from 'lucide-react';
@@ -33,6 +34,7 @@ export default function CustomerApplication() {
 
   const loanDetails = usePawnStore((state) => state.loanDetails);
   const pawnItems = usePawnStore((state) => state.pawnItems);
+  const customerData = usePawnStore((state) => state.customerData);
 
   const handleFileChange = (id: string, file: File | null) => {
     setFiles((prev) => ({ ...prev, [id]: file }));
@@ -105,60 +107,77 @@ export default function CustomerApplication() {
     router.push("/pawn/application/customer_data");
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   if (!loanDetails) {
     return <p>Data pinjaman tidak ditemukan.</p>;
   }
 
   return (
     <>
-      {/* Card */}
-      <div className={`${style_card} w-full`}>
-        {/* Judul */}
-        <h1 className="font-bold">Dokumen</h1>
-
-
-        {/* Tabel Dokumen*/}
-        <div className="flex flex-col gap-2">
-          <h3>Daftar Barang</h3>
-          <TableDocument data={pawnItems} />
-        </div>
-
-        {/* Form Informasi Pembayaran*/}
-        <div className="flex flex-col gap-2">
-          <h3>Detail Informasi Pinjaman</h3>
-          <div className="flex flex-col lg:flex-row gap-4">
-            {/* Tenor, Bank ,dll */}
-            <FieldNominal data={loanDetails} />
-            {/* Informasi Dokumen */}
-            <FieldDokumen data={loanDetails} />
-          </div>
-        </div>
-
-        <Separator />
-
-        <div className="text-center">
-          {/* Button Download Document */}
-          <Button className="mb-6 bg-btn-primary-bg text-btn-primary-text"><Download className="mr-2 h-4 w-4" />Download Document</Button>
-
-          {/* Section Input File */}
-          <InputFile files={files} onFileChange={handleFileChange} />
-
-          {/* Loading untuk menunggu approval */}
-          {isWaitingApproval && (
-            <div className="mt-8 text-left">
-              <WaitingApproval />
-            </div>
-          )}
-        </div>
-
-        <StepNavigation
-          currentStep={4}
-          totalSteps={5}
-          onNext={handleNext}
-          onBack={handleBack}
-          nextLabel="Ajukan Approval"
-          hideNext={isWaitingApproval}
+      <div className="hidden print:block absolute top-0 left-0 w-full min-h-screen bg-white z-[9999] m-0 p-0 text-black">
+        <SuratPerjanjian 
+          loanDetails={loanDetails} 
+          pawnItems={pawnItems} 
+          customerData={customerData} 
         />
+      </div>
+
+      <div className="print:hidden">
+        {/* Card */}
+        <div className={`${style_card} w-full`}>
+          {/* Judul */}
+          <h1 className="font-bold">Dokumen</h1>
+
+
+          {/* Tabel Dokumen*/}
+          <div className="flex flex-col gap-2">
+            <h3>Daftar Barang</h3>
+            <TableDocument data={pawnItems} />
+          </div>
+
+          {/* Form Informasi Pembayaran*/}
+          <div className="flex flex-col gap-2">
+            <h3>Detail Informasi Pinjaman</h3>
+            <div className="flex flex-col lg:flex-row gap-4">
+              {/* Tenor, Bank ,dll */}
+              <FieldNominal data={loanDetails} />
+              {/* Informasi Dokumen */}
+              <FieldDokumen data={loanDetails} pawnCode={pawnItems?.[0]?.pawn_item_code} />
+            </div>
+          </div>
+
+          <Separator />
+
+          <div className="text-center">
+            {/* Button Download Document */}
+            <Button onClick={handlePrint} className="mb-6 bg-btn-primary-bg text-btn-primary-text cursor-pointer hover:bg-btn-primary-bg/90">
+              <Download className="mr-2 h-4 w-4" />
+              Download Document
+            </Button>
+
+            {/* Section Input File */}
+            <InputFile files={files} onFileChange={handleFileChange} />
+
+            {/* Loading untuk menunggu approval */}
+            {isWaitingApproval && (
+              <div className="mt-8 text-left">
+                <WaitingApproval />
+              </div>
+            )}
+          </div>
+
+          <StepNavigation
+            currentStep={4}
+            totalSteps={5}
+            onNext={handleNext}
+            onBack={handleBack}
+            nextLabel="Ajukan Approval"
+            hideNext={isWaitingApproval}
+          />
+        </div>
       </div>
     </>
   )

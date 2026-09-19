@@ -5,17 +5,25 @@ import { CurrencyInput } from "@/components/ui/currency-input";
 
 interface FieldDokumenProps {
   data: any;
+  pawnCode?: string;
 }
 
 // Style Card
 import { style_card } from "@/components/shared/Stepper/Stepper";
 
-export function FieldDokumen({ data }: FieldDokumenProps) {
+export function FieldDokumen({ data, pawnCode }: FieldDokumenProps) {
+  const txDate = data?.tanggalTransaksi ? new Date(data.tanggalTransaksi) : new Date();
+  const yy = String(txDate.getFullYear()).slice(-2);
+  const mm = String(txDate.getMonth() + 1).padStart(2, '0');
+  const dd = String(txDate.getDate()).padStart(2, '0');
+  const defaultAppNumber = `J2CE34${yy}${mm}${dd}0001`;
+  const appNumber = data?.applicationNumber || defaultAppNumber;
+
   return (
     <FieldGroup className={`${style_card}`}>
       <Field>
         <FieldLabel>No Dokumen</FieldLabel>
-        <Input value={""} disabled />
+        <Input value={appNumber} disabled />
       </Field>
       <Field>
         <FieldLabel>Tanggal Jatuh Tempo</FieldLabel>
@@ -28,7 +36,7 @@ export function FieldDokumen({ data }: FieldDokumenProps) {
       <Field>
         <FieldLabel>Tanggal Penjualan</FieldLabel>
         <Input
-          value={data?.tanggalJatuhTempo || ""}
+          value={data?.tanggalTransaksi || ""}
           disabled
           type="date"
         />

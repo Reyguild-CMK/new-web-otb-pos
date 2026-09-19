@@ -22,14 +22,14 @@ import { Controller, useFormContext, useWatch } from "react-hook-form";
 
 // Interface berdasarkan tipe data Tenor
 interface LoanProps {
-    data: Tenor[]
+    data: Tenor[],
+    isSubmitting?: boolean
 }
 
-export function CardDayLoan({ data }: LoanProps) {
+export function CardDayLoan({ data, isSubmitting = false }: LoanProps) {
     const { control, register, getValues, setValue, trigger, formState: { errors } } = useFormContext();
     const [isLoading, setIsLoading] = useState(false);
 
-    // Watchers to reset calculated status when inputs change
     const watchNilai = useWatch({ control, name: "nilaiPinjaman" });
     const watchTenor = useWatch({ control, name: "tenor" });
     const watchTanggal = useWatch({ control, name: "tanggalTransaksi" });
@@ -207,10 +207,10 @@ export function CardDayLoan({ data }: LoanProps) {
                 <div className="flex flex-col gap-1 w-full items-start">
                     <Button
                         type="button"
-                        disabled={isLoading}
+                        disabled={isLoading || isSubmitting}
                         onClick={handleCalculate}
                         className="shrink-0 px-2 bg-btn-action-bg text-[11px]! w-24">
-                        {isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : "Calculate"}
+                        {(isLoading || isSubmitting) ? <Loader2 className="animate-spin h-4 w-4" /> : "Calculate"}
                     </Button>
                     {errors.isCalculated && <span className="text-red-500 text-[10px] mt-1">{errors.isCalculated.message as string}</span>}
                 </div>

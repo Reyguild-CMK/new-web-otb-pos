@@ -1,49 +1,110 @@
 "use client"
 
-// Style Card
 import { style_card } from "@/components/shared/Stepper/Stepper";
-
-// Component
-import { Summary } from "../summary/_components/summary"
-import { TableDocument } from "../_components/table-document";
-
-// Function getPawnSummary
 import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
-
-import { StepNavigation } from "@/components/shared/Stepper/StepNavigation";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function SummaryPage(){
+// Store
+import { usePawnStore } from "@/app/(protected)/_store/usePawnStore";
+
+// Components
+import { Summary } from "./_components/summary";
+import { TableDocument } from "../_components/table-document";
+import { StepNavigation } from "@/components/shared/Stepper/StepNavigation";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
+import { Key } from "lucide-react";
+
+export default function SummaryPage() {
     const router = useRouter();
+
+    const [isPinDialogOpen, setIsPinDialogOpen] = useState(false);
+    const [pin, setPin] = useState("");
+
+    const loanDetails = usePawnStore((state) => state.loanDetails);
+    const pawnItems = usePawnStore((state) => state.pawnItems);
 
     const handleBack = () => {
         router.push("/pawn/application/document");
     };
-    // hardcore aja
-    const pawnId = 1;
-    const summaryData = getPawnSummary(pawnId);
 
-    if (!summaryData){
-        return <p>Data Summary ga ada.</p>
+    const handleTransferDana = () => {
+        setIsPinDialogOpen(true);
+    };
+
+    const handleSubmitPin = () => {
+        if (pin === "111111") {
+            toast.add({ title: "Berhasil", description: "Dana berhasil ditransfer.", type: "success" });
+            setIsPinDialogOpen(false);
+            router.push("/pawn/list");
+        } else {
+            toast.add({ title: "Gagal", description: "PIN salah, silakan coba lagi.", type: "error" });
+        }
+    };
+
+    if (!loanDetails) {
+        return <p>Data pinjaman tidak ditemukan.</p>
     }
 
-    return(
+    const summaryData = {
+        ...loanDetails,
+        pawnItems: pawnItems
+    };
+
+    return (
         <div className={`${style_card} w-full`}>
             {/* Judul */}
             <div className="md:flex justify-between align-middle">
                 <h1 className="font-bold pb-2">Detail Pinjaman</h1>
             </div>
+
             {/* Table Barang */}
-            <TableDocument data={summaryData.pawnItems}></TableDocument>
+            <TableDocument data={pawnItems}></TableDocument>
             <Summary data={summaryData}></Summary>
 
-            <StepNavigation 
-                currentStep={5} 
-                totalSteps={5} 
+            <StepNavigation
+                currentStep={5}
+                totalSteps={5}
                 isLastStep
-                hideNext
+                nextLabel="Transfer Dana"
+                onNext={handleTransferDana}
                 onBack={handleBack}
             />
+
+            {/* PIN Dialog */}
+            <Dialog open={isPinDialogOpen} onOpenChange={setIsPinDialogOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <Key className="w-5 h-5" />
+                            Input Your PIN
+                        </DialogTitle>
+                    </DialogHeader>
+
+                    <div className="py-4">
+                        <Input
+                            type="password"
+                            placeholder="Masukan 6 Digit PIN"
+                            value={pin}
+                            onChange={(e) => setPin(e.target.value)}
+                            maxLength={6}
+                            className="w-full"
+                        />
+                    </div>
+
+                    <DialogFooter className="flex justify-end gap-2">
+                        <Button type="button" variant="secondary" onClick={() => setIsPinDialogOpen(false)}>
+                            Close
+                        </Button>
+                        <Button type="button" onClick={handleSubmitPin} className="bg-btn-primary-bg text-btn-primary-text">
+                            Submit
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

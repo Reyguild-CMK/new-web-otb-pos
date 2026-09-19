@@ -34,9 +34,8 @@ export const loanSchema = z.object({
     // Catatan
     catatan: z.string().optional(),
 
-    // Validasi Tombol Action
-    isCalculated: z.boolean().refine(val => val === true, { message: "Wajib melakukan kalkulasi" }),
-    isRekeningChecked: z.boolean().refine(val => val === true, { message: "Wajib melakukan Cek No Rekening" }),
+    isCalculated: z.boolean().optional(),
+    isRekeningChecked: z.boolean().optional(),
 }).superRefine((data, ctx) => {
     // Validasi nilai pinjaman
     if (data.maksNilaiPinjaman !== undefined && data.nilaiPinjaman > data.maksNilaiPinjaman) {

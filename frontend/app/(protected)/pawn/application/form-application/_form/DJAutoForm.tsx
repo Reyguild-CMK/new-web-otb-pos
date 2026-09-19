@@ -145,7 +145,12 @@ export function DJModalAuto() {
           <FieldLabel htmlFor="itemPlu">PLU<RequiredDot /></FieldLabel>
           <div className="flex flex-col gap-1 w-full">
             <div className="flex">
-              <Input id="itemPlu" {...register("itemPlu")}></Input>
+              <Input id="itemPlu" {...register("itemPlu")} onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleCheckPlu();
+                }
+              }}></Input>
               <Button type="button" onClick={handleCheckPlu} disabled={isLoading} className="bg-btn-primary-bg text-btn-primary-text justify-end">
                 {isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : <Check />}
               </Button>

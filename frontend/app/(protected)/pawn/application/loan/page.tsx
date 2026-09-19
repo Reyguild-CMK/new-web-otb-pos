@@ -21,9 +21,11 @@ import { CardBank } from "./_components/card-bank";
 import { CardDayLoan } from "./_components/card-loan";
 import { CardDetailLoan } from "./_components/card-detail-loan";
 
+import React from "react";
 // Data
 import { dataBank } from "../../../_data/data-bank";
 import { tenor } from "../../../_data/data-tenor";
+import { calculateRefinancingDueDate, calculateRefinancingFees } from "@/lib/math-formulas";
 import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
 import { dummyBankAccounts } from "@/app/(protected)/_data/data-bank-account";
 import { usePawnStore } from "@/app/(protected)/_store/usePawnStore";
@@ -45,44 +47,66 @@ export default function FormLoanApplication() {
     // =========== INISIALISASI FORM (REACT-HOOK-FORM) ===========
     const form = useForm<FormValues>({
         resolver: zodResolver(loanSchema) as any,
-        defaultValues: loanDetails || {
-            tenor: tenor.find(t => t.tenor === 120)?.id || "",
-            maksNilaiPinjaman: totalMaximumLoan,
-            nilaiPinjaman: 0,
-            setMaksimalPinjaman: false,
-            persentaseBiayaPerawatan: undefined,
-            tanggalTransaksi: new Date().toISOString().split('T')[0],
-            bankId: "",
-            cabang: "",
-            nomorRekening: "",
-            namaPemilikRekening: dummyBankAccounts.defaultName,
-            tanggalJatuhTempo: "",
-            biayaAdmin: undefined,
-            biayaPerawatan: undefined,
-            totalNilaiPinjaman: undefined,
-            calculatedNilaiPinjaman: undefined,
-            catatan: "",
-            isCalculated: false,
-            isRekeningChecked: false,
+        defaultValues: {
+            tenor: loanDetails?.tenor || tenor.find(t => t.tenor === 120)?.id || "",
+            maksNilaiPinjaman: loanDetails?.maksNilaiPinjaman ?? totalMaximumLoan,
+            nilaiPinjaman: loanDetails?.nilaiPinjaman || 0,
+            setMaksimalPinjaman: loanDetails?.setMaksimalPinjaman || false,
+            persentaseBiayaPerawatan: loanDetails?.persentaseBiayaPerawatan || undefined,
+            tanggalTransaksi: loanDetails?.tanggalTransaksi || new Date().toISOString().split('T')[0],
+            bankId: loanDetails?.bankId || "",
+            cabang: loanDetails?.cabang || "",
+            nomorRekening: loanDetails?.nomorRekening || "",
+            namaPemilikRekening: loanDetails?.namaPemilikRekening || dummyBankAccounts.defaultName,
+            tanggalJatuhTempo: loanDetails?.tanggalJatuhTempo || "",
+            biayaAdmin: loanDetails?.biayaAdmin || undefined,
+            biayaPerawatan: loanDetails?.biayaPerawatan || undefined,
+            totalNilaiPinjaman: loanDetails?.totalNilaiPinjaman || undefined,
+            calculatedNilaiPinjaman: loanDetails?.calculatedNilaiPinjaman || undefined,
+            catatan: loanDetails?.catatan || "",
+            isCalculated: loanDetails?.isCalculated || false,
+            isRekeningChecked: loanDetails?.isRekeningChecked || false,
         }
     });
 
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
+
     const onSubmit = async (data: FormValues) => {
-        const payload = {
-            loan_details: data,
-            items: pawnItems,
-            total_appraisal: pawnItems.reduce((acc, item) => acc + item.appraisal, 0),
-            total_max_loan: totalMaximumLoan
-        };
+        setIsSubmitting(true);
 
-        console.log("POST /api/dummy/loan/process_ajax payload:", payload);
+        await new Promise(r => setTimeout(r, 800));
 
-        setLoanDetails(data);
-        await new Promise(r => setTimeout(r, 600));
+        // Auto-Calculate Loan
+        let finalData = { ...data };
+        const selectedTenorId = typeof finalData.tenor === 'object' && finalData.tenor !== null ? (finalData.tenor as any).id : finalData.tenor;
+        const selectedTenor = tenor.find((t) => String(t.id) === String(selectedTenorId));
+
+        if (selectedTenor && finalData.tanggalTransaksi) {
+            finalData.tanggalJatuhTempo = calculateRefinancingDueDate(finalData.tanggalTransaksi, selectedTenor.tenor);
+            finalData.persentaseBiayaPerawatan = selectedTenor.rate || 0;
+
+            const np = Number(finalData.nilaiPinjaman) || 0;
+            const ba = Number(finalData.biayaAdmin) || 0;
+            const { biayaPerawatan, nominalDitransfer } = calculateRefinancingFees(np, selectedTenor.rate || 0, ba);
+
+            finalData.biayaPerawatan = biayaPerawatan;
+            finalData.biayaAdmin = ba;
+            finalData.totalNilaiPinjaman = nominalDitransfer;
+            finalData.calculatedNilaiPinjaman = np;
+            finalData.isCalculated = true;
+        }
+
+        // Auto-Check Rekening
+        const foundAccount = dummyBankAccounts.accounts.find(a => a.number === finalData.nomorRekening);
+        const nameToSet = foundAccount ? foundAccount.name : dummyBankAccounts.getRandomVerifiedName();
+        finalData.namaPemilikRekening = nameToSet;
+        finalData.isRekeningChecked = true;
+
+        setLoanDetails(finalData);
 
         toast.add({
             title: "Success",
-            description: "Transaksi berhasil disimpan",
+            description: "Transaksi berhasil dihitung dan disimpan",
             type: "success"
         });
         router.push("/pawn/application/customer_data");
@@ -91,7 +115,7 @@ export default function FormLoanApplication() {
     const onError = () => {
         toast.add({
             title: "Gagal",
-            description: "Mohon lengkapi atau perbaiki kolom yang berwarna merah",
+            description: "Mohon lengkapi kolom",
             type: "error"
         });
     };
@@ -114,8 +138,8 @@ export default function FormLoanApplication() {
 
                     {/* Kolom Kiri */}
                     <div className="flex flex-col gap-4">
-                        <CardDayLoan data={tenor} />
-                        <CardBank data={dataBank} />
+                        <CardDayLoan data={tenor} isSubmitting={isSubmitting} />
+                        <CardBank data={dataBank} isSubmitting={isSubmitting} />
                     </div>
 
                     {/* Kolom Kanan */}
@@ -140,6 +164,7 @@ export default function FormLoanApplication() {
                             totalSteps={5}
                             onBack={handleBack}
                             nextButtonType="submit"
+                            isLoading={isSubmitting}
                         />
                     </div>
                 </form>

@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell, TableFooter } from "@/components/ui/table";
 import PreviewImage from "@/components/shared/ImagePreview/ImagePreview";
 
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
+
 // Library
 import { formatRupiah } from "@/lib/currency";
 
@@ -71,7 +73,7 @@ export function BarangTable({ data }: BarangTableProps) {
               </TableCell>
               <TableCell>{item.carat}</TableCell>
               <TableCell>{item.weight}</TableCell>
-              <TableCell>
+              <TableCell className="max-w-xs whitespace-pre-wrap break-words">
                 <div>{item.remark}</div>
                 <div className="font-semibold">({item.condition})</div>
               </TableCell>
@@ -79,12 +81,32 @@ export function BarangTable({ data }: BarangTableProps) {
               <TableCell className="text-right">{formatRupiah(item.appraisal)}</TableCell>
               <TableCell className="text-right">{formatRupiah(item.max_loan_price)}</TableCell>
               <TableCell className="p-2!">
-                <Button
-                  onClick={() => removePawnItem(item.id)}
-                  className="bg-btn-delete-bg text-btn-delete-text size-7 p-0"
-                >
-                  <CircleX />
-                </Button>
+                <Dialog>
+                  <DialogTrigger render={
+                    <Button className="bg-btn-delete-bg hover:bg-btn-delete-bg/80 text-btn-delete-text size-7 p-0">
+                      <CircleX />
+                    </Button>
+                  } />
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Konfirmasi Hapus</DialogTitle>
+                      <DialogDescription>
+                        Apakah Anda yakin ingin menghapus barang <b>{item.pawn_item_code}</b> dari daftar pinjaman?
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="sm:justify-end mt-4">
+                      <DialogClose render={<Button variant="outline">Batal</Button>} />
+                      <DialogClose render={
+                        <Button
+                          className="bg-btn-delete-bg hover:bg-btn-delete-bg/80 text-white"
+                          onClick={() => removePawnItem(item.id)}
+                        >
+                          Ya, Hapus
+                        </Button>
+                      } />
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </TableCell>
             </TableRow>
           ))}
