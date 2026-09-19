@@ -69,7 +69,7 @@ export function BarangTable({ data }: BarangTableProps) {
               </TableCell>
               <TableCell>
                 <div>{item.itemType?.text || "-"}</div>
-                <div className="font-semibold">({item.plu})</div>
+                <div className="font-semibold">({item.plu?.toUpperCase()})</div>
               </TableCell>
               <TableCell>{item.carat}</TableCell>
               <TableCell>{item.weight}</TableCell>

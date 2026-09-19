@@ -1,6 +1,6 @@
 "use client"
 
-import { pawnData } from "@/app/(protected)/_data/data-pawn";
+import { pawnData } from "@/app/(protected)/_data/data-pawn-dummy";
 import { CardDoc } from "./_components/card-document";
 import { CardDetailPawn } from "./_components/card-detail-pawn";
 import { CardCustomer } from "./_components/card-customer";
@@ -15,7 +15,8 @@ import { CardReceipts } from "./_components/card-receipts";
 
 export default function DetailPage(){
     //masih hardcode
-    const data = getPawnSummary(4);
+    const pawnObj = pawnData.find(p => p.id === 4);
+    const data = pawnObj ? getPawnSummary(pawnObj) : undefined;
     
     if (!data) {
         return <p>Data pawn tidak ditemukan.</p>;

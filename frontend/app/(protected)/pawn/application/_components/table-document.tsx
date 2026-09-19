@@ -49,7 +49,7 @@ export function TableDocument({ data }: BarangTableProps) {
                 alt={item.item_name}
               />
             </TableCell>
-            <TableCell>{item.itemType?.text || "-"} <span className="font-bold">({item.plu})</span></TableCell>
+            <TableCell>{item.itemType?.text || "-"} <span className="font-bold">({item.plu?.toUpperCase()})</span></TableCell>
             <TableCell>{item.carat}</TableCell>
             <TableCell>{item.weight}</TableCell>
             <TableCell className="max-w-xs whitespace-pre-wrap break-words">{item.remark}</TableCell>

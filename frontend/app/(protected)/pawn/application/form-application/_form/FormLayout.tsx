@@ -162,6 +162,7 @@ export function ModalLayout() {
         }
 
         // Mock data
+        const rawPlu = data.itemPlu || data.manualPlu || "MOCK-PLU";
         const newItem: any = {
           id: Math.floor(Math.random() * 10000),
           pawn_id: 4,
@@ -169,7 +170,7 @@ export function ModalLayout() {
           pawn_item_type_id: isDJ ? 9 : 8,
           item_name: data.itemName || data.manualProductItem || "Item Baru",
           status: "stored",
-          plu: data.itemPlu || data.manualPlu || "MOCK-PLU",
+          plu: typeof rawPlu === 'string' ? rawPlu.toUpperCase() : rawPlu,
           weight: data.itemWeight || data.manualWeight || data.manualGrossWeight || 0,
           weight_current: data.itemWeight || data.manualWeight || data.manualGrossWeight || 0,
           carat: data.itemFineness || data.manualFineness || 0,

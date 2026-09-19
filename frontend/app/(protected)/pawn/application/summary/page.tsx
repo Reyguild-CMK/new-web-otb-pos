@@ -18,6 +18,8 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { Key } from "lucide-react";
 
+import { useEffect } from "react";
+
 export default function SummaryPage() {
     const router = useRouter();
 
@@ -26,6 +28,12 @@ export default function SummaryPage() {
 
     const loanDetails = usePawnStore((state) => state.loanDetails);
     const pawnItems = usePawnStore((state) => state.pawnItems);
+    const syncActiveTransaction = usePawnStore((state) => state.syncActiveTransaction);
+
+    useEffect(() => {
+        // When summary is reached, update status to done (if it was approved)
+        syncActiveTransaction('done');
+    }, [syncActiveTransaction]);
 
     const handleBack = () => {
         router.push("/pawn/application/document");
@@ -37,6 +45,7 @@ export default function SummaryPage() {
 
     const handleSubmitPin = () => {
         if (pin === "111111") {
+            syncActiveTransaction('disbursed');
             toast.add({ title: "Berhasil", description: "Dana berhasil ditransfer.", type: "success" });
             setIsPinDialogOpen(false);
             router.push("/pawn/list");

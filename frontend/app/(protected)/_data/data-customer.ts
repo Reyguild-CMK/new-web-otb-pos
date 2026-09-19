@@ -1,4 +1,4 @@
-export interface Customer{
+export interface Customer {
     id: number,
     name: string,
     tanggal_lahir: Date | null,
@@ -87,7 +87,7 @@ export const dataCustomer: Customer[] = [
     },
     {
         id: 5,
-        name: "Bunga bungaan",
+        name: "Bunga Sakura",
         tanggal_lahir: new Date(2002, 9, 12),
         address: "Jl. Jalan",
         handphone: "08123",

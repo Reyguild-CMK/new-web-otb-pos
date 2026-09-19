@@ -16,11 +16,12 @@ import type { DateRange } from "react-day-picker"
 // Icon
 import { CalendarIcon } from "lucide-react"
 
-export function PawnDataPicker({}) {
-    const [date, setDate] = React.useState<DateRange | undefined>({
-            from: new Date(new Date().getFullYear(), 0, 20),
-            to: addDays(new Date(new Date().getFullYear(), 0, 20), 20),
-    })
+interface PawnDataPickerProps {
+    date?: DateRange;
+    setDate?: (date: DateRange | undefined) => void;
+}
+
+export function PawnDataPicker({ date, setDate }: PawnDataPickerProps) {
 
     return (
     <Field className="mx-auto w-50 text-xs">
@@ -45,6 +46,13 @@ export function PawnDataPicker({}) {
                 onSelect={setDate}
                 numberOfMonths={1}
             />
+            {date?.from && (
+                <div className="p-2 border-t flex justify-end">
+                    <Button variant="ghost" size="sm" className="text-xs h-8" onClick={() => setDate && setDate(undefined)}>
+                        Clear Filter
+                    </Button>
+                </div>
+            )}
             </PopoverContent>
         </Popover>
     </Field>

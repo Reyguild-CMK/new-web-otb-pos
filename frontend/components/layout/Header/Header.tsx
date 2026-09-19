@@ -69,7 +69,9 @@ export function Header({
           <button
             onClick={() =>
               setIsActive(prev => !prev)}
-            className={style_button}>
+            className={style_button}
+            suppressHydrationWarning
+          >
             {isActive ? (<SquareX stroke="gold" size={16} />) : (<ReceiptText stroke="gold" size={16} />)}
           </button>
         </div>

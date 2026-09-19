@@ -21,6 +21,12 @@ export function Summary({ data }: SummaryProps) {
     const defaultAppNumber = `J2CE34${yy}${mm}${dd}0001`;
     const appNumber = data?.applicationNumber || defaultAppNumber;
 
+    const formatDate = (dateValue: any) => {
+        if (!dateValue) return "-";
+        const date = new Date(dateValue);
+        return isNaN(date.getTime()) ? dateValue : date.toLocaleDateString("id-ID", { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
     return (
         <Card
             className="grid grid-cols-1 gap-6 rounded-none border-x-0 border-y p-2 ring-0 shadow-none bg-transparent lg:grid-cols-2 text-xs md:text-sm"
@@ -65,12 +71,12 @@ export function Summary({ data }: SummaryProps) {
 
                 <div className={`${style_grid_summary}`}>
                     <span>Tanggal Transaksi</span>
-                    <span>: {data?.tanggalTransaksi || "-"}</span>
+                    <span>: {formatDate(data?.tanggalTransaksi)}</span>
                 </div>
 
                 <div className={`${style_grid_summary}`}>
                     <span>Tanggal Jatuh Tempo</span>
-                    <span>: {data?.tanggalJatuhTempo || "-"}</span>
+                    <span>: {formatDate(data?.tanggalJatuhTempo)}</span>
                 </div>
 
                 <div className={`${style_grid_summary}`}>

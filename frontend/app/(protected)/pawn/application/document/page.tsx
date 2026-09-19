@@ -61,6 +61,8 @@ export default function CustomerApplication() {
       return;
     }
 
+    const syncActiveTransaction = usePawnStore((state) => state.syncActiveTransaction);
+
     setIsWaitingApproval(true);
 
     try {
@@ -93,12 +95,13 @@ export default function CustomerApplication() {
         console.log("[ROUTING] Approval dialihkan ke Role: SM (Karena nominal < 20 Juta)");
       }
 
+      syncActiveTransaction('waiting_approval');
       toast.add({ title: "Berhasil", description: "Dokumen berhasil diajukan untuk approval.", type: "success" });
+      router.push("/pawn/list");
 
     } catch (error) {
       console.error(error);
       toast.add({ title: "Gagal", description: "Terjadi kesalahan saat memproses gambar.", type: "error" });
-    } finally {
       setIsWaitingApproval(false);
     }
   };

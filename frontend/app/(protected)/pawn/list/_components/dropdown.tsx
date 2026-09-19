@@ -7,12 +7,14 @@ import { Status } from "../../../_data/status-take-over"
 
 interface DropDownProps {
     data: Status[];
+    value?: string;
+    onChange?: (value: string) => void;
 }
 
-export function DropDown({ data }: DropDownProps) {
+export function DropDown({ data, value, onChange }: DropDownProps) {
     return(
         <Field className="w-45 text-xs">
-            <Select items={data} defaultValue="all">
+            <Select items={data} value={value} onValueChange={onChange}>
                 <SelectTrigger className="border border-black/30">
                     <SelectValue>
                     </SelectValue>
