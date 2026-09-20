@@ -114,4 +114,32 @@ export const dataPawnHistory: PawnHistory[] = [
         bukti_transaksi: "/image/document/sgk_jabar.png",
         nota_tanda_terima: null
     },
+    {
+        id: 5,
+        pawn_id: 4,
+        extend_number: 2,
+        due_date: "26 Feb 26",
+        storage_insurance_fee_nominal: 258701,
+        admin_fee: 0,
+        total_payment: 258701,
+        status: "not_complete",
+        remark: "Perpanjangan Gadai 2",
+        form_application: "/image/document/sgk_jabar.png",
+        bukti_transaksi: null,
+        nota_tanda_terima: null
+    },
+    {
+        id: 6,
+        pawn_id: 6,
+        extend_number: 1,
+        due_date: "15 Dec 26",
+        storage_insurance_fee_nominal: 150000,
+        admin_fee: 35000,
+        total_payment: 185000,
+        status: "completed",
+        remark: "Perpanjangan Gadai 1",
+        form_application: "/image/document/sgk_jabar.png",
+        bukti_transaksi: "/image/document/sgk_jabar.png",
+        nota_tanda_terima: null,
+    }
 ];

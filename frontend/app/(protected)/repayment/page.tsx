@@ -1,16 +1,24 @@
 "use client";
 
 import * as React from "react";
-import { RepaymentTable } from "./_component/table-repayment";
-import { pawnData } from "../_data/data-pawn-dummy";
+import { pawnData } from "../_data/data-pawn";
+import { PaymentTable } from "./_component/table-payment";
+import { PawnSummary } from "../_data/data-summary";
 import { getPawnSummary } from "../_data/data-summary";
-import { SearchBarRepayment } from "./_component/search-bar-repayment";
+import { SearchBarPayment } from "./_component/search-bar-payment";
 import { CreditCard } from "lucide-react";
 
 export default function RepaymentPage(){
     const [searchQuery, setSearchQuery] = React.useState("")
-    const pawnTableData = pawnData.map((pawn)=>getPawnSummary(pawn)).filter((pawn)=>pawn!==undefined);
-    const filteredApplications = pawnData.filter((application) => application.applicationNumber.toLowerCase().includes(searchQuery.toLowerCase()))
+    const pawnTableData = pawnData
+        .filter((pawn) => pawn.status === "disbursed")
+        .filter((pawn) =>
+            pawn.applicationNumber
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase())
+        )
+        .map((pawn) => getPawnSummary(pawn))
+        .filter((pawn): pawn is PawnSummary => pawn !== undefined);
     return(
         <>
         <div className="mt-4">
@@ -19,7 +27,7 @@ export default function RepaymentPage(){
                 <h3 className="font-bold flex gap-2 self-center"><CreditCard size={22} />Repayment</h3>
             </div>
         </div>
-        <SearchBarRepayment onSearch={setSearchQuery}></SearchBarRepayment>
-        <RepaymentTable data={pawnTableData}></RepaymentTable></>
+        <SearchBarPayment onSearch={setSearchQuery}></SearchBarPayment>
+        <PaymentTable data={pawnTableData}></PaymentTable></>
     )
 }

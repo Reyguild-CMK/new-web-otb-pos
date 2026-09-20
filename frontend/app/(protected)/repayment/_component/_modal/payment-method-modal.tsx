@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 
 import { useState } from "react"
 
-type PaymentMethod =
+export type PaymentMethod =
     | "bca"
     | "bni"
     | "bri"
@@ -23,6 +23,8 @@ interface PaymentMethodModalProps {
     onSelectMethod: (
         method: PaymentMethod) => void
 }
+
+// Kalau status nya akan lunas atau gadai ulang bakalan direct ke modal ini
 
 export function PaymentMethodModal({ open, paymentDate, onPaymentDateChange, onClose, onSelectMethod, }: PaymentMethodModalProps){
     const today = new Date().toISOString().split("T")[0]
@@ -51,8 +53,6 @@ export function PaymentMethodModal({ open, paymentDate, onPaymentDateChange, onC
                         <Button disabled={!isPaymentDateToday} onClick={() => onSelectMethod("bri")}>Transfer Virtual Account BRI</Button>
                         <Button disabled={!isPaymentDateToday} onClick={() => onSelectMethod("mandiri")}>Transfer Virtual Account Mandiri</Button>
                         <Button disabled={!isPaymentDateToday} onClick={() => onSelectMethod("permata")}>Transfer Virtual Account Permata atau Bank Lain</Button>
-                        <Button disabled={!isPaymentDateToday} onClick={() => onSelectMethod("cash")}>Cash</Button>
-                        <Button disabled={!isPaymentDateToday} onClick={() => onSelectMethod("manual-transfer")}>Manual Transfer</Button>
                     </div>
                     <div className="flex justify-center gap-2">
                         <Button variant="secondary" onClick={onClose}>Cancel</Button>

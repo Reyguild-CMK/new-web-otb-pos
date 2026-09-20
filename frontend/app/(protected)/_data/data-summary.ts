@@ -9,6 +9,7 @@ import { tenor, type Tenor } from "./data-tenor";
 import { dataPawnItems, type PawnItem } from "./data-pawn-item";
 import { dataPawnItemType, type PawnItemType } from "./data-pawn-item-type";
 import { dataDocs, type Docs } from "./data-docs";
+import { dataPawnHistory, type PawnHistory } from "./data-pawn-history";
 
 export interface PawnSummary extends Pawn {
     customer: Customer;
@@ -20,6 +21,7 @@ export interface PawnSummary extends Pawn {
     nominalDitransfer: number;
     pawnItems: PawnItemSummary[];
     pawnDocs: Docs | null;
+    pawnHistory: PawnHistory[];
 }
 
 export interface PawnItemSummary extends PawnItem {
@@ -31,7 +33,7 @@ export function getPawnSummary(pawn: Pawn): PawnSummary | undefined {
         return undefined;
     }
 
-    let customer = dataCustomer.find((item) => (item.id) === pawn.customerId);
+    let customer = dataCustomer.find((item) => item.id === pawn.customerId);
 
     if (!customer && pawn.draftData?.customerData) {
         const draft = pawn.draftData.customerData;
@@ -54,11 +56,10 @@ export function getPawnSummary(pawn: Pawn): PawnSummary | undefined {
         } as any;
     }
     const bank = dataBank.find((item) => item.id === pawn.bankId);
-    const barang = dataBarang.filter((item) => pawn.barangCodes.includes(item.kode))
-
+    const barang = dataBarang.filter((item) => pawn.barangCodes.includes(item.kode));
     const pawnTenor = tenor.find((item) => item.id === pawn.idPawnTenor);
 
-    let pawnItems: PawnItemSummary[] = dataPawnItems
+    const storedPawnItems: PawnItemSummary[] = dataPawnItems
         .filter((item) => item.pawn_id === pawn.id)
         .map((item) => ({
             ...item,
@@ -68,77 +69,53 @@ export function getPawnSummary(pawn: Pawn): PawnSummary | undefined {
                 ) ?? null,
         }));
 
-    if (pawnItems.length === 0 && pawn.draftData?.pawnItems) {
-        pawnItems = pawn.draftData.pawnItems;
+    const pawnItems = storedPawnItems.length > 0
+        ? storedPawnItems
+        : pawn.draftData?.pawnItems ?? [];
+
+    const pawnHistory = dataPawnHistory.filter(
+        (history) => history.pawn_id === pawn.id
+    );
+
+    const pawnDocs =
+        dataDocs.find((item) => item.pawn_id === pawn.id) ??
+        pawn.draftData?.pawnDocs ??
+        null;
+
+    if (!customer || !bank || !pawnTenor) {
+        return undefined;
     }
 
-    const pawnDocs = dataDocs.find((item) => item.pawn_id === pawn.id) ?? pawn.draftData?.pawnDocs ?? null;
-
-    const jatuhTempo = pawnTenor ? calculateDueData(
+    const jatuhTempo = calculateDueData(
         pawn.tanggalTransaksi,
         pawnTenor.tenor
-    ) : new Date(pawn.tanggalTransaksi); // fallback
-
-    const biayaPerawatan = pawn.draftData?.loanDetails?.biayaPerawatan || (pawn.nilaiPinjaman * pawn.persentaseBiayaPerawatan);
+    );
+    const biayaPerawatan =
+        pawn.draftData?.loanDetails?.biayaPerawatan ??
+        pawn.nilaiPinjaman * pawn.persentaseBiayaPerawatan;
 
     return {
         ...pawn,
-        customer: customer || { id: 0, name: "-", tanggal_lahir: null, address: "-", handphone: "-", email: null, profesi: null, status_perkawinan: null, tanda_pengenal: "-", image_tanda_pengenal: "", image_selfie: "", created_at: null, deleted_at: null, NoCustomer: "", IDCustomerStamps: null },
-        barang: barang || [],
-        bankName: bank?.name || "-",
-        tenordata: pawnTenor || { id: "0", tenor: 0, label: "-", status: "inactive", rate: 0, createdAt: new Date().toISOString() },
+        customer,
+        barang,
+        bankName: bank.name,
+        tenordata: pawnTenor,
         jatuhTempo,
         biayaPerawatan,
         nominalDitransfer: pawn.nilaiPinjaman - biayaPerawatan - pawn.biayaAdmin,
         pawnItems,
-        pawnDocs
+        pawnDocs,
+        pawnHistory
     };
 }
 
 
 export function filterPawnSummarybyDate(tanggalTransaksi: Date): PawnSummary[] {
-    const pawn = pawnData.filter(
+    return pawnData.filter(
         (item) => item.tanggalTransaksi.getTime() === tanggalTransaksi.getTime()
-    );
-
-    return (
-        pawn.map((pawn, index) => {
-            // Cari dataCustomer yang id-nya = pawn.customerId
-            const customer = dataCustomer.find(
-                (item) => (item.id) === pawn.customerId
-            );
-
-            // Cari dataBank yang id-nya = pawn.bankId
-            const bank = dataBank.find(
-                (item) => item.id === pawn.bankId
-            );
-
-            // Filter dataBarang yang kodenya ada pada pawn.barangCodes
-            const barang = dataBarang.filter(
-                (item) => pawn.barangCodes.includes(item.kode)
-            )
-
-            const jatuhTempo = new Date(pawn.tanggalTransaksi);
-            jatuhTempo.setDate(jatuhTempo.getDate() + pawn.tenor);
-
-            const biayaPerawatan = Math.round(pawn.nilaiPinjaman * pawn.persentaseBiayaPerawatan);
-
-            // Undefined jika tidak ada data customer atau data bank
-            if (!customer || !bank) {
-                return undefined;
-            }
-
-            return {
-                ...pawn,
-                customer,
-                barang,
-                bankName: bank.name,
-                jatuhTempo,
-                biayaPerawatan,
-                nominalDitransfer: pawn.nilaiPinjaman - biayaPerawatan - pawn.biayaAdmin,
-            };
-        }).filter((item): item is PawnSummary => item !== undefined)
     )
+        .map((pawn) => getPawnSummary(pawn))
+        .filter((item): item is PawnSummary => item !== undefined);
 }
 
 export function calculateDueData(
