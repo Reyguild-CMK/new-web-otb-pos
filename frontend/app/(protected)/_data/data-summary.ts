@@ -10,7 +10,7 @@ import { dataPawnItems, type PawnItem } from "./data-pawn-item";
 import { dataPawnItemType, type PawnItemType } from "./data-pawn-item-type";
 import { dataDocs, type Docs } from "./data-docs";
 
-export interface PawnSummary extends Pawn{
+export interface PawnSummary extends Pawn {
     customer: Customer;
     barang: Barang[];
     bankName: string;
@@ -22,20 +22,41 @@ export interface PawnSummary extends Pawn{
     pawnDocs: Docs | null;
 }
 
-export interface PawnItemSummary extends PawnItem{
+export interface PawnItemSummary extends PawnItem {
     itemType: PawnItemType | null;
 }
 
 export function getPawnSummary(pawn: Pawn): PawnSummary | undefined {
-    if (!pawn){
+    if (!pawn) {
         return undefined;
     }
 
-    const customer = dataCustomer.find((item) => (item.id) === pawn.customerId) || pawn.draftData?.customerData;
-    const bank = dataBank.find((item)=> item.id ===pawn.bankId);
-    const barang = dataBarang.filter((item)=> pawn.barangCodes.includes(item.kode))
-    
-    const pawnTenor = tenor.find((item)=>item.id===pawn.idPawnTenor);
+    let customer = dataCustomer.find((item) => (item.id) === pawn.customerId);
+
+    if (!customer && pawn.draftData?.customerData) {
+        const draft = pawn.draftData.customerData;
+        customer = {
+            id: 0,
+            name: draft.name || "-",
+            tanggal_lahir: draft.birthDate || null,
+            address: draft.address || "-",
+            handphone: draft.handphone || "-",
+            email: draft.email || null,
+            profesi: draft.occupation || null,
+            status_perkawinan: draft.maritalStatus || null,
+            tanda_pengenal: draft.ktpNumber || "-",
+            image_tanda_pengenal: "",
+            image_selfie: "",
+            created_at: null,
+            deleted_at: null,
+            NoCustomer: "",
+            IDCustomerStamps: null
+        } as any;
+    }
+    const bank = dataBank.find((item) => item.id === pawn.bankId);
+    const barang = dataBarang.filter((item) => pawn.barangCodes.includes(item.kode))
+
+    const pawnTenor = tenor.find((item) => item.id === pawn.idPawnTenor);
 
     let pawnItems: PawnItemSummary[] = dataPawnItems
         .filter((item) => item.pawn_id === pawn.id)
@@ -46,21 +67,21 @@ export function getPawnSummary(pawn: Pawn): PawnSummary | undefined {
                     (itemType) => itemType.id === item.pawn_item_type_id
                 ) ?? null,
         }));
-        
+
     if (pawnItems.length === 0 && pawn.draftData?.pawnItems) {
         pawnItems = pawn.draftData.pawnItems;
     }
 
-    const pawnDocs = dataDocs.find((item) => item.pawn_id === pawn.id) ?? null;
-    
+    const pawnDocs = dataDocs.find((item) => item.pawn_id === pawn.id) ?? pawn.draftData?.pawnDocs ?? null;
+
     const jatuhTempo = pawnTenor ? calculateDueData(
         pawn.tanggalTransaksi,
         pawnTenor.tenor
     ) : new Date(pawn.tanggalTransaksi); // fallback
 
-    const biayaPerawatan = pawn.nilaiPinjaman * pawn.persentaseBiayaPerawatan;
+    const biayaPerawatan = pawn.draftData?.loanDetails?.biayaPerawatan || (pawn.nilaiPinjaman * pawn.persentaseBiayaPerawatan);
 
-    return{
+    return {
         ...pawn,
         customer: customer || { id: 0, name: "-", tanggal_lahir: null, address: "-", handphone: "-", email: null, profesi: null, status_perkawinan: null, tanda_pengenal: "-", image_tanda_pengenal: "", image_selfie: "", created_at: null, deleted_at: null, NoCustomer: "", IDCustomerStamps: null },
         barang: barang || [],
@@ -75,13 +96,13 @@ export function getPawnSummary(pawn: Pawn): PawnSummary | undefined {
 }
 
 
-export function filterPawnSummarybyDate(tanggalTransaksi: Date): PawnSummary[]{
+export function filterPawnSummarybyDate(tanggalTransaksi: Date): PawnSummary[] {
     const pawn = pawnData.filter(
         (item) => item.tanggalTransaksi.getTime() === tanggalTransaksi.getTime()
     );
 
-    return(
-        pawn.map((pawn, index) =>{
+    return (
+        pawn.map((pawn, index) => {
             // Cari dataCustomer yang id-nya = pawn.customerId
             const customer = dataCustomer.find(
                 (item) => (item.id) === pawn.customerId
@@ -107,7 +128,7 @@ export function filterPawnSummarybyDate(tanggalTransaksi: Date): PawnSummary[]{
                 return undefined;
             }
 
-            return{
+            return {
                 ...pawn,
                 customer,
                 barang,
@@ -121,11 +142,11 @@ export function filterPawnSummarybyDate(tanggalTransaksi: Date): PawnSummary[]{
 }
 
 export function calculateDueData(
-  tanggalTransaksi: Date, 
-  tenor: number
-): Date{
-  const dueDate = new Date(tanggalTransaksi);
-  dueDate.setDate(dueDate.getDate()+tenor);
+    tanggalTransaksi: Date,
+    tenor: number
+): Date {
+    const dueDate = new Date(tanggalTransaksi);
+    dueDate.setDate(dueDate.getDate() + tenor);
 
-  return dueDate;
+    return dueDate;
 }

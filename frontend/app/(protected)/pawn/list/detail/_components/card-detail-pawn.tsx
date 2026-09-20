@@ -1,14 +1,22 @@
 import { PawnSummary } from "@/app/(protected)/_data/data-summary";
 import { formatRupiah } from "@/lib/currency";
-import { Handshake } from "lucide-react"
+import { Handshake, Link as LinkIcon } from "lucide-react"
 import { formatDateTime } from "@/lib/date";
 import { style_card } from "@/components/shared/Stepper/Stepper";
+import { usePawnStore } from "@/app/(protected)/_store/usePawnStore";
+import { useRouter } from "next/navigation";
 
 interface CardDetailPawnProps {
     data: PawnSummary;
 }
 
 export function CardDetailPawn({ data }: CardDetailPawnProps) {
+    const transactionList = usePawnStore((state) => state.transactionList);
+    const loadTransaction = usePawnStore((state) => state.loadTransaction);
+    const router = useRouter();
+
+    const oldTx = data.oldApplication !== "-" ? transactionList.find(t => t.applicationNumber === data.oldApplication) : null;
+
     return (
         <div className={style_card}>
             <div className="flex flex-row items-center justify-start gap-2 pb-2">
@@ -17,13 +25,35 @@ export function CardDetailPawn({ data }: CardDetailPawnProps) {
             </div>
             <div className="grid grid-cols-1 gap-6 text-xs">
                 <div className="flex flex-col gap-2">
+                    {data.oldApplication !== "-" && (
+                        <div className="grid grid-cols-[220px_1fr] gap-x-2 items-center bg-blue-50/50 p-2 rounded border border-blue-100">
+                            <span className="font-semibold text-blue-800">Aplikasi Sebelumnya</span>
+                            <div className="flex items-center gap-1.5 text-blue-700">
+                                <span>:</span>
+                                {oldTx ? (
+                                    <button 
+                                        className="font-bold hover:underline flex items-center gap-1 cursor-pointer"
+                                        onClick={() => {
+                                            loadTransaction(oldTx.id);
+                                            router.push("/pawn/list/detail");
+                                        }}
+                                    >
+                                        <LinkIcon size={12} />
+                                        {data.oldApplication}
+                                    </button>
+                                ) : (
+                                    <span className="font-bold">{data.oldApplication}</span>
+                                )}
+                            </div>
+                        </div>
+                    )}
                     <div className="grid grid-cols-[220px_1fr] gap-x-2">
                         <span>Nilai Pinjaman </span>
                         <span>: {formatRupiah(data.nilaiPinjaman)}</span>
                     </div>
                     <div className="grid grid-cols-[220px_1fr] gap-x-2">
-                        <span>Tenor:</span>
-                        <span>: {data.tenor} hari</span>
+                        <span>Tenor</span>
+                        <span>: {data.tenordata?.tenor || data.tenor} hari</span>
                     </div>
                     <div className="grid grid-cols-[220px_1fr] gap-x-2">
                         <span>Tanggal Transaksi</span>

@@ -3,13 +3,26 @@ import { style_card } from "@/components/shared/Stepper/Stepper";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatRupiah } from "@/lib/currency";
 import { Gem, ShoppingCartPlus } from "lucide-react";
-import { filterPawnSummarybyDate, PawnSummary } from "../../_data/data-summary";
+import { getPawnSummary, PawnSummary } from "../../_data/data-summary";
+import { usePawnStore } from "@/app/(protected)/_store/usePawnStore";
 import { TodaysTransactionsTable } from "./_components/todaystransaction-table";
 import { ItemListsTable } from "./_components/item-list";
 
 export default function TransactionTodayPage(){
-    const tanggal = new Date("2023-03-04");
-    const todaysData = filterPawnSummarybyDate(tanggal);
+    const transactionList = usePawnStore((state) => state.transactionList);
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const todaysData = transactionList
+        .map((pawn) => getPawnSummary(pawn))
+        .filter((pawn): pawn is PawnSummary => pawn !== undefined)
+        .filter((pawn) => pawn.status === "disbursed")
+        .filter((pawn) => {
+            const pawnDate = new Date(pawn.tanggalTransaksi);
+            pawnDate.setHours(0, 0, 0, 0);
+            return pawnDate.getTime() === today.getTime();
+        });
 
     return(
         <div className={`w-full`}>

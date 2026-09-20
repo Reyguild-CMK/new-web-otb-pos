@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { Key } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function SummaryPage() {
     const router = useRouter();
@@ -63,8 +64,14 @@ export default function SummaryPage() {
 
     const handleSubmitPin = () => {
         if (pin === "111111") {
-            syncActiveTransaction('disbursed');
-            toast.add({ title: "Berhasil", description: "Dana berhasil ditransfer.", type: "success" });
+            const pinjaman = loanDetails?.nilaiPinjaman || 0;
+            if (pinjaman > 20000000) {
+                syncActiveTransaction('ready_disburse');
+                toast.add({ title: "Berhasil", description: "Pengajuan Anda berhasil terkirim kepada finance !", type: "success" });
+            } else {
+                syncActiveTransaction('disbursed');
+                toast.add({ title: "Berhasil", description: "Pengajuan Anda berhasil, Dana telah ditransfer !", type: "success" });
+            }
             setIsPinDialogOpen(false);
             router.push("/pawn/list");
         } else {
@@ -106,7 +113,7 @@ export default function SummaryPage() {
             <div className="mt-4 flex flex-col gap-2">
                 {isFetchingBalance ? (
                     <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm font-medium flex items-center gap-2">
-                        <span className="animate-pulse">⏳ Mengecek saldo Iris cabang...</span>
+                        <span className="animate-pulse flex"><Spinner />Mengecek saldo Iris cabang...</span>
                     </div>
                 ) : isBalanceInsufficient ? (
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm font-medium">

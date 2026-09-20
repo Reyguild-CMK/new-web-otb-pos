@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { formatDateTime } from "@/lib/date";
 import { Button } from "@/components/ui/button";
-import { Edit, Mail } from "lucide-react";
+import { Edit, Mail, CheckCircle, XCircle } from "lucide-react";
 import { usePawnStore } from "@/app/(protected)/_store/usePawnStore";
+import { useAuthStore } from "@/app/(protected)/_store/useAuthStore";
+import { useRouter } from "next/navigation";
 import { CardDoc } from "./_components/card-document";
 import { CardDetailPawn } from "./_components/card-detail-pawn";
 import { CardCustomer } from "./_components/card-customer";
@@ -19,9 +21,13 @@ import { CardReceipts } from "./_components/card-receipts";
 
 export default function DetailPage() {
     const [isReuploadMode, setIsReuploadMode] = useState(false);
-    
+
+    const { currentRole } = useAuthStore();
+    const router = useRouter();
+
     const activeTransactionId = usePawnStore((state) => state.activeTransactionId);
     const transactionList = usePawnStore((state) => state.transactionList);
+    const updateTransactionStatus = usePawnStore((state) => state.updateTransactionStatus);
 
     const pawnObj = transactionList.find(p => p.id === activeTransactionId);
     const data = pawnObj ? getPawnSummary(pawnObj) : undefined;
@@ -42,19 +48,50 @@ export default function DetailPage() {
                     </span>
                 </h1>
                 <div className="flex items-center gap-2">
-                    <Button
-                        className="bg-btn-action-bg text-btn-action-text hover:bg-btn-action-bg/90 hover:text-btn-action-text border-0"
-                        size="sm"
-                        onClick={() => setIsReuploadMode(!isReuploadMode)}
-                    >
-                        <Edit className="w-4 h-4 mr-2" />
-                        {isReuploadMode ? "Cancel Reupload" : "Request Reupload"}
-                    </Button>
-                    {data.status === "disbursed" && (
+                    {/* Role JR Actions */}
+                    {currentRole === 'JR' && (
+                        <Button
+                            className="bg-btn-action-bg text-btn-action-text hover:bg-btn-action-bg/90 hover:text-btn-action-text border-0"
+                            size="sm"
+                            onClick={() => setIsReuploadMode(!isReuploadMode)}
+                        >
+                            <Edit className="w-4 h-4 mr-2" />
+                            {isReuploadMode ? "Cancel Reupload" : "Request Reupload"}
+                        </Button>
+                    )}
+                    {currentRole === 'JR' && data.status === "disbursed" && (
                         <Button className="bg-btn-action-bg text-btn-action-text hover:bg-btn-action-bg/90 hover:text-btn-action-text border-0" size="sm">
                             <Mail className="w-4 h-4 mr-2" />
                             Send Email Payment Notification
                         </Button>
+                    )}
+
+                    {/* Role SM Actions */}
+                    {currentRole === 'SM' && data.status === "waiting_approval" && (
+                        <>
+                            <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => {
+                                    updateTransactionStatus(data.id, 'rejected');
+                                    router.push("/pawn/list");
+                                }}
+                            >
+                                <XCircle className="w-4 h-4 mr-2" />
+                                Reject
+                            </Button>
+                            <Button
+                                className="bg-green-600 hover:bg-green-700 text-white"
+                                size="sm"
+                                onClick={() => {
+                                    updateTransactionStatus(data.id, 'approved');
+                                    router.push("/pawn/list");
+                                }}
+                            >
+                                <CheckCircle className="w-4 h-4 mr-2" />
+                                Approve
+                            </Button>
+                        </>
                     )}
                 </div>
             </div>

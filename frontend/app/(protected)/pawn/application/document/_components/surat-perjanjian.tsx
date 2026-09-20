@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatRupiah } from "@/lib/currency";
+import Barcode from 'react-barcode';
 
 interface SuratPerjanjianProps {
   loanDetails: any;
@@ -37,6 +38,8 @@ export function SuratPerjanjian({ loanDetails, pawnItems, customerData }: SuratP
 
   // Assuming first pawn item is the main one for the seal
   const firstItem = pawnItems && pawnItems.length > 0 ? pawnItems[0] : null;
+
+  const itemNumber = appNumber.startsWith("J2C") ? appNumber.replace(/^J2C[A-Z0-9]{3}/, "ITEM-") : `ITEM-${appNumber}`;
 
   return (
     <div className="text-black font-sans bg-white p-2 w-full max-w-[21cm] mx-auto text-[10px] leading-relaxed">
@@ -133,7 +136,7 @@ export function SuratPerjanjian({ loanDetails, pawnItems, customerData }: SuratP
         <div className="mb-4 text-justify">dengan Rincian dan Spesifikasi yang tercantum sesuai dengan invoice pembelian barang serta Foto barang terlampir, yang selanjutnya disebut <b>BARANG</b>.</div>
 
         <div className="pt-2 text-justify">Selanjutnya PIHAK PERTAMA dan PIHAK KEDUA sepakat dan menyetujui hal-hal berikut ini :</div>
-        <div className="mb-6">
+        <div className="mb-4">
           <ol style={{ listStyleType: 'decimal', listStylePosition: 'outside', paddingLeft: '1.25rem' }} className="text-justify space-y-1">
             <li style={{ display: 'list-item' }} className="mb-1">Bahwa PIHAK KEDUA menjual <b>BARANG</b> tersebut adalah benar milik PIHAK KEDUA yang diperoleh secara sah atau legal dan bukan merupakan hasil dari tindak pidana termasuk tidak terbatas Tindak Pidana Pencucian Uang, penggelapan dan bukan merupakan barang sengketa dalam perkara hukum apapun atau harta gono gini dalam perkara perceraian.</li>
             <li style={{ display: 'list-item' }} className="mb-1">Bahwa PIHAK KEDUA telah menjual dan menyerahkan <b>BARANG</b> kepada PIHAK PERTAMA dengan harga {formatRupiah(loanNominal)} selama 4 (empat) bulan terhitung pada tanggal {txDateStr} sampai dengan {dueDateStr}</li>
@@ -148,19 +151,19 @@ export function SuratPerjanjian({ loanDetails, pawnItems, customerData }: SuratP
           </ol>
         </div>
 
-        <div className="mb-6">Demikian Perjanjian ini dibuat secara sadar, jujur dan tanpa adanya paksaan dari Pihak manapun juga.</div>
+        <div className="mb-4">Demikian Perjanjian ini dibuat secara sadar, jujur dan tanpa adanya paksaan dari Pihak manapun juga.</div>
 
-        <table className="w-full text-center">
+        <table className="w-full text-center break-inside-avoid">
           <tbody>
             <tr>
               <td width="55%" className="align-top text-left">
-                <div className="mb-20">PIHAK PERTAMA</div>
+                <div className="mb-12">PIHAK PERTAMA</div>
                 <div>(Nama Petugas)</div>
                 <div>PT. CENTRAL MEGA KENCANA</div>
               </td>
               <td className="align-top text-left">
-                <div className="mb-4">PIHAK KEDUA</div>
-                <div className="h-16 text-xs text-gray-400"><br />Materai 10.000</div>
+                <div className="mb-2">PIHAK KEDUA</div>
+                <div className="h-12 text-xs text-gray-400"><br />Materai 10.000</div>
                 <div>({customerName})</div>
               </td>
             </tr>
@@ -241,12 +244,12 @@ export function SuratPerjanjian({ loanDetails, pawnItems, customerData }: SuratP
                 </td>
                 <td width="30%" className="align-top border-l border-dashed border-gray-400 pl-4">
                   <div className="mb-4">
-                    <div>Tanggal Awal Pengajuan :</div>
+                    <div>Tanggal Awal OTB :</div>
                     <div className="text-center font-bold text-base mt-1">{txDateShort}</div>
                     <hr className="border-t border-dashed border-gray-400 mt-2" />
                   </div>
                   <div>
-                    <div>Tanggal Jatuh Tempo :</div>
+                    <div>Tanggal Pembelian Kembali :</div>
                     <div className="text-center font-bold text-base mt-1">{dueDateStr}</div>
                     <hr className="border-t border-dashed border-gray-400 mt-2" />
                   </div>
@@ -273,7 +276,7 @@ export function SuratPerjanjian({ loanDetails, pawnItems, customerData }: SuratP
                 </td>
                 <td width="30%" className="align-top border-l border-dashed border-gray-400 pl-4">
                   <div>
-                    <div>Senilai :</div>
+                    <div>Nilai Barang :</div>
                     <div className="text-center font-bold text-base mt-1">{formatRupiah(loanNominal)}</div>
                     <hr className="border-t border-dashed border-gray-400 mt-2" />
                   </div>
@@ -283,33 +286,40 @@ export function SuratPerjanjian({ loanDetails, pawnItems, customerData }: SuratP
               <tr><td colSpan={2}><hr className="border-t border-dashed border-gray-600 my-4" /></td></tr>
 
               <tr>
-                <td width="60%" className="align-top">
-                  <table className="w-full text-center">
+                <td colSpan={2} className="pt-4">
+                  <table className="w-full text-center h-full">
                     <tbody>
                       <tr>
-                        <td width="33%" className="align-top pt-2 border-l-4 border-double border-gray-600">
-                          <div>Penaksir</div>
+                        <td width="25%" className="align-top pt-2 border-l-4 border-double border-gray-600">
+                          <div>QC</div>
                           <div className="h-20"></div>
-                          <div className="uppercase">Penaksir CMK</div>
+                          <div className="uppercase">QC CMK</div>
                         </td>
-                        <td width="33%" className="align-top pt-2 border-l-4 border-r-4 border-double border-gray-600">
+                        <td width="25%" className="align-top pt-2 border-l-4 border-double border-gray-600">
                           <div>Petugas Cabang</div>
                           <div className="h-20"></div>
                           <div className="uppercase">SM CMK</div>
                         </td>
-                        <td width="33%" className="align-top pt-2 border-r-4 border-double border-gray-600">
-                          <div>Nasabah</div>
+                        <td width="25%" className="align-top pt-2 border-l-4 border-double border-gray-600">
+                          <div>Customer</div>
                           <div className="h-20"></div>
                           <div className="uppercase">{customerName}</div>
+                        </td>
+                        <td width="25%" className="align-middle border-l-4 border-r-4 border-double border-gray-600 p-2">
+                          <div className="inline-flex flex-col items-center border border-black bg-white p-2">
+                            <Barcode 
+                              value={itemNumber} 
+                              width={1.2} 
+                              height={35} 
+                              fontSize={12} 
+                              margin={0}
+                              displayValue={true}
+                            />
+                          </div>
                         </td>
                       </tr>
                     </tbody>
                   </table>
-                </td>
-                <td width="40%" className="align-top text-center pt-8">
-                  <div className="inline-block px-4 py-2 border border-black font-mono tracking-widest bg-gray-100">
-                    {appNumber}
-                  </div>
                 </td>
               </tr>
             </tbody>

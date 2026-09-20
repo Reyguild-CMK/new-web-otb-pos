@@ -37,7 +37,19 @@ export function ItemListsTable({data}: todaysDataProps){
       ) : (
       <TableBody>
           {data.map((pawn) =>
-            pawn.barang.map((barang, index) => (
+            pawn.pawnItems && pawn.pawnItems.length > 0 ? pawn.pawnItems.map((item, index) => (
+              <TableRow key={item.pawn_item_code || index}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{pawn.applicationNumber}</TableCell>
+                <TableCell>{item.pawn_item_code || item.plu}</TableCell>
+                <TableCell>{item.itemType?.text || item.item_name}</TableCell>
+                <TableCell>{item.carat}</TableCell>
+                <TableCell>{item.weight}</TableCell>
+                <TableCell>
+                  <PreviewImage src={item.photo || "/image/jewelry.jpg"} alt={item.item_name}/>
+                </TableCell>
+              </TableRow>
+            )) : pawn.barang.map((barang, index) => (
               <TableRow key={barang.kode}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{pawn.applicationNumber}</TableCell>

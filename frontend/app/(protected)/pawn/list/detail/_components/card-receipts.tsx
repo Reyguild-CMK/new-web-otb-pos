@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { ReceiptText, WalletCards } from "lucide-react";
 import { PawnSummary } from "@/app/(protected)/_data/data-summary";
 import { dataPawnHistory } from "@/app/(protected)/_data/data-pawn-history";
+import { ModalRepawn } from "./modal-repawn";
+import { ModalDisbursement } from "./modal-disbursement";
+import { ModalRepayment } from "./modal-repayment";
 
 import { style_card } from "@/components/shared/Stepper/Stepper";
 
@@ -31,28 +34,34 @@ export function CardReceipts({ data }: CardReceiptsProps) {
             </div>
 
             <div className="flex flex-wrap gap-3">
-                <Button
-                    variant="outline"
-                    onClick={() => openReceipt(data.invoice)}
-                    disabled={!data.invoice}
-                >
-                    <WalletCards />
-                    Pencairan Dana
-                </Button>
+                {/* Pencairan Dana (Action if approved, Receipt if disbursed/done) */}
+                {(data.status === "approved" || data.status === "disbursed" || data.status === "done") && (
+                    <ModalDisbursement 
+                        data={data} 
+                        isReceiptMode={data.status === "disbursed" || data.status === "done"} 
+                        isDisbursed={data.status === "disbursed" || data.status === "done"} 
+                        buttonLabel="Pencairan Dana" 
+                    />
+                )}
 
+                {/* Past Perpanjangan Receipts */}
                 {pawnHistories.map((history) => (
-                    <Button
-                        key={history.id}
-                        variant="outline"
-                        onClick={() =>
-                            openReceipt(history.bukti_transaksi ?? null)
-                        }
-                        disabled={!history.bukti_transaksi}
-                    >
-                        <ReceiptText />
-                        Perpanjangan {history.extend_number}
-                    </Button>
+                    <ModalRepawn 
+                        key={history.id} 
+                        data={data} 
+                        historyData={history} 
+                        isReceiptMode={true} 
+                        buttonLabel={`Perpanjangan ${history.extend_number}`} 
+                    />
                 ))}
+
+                {/* Pelunasan Receipt */}
+                {data.status === "done" && (
+                    <ModalRepayment 
+                        data={data} 
+                        isReceiptMode={true} 
+                    />
+                )}
             </div>
         </div>
     );

@@ -9,6 +9,7 @@ interface PawnStore {
   pawnItems: PawnItemSummary[]
   loanDetails: any | null
   customerData: any | null
+  pawnDocs: any | null
   searchQuery: string
   selectedCustomer: string
   
@@ -22,6 +23,7 @@ interface PawnStore {
   clearPawnItems: () => void
   setLoanDetails: (details: any) => void
   setCustomerData: (data: any) => void
+  setPawnDocs: (docs: any) => void
   setSearchQuery: (query: string) => void
   setSelectedCustomer: (id: string) => void
 
@@ -39,6 +41,7 @@ export const usePawnStore = create<PawnStore>()(
       pawnItems: [],
       loanDetails: null,
       customerData: null,
+      pawnDocs: null,
       searchQuery: "",
       selectedCustomer: "",
       
@@ -50,6 +53,7 @@ export const usePawnStore = create<PawnStore>()(
       clearPawnItems: () => { set({ pawnItems: [] }); get().syncActiveTransaction(); },
       setLoanDetails: (details) => { set({ loanDetails: details }); get().syncActiveTransaction(); },
       setCustomerData: (data) => { set({ customerData: data }); get().syncActiveTransaction(); },
+      setPawnDocs: (docs) => { set({ pawnDocs: docs }); get().syncActiveTransaction(); },
       setSearchQuery: (query) => set({ searchQuery: query }),
       setSelectedCustomer: (id) => set({ selectedCustomer: id }),
 
@@ -177,6 +181,7 @@ export const usePawnStore = create<PawnStore>()(
             tanggalTransaksi: new Date().toISOString()
           },
           customerData: null,
+          pawnDocs: null,
           searchQuery: "",
           selectedCustomer: ""
         }));
@@ -201,7 +206,8 @@ export const usePawnStore = create<PawnStore>()(
               nomorRekening: tx.nomorRekening,
               namaPemilikRekening: tx.namaPemilikRekening
             },
-            customerData: tx.draftData?.customerData || null
+            customerData: tx.draftData?.customerData || null,
+            pawnDocs: tx.draftData?.pawnDocs || null
           });
         }
       },
@@ -220,10 +226,16 @@ export const usePawnStore = create<PawnStore>()(
                 tanggalTransaksi: state.loanDetails?.tanggalTransaksi ? new Date(state.loanDetails.tanggalTransaksi) : tx.tanggalTransaksi,
                 bankId: state.loanDetails?.bankId ? Number(state.loanDetails.bankId) : tx.bankId,
                 idPawnTenor: state.loanDetails?.tenor || tx.idPawnTenor,
+                nomorRekening: state.loanDetails?.nomorRekening || tx.nomorRekening,
+                namaPemilikRekening: state.loanDetails?.namaPemilikRekening || tx.namaPemilikRekening,
+                tenor: state.loanDetails?.tenor ? parseInt(state.loanDetails.tenor) : tx.tenor, // In case tenor is stored directly
+                persentaseBiayaPerawatan: state.loanDetails?.persentaseBiayaPerawatan || tx.persentaseBiayaPerawatan,
+                biayaAdmin: state.loanDetails?.biayaAdmin || tx.biayaAdmin,
                 draftData: {
                   pawnItems: state.pawnItems,
                   loanDetails: state.loanDetails,
-                  customerData: state.customerData
+                  customerData: state.customerData,
+                  pawnDocs: state.pawnDocs
                 }
               };
             }

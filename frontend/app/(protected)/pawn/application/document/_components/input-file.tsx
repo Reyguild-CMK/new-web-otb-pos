@@ -61,9 +61,10 @@ interface InputFileProps {
   files: Record<string, File | null>;
   onFileChange: (id: string, file: File | null) => void;
   disabled?: boolean;
+  showValidation?: boolean;
 }
 
-export function InputFile({ files, onFileChange, disabled }: InputFileProps) {
+export function InputFile({ files, onFileChange, disabled, showValidation }: InputFileProps) {
   return (
     <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {dataInputField.map((data) => (
@@ -74,6 +75,7 @@ export function InputFile({ files, onFileChange, disabled }: InputFileProps) {
           imageAlt={data.imageAlt}
           required={data.required}
           disabled={disabled}
+          error={showValidation && data.required && !files[data.id] ? "Wajib diunggah" : undefined}
           onFileChange={(file) => onFileChange(data.id, file)}
         />
       ))

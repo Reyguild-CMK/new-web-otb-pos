@@ -34,12 +34,15 @@ export default function CustomerApplication() {
   const customerData = usePawnStore((state) => state.customerData);
   const activeTransactionId = usePawnStore((state) => state.activeTransactionId);
   const transactionList = usePawnStore((state) => state.transactionList);
+  const syncActiveTransaction = usePawnStore((state) => state.syncActiveTransaction);
+  const setPawnDocs = usePawnStore((state) => state.setPawnDocs);
 
   const activeTx = transactionList.find(t => t.id === activeTransactionId);
   const isAlreadyWaiting = activeTx?.status === "waiting_approval";
 
   const [isWaitingApproval, setIsWaitingApproval] = useState(isAlreadyWaiting);
   const [files, setFiles] = useState<Record<string, File | null>>({});
+  const [showValidation, setShowValidation] = useState(false);
 
   const handleFileChange = (id: string, file: File | null) => {
     setFiles((prev) => ({ ...prev, [id]: file }));
@@ -58,6 +61,7 @@ export default function CustomerApplication() {
     const isAllRequiredFilled = requiredFiles.every((key) => files[key] !== undefined && files[key] !== null);
 
     if (!isAllRequiredFilled) {
+      setShowValidation(true);
       toast.add({
         title: "Validasi Gagal",
         description: "Mohon lengkapi semua dokumen yang wajib diunggah.",
@@ -65,8 +69,6 @@ export default function CustomerApplication() {
       });
       return;
     }
-
-    const syncActiveTransaction = usePawnStore((state) => state.syncActiveTransaction);
 
     setIsWaitingApproval(true);
 
@@ -90,6 +92,15 @@ export default function CustomerApplication() {
           console.log(`   FormData => ${pair[0]}: ${pair[1] instanceof Blob ? `[Blob object] (Size: ${(pair[1].size / 1024).toFixed(2)}KB)` : pair[1]}`);
         }
       }
+
+      const mockPawnDocs = {
+        application_form: files.formPerjanjian ? URL.createObjectURL(files.formPerjanjian) : null,
+        sbg_form: files.suratKepemilikanBarang ? URL.createObjectURL(files.suratKepemilikanBarang) : null,
+        bukti_kepemilikan: files.suratSegelBarang ? URL.createObjectURL(files.suratSegelBarang) : null,
+        form_perjanjian: files.formPerjanjian ? URL.createObjectURL(files.formPerjanjian) : null,
+        bukti_transaksi: files.buyingPrice ? URL.createObjectURL(files.buyingPrice) : null,
+      };
+      setPawnDocs(mockPawnDocs);
 
       // Penentuan Role Approval berdasarkan Nilai Pinjaman
       const nilaiPinjaman = loanDetails?.nilaiPinjaman || 0;
@@ -166,7 +177,7 @@ export default function CustomerApplication() {
             </Button>
 
             {/* Section Input File */}
-            <InputFile files={files} onFileChange={handleFileChange} disabled={isWaitingApproval} />
+            <InputFile files={files} onFileChange={handleFileChange} disabled={isWaitingApproval} showValidation={showValidation} />
 
             {/* Loading untuk menunggu approval */}
             {isWaitingApproval && (

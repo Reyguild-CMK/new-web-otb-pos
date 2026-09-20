@@ -69,6 +69,13 @@ function SidebarProvider({
   const isMobile = useIsMobile()
   const [openMobile, setOpenMobile] = React.useState(false)
 
+  // Reset openMobile when resizing back to desktop so the sheet doesn't get stuck.
+  React.useEffect(() => {
+    if (!isMobile) {
+      setOpenMobile(false)
+    }
+  }, [isMobile])
+
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
   const [_open, _setOpen] = React.useState(defaultOpen)

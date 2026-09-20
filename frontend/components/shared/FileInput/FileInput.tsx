@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { FileIcon } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect, ChangeEvent } from "react";
+import { RequiredDot } from "@/components/ui/required-dot";
 
 export interface FileFieldProps {
   id: string;
@@ -85,8 +86,9 @@ export default function FileInput({
   return (
     <Field orientation="vertical">
       <div className="flex justify-between items-center w-full">
-        <FieldLabel htmlFor={id}>
+        <FieldLabel htmlFor={id} className="flex items-center gap-1">
           {label}
+          {required && <RequiredDot />}
         </FieldLabel>
         <p className="text-xs text-alert-error-icon">{fileHint}</p>
       </div>
