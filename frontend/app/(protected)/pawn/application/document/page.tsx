@@ -29,12 +29,17 @@ import { usePawnStore } from "@/app/(protected)/_store/usePawnStore";
 
 export default function CustomerApplication() {
   const router = useRouter();
-  const [isWaitingApproval, setIsWaitingApproval] = useState(false);
-  const [files, setFiles] = useState<Record<string, File | null>>({});
-
   const loanDetails = usePawnStore((state) => state.loanDetails);
   const pawnItems = usePawnStore((state) => state.pawnItems);
   const customerData = usePawnStore((state) => state.customerData);
+  const activeTransactionId = usePawnStore((state) => state.activeTransactionId);
+  const transactionList = usePawnStore((state) => state.transactionList);
+
+  const activeTx = transactionList.find(t => t.id === activeTransactionId);
+  const isAlreadyWaiting = activeTx?.status === "waiting_approval";
+
+  const [isWaitingApproval, setIsWaitingApproval] = useState(isAlreadyWaiting);
+  const [files, setFiles] = useState<Record<string, File | null>>({});
 
   const handleFileChange = (id: string, file: File | null) => {
     setFiles((prev) => ({ ...prev, [id]: file }));
@@ -97,7 +102,6 @@ export default function CustomerApplication() {
 
       syncActiveTransaction('waiting_approval');
       toast.add({ title: "Berhasil", description: "Dokumen berhasil diajukan untuk approval.", type: "success" });
-      router.push("/pawn/list");
 
     } catch (error) {
       console.error(error);
@@ -121,10 +125,10 @@ export default function CustomerApplication() {
   return (
     <>
       <div className="hidden print:block absolute top-0 left-0 w-full min-h-screen bg-white z-[9999] m-0 p-0 text-black">
-        <SuratPerjanjian 
-          loanDetails={loanDetails} 
-          pawnItems={pawnItems} 
-          customerData={customerData} 
+        <SuratPerjanjian
+          loanDetails={loanDetails}
+          pawnItems={pawnItems}
+          customerData={customerData}
         />
       </div>
 
@@ -162,7 +166,7 @@ export default function CustomerApplication() {
             </Button>
 
             {/* Section Input File */}
-            <InputFile files={files} onFileChange={handleFileChange} />
+            <InputFile files={files} onFileChange={handleFileChange} disabled={isWaitingApproval} />
 
             {/* Loading untuk menunggu approval */}
             {isWaitingApproval && (

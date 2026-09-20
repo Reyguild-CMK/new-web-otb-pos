@@ -60,9 +60,10 @@ const dataInputField: FileFieldProps[] = [
 interface InputFileProps {
   files: Record<string, File | null>;
   onFileChange: (id: string, file: File | null) => void;
+  disabled?: boolean;
 }
 
-export function InputFile({ files, onFileChange }: InputFileProps) {
+export function InputFile({ files, onFileChange, disabled }: InputFileProps) {
   return (
     <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {dataInputField.map((data) => (
@@ -72,6 +73,7 @@ export function InputFile({ files, onFileChange }: InputFileProps) {
           label={data.label}
           imageAlt={data.imageAlt}
           required={data.required}
+          disabled={disabled}
           onFileChange={(file) => onFileChange(data.id, file)}
         />
       ))

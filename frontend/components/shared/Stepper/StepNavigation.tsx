@@ -15,6 +15,7 @@ interface StepNavigationProps {
   nextLabel?: string;
   hideNext?: boolean;
   nextButtonType?: "button" | "submit";
+  nextDisabled?: boolean;
 }
 
 export function StepNavigation({
@@ -28,6 +29,7 @@ export function StepNavigation({
   nextLabel,
   hideNext = false,
   nextButtonType = "button",
+  nextDisabled = false,
 }: StepNavigationProps) {
   return (
     <div className="w-full mt-2">
@@ -50,7 +52,7 @@ export function StepNavigation({
           <Button
             type={nextButtonType}
             onClick={nextButtonType === "button" ? onNext : undefined}
-            disabled={isLoading}
+            disabled={isLoading || nextDisabled}
             className="cursor-pointer bg-btn-next-bg text-btn-next-text w-auto px-4 h-8 hover:bg-btn-next-bg/80 min-w-24"
           >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

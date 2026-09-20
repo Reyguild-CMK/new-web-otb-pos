@@ -61,12 +61,11 @@ export const dataPawnItems : PawnItem[]=[
         invoice_value: 2420931,
         max_loan_price: 2420931,
         remark: "LR PLU ABA004314\r\nKADAR 75% 18KARAT\r\nBERLIAN 1 BUTIR 0,148CT BL.F.VVS\r\nBERAT EMAS: 3,33GRA",
-        created_at: new Date("2021-09-01 18:27:21"),
-        updated_at: new Date("2022-09-22 16:38:19")
+        created_at: new Date('2024-09-02T10:30:00'),
+        updated_at: new Date('2024-09-02T10:30:00')
     }
 ]
 
 	// estimated_unit_appraisal_price: 2420931	
     // estimated_total_appraisal_price: 2420931	
-    // appraisal: 2420931	
-    // max_loan_price:2178838	
+    // appraisal: 2420931

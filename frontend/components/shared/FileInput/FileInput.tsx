@@ -16,6 +16,7 @@ export interface FileFieldProps {
   error?: string;
   accept?: string;
   fileHint?: string;
+  disabled?: boolean;
 }
 
 export default function FileInput({
@@ -29,6 +30,7 @@ export default function FileInput({
   error,
   accept = ".jpg, .jpeg, .png, .pdf",
   fileHint = "*PNG, JPG, JPEG, or PDF.",
+  disabled = false,
 }: FileFieldProps) {
   // Input
   const [selectedItem, setSelectedItem] = useState<File | null>(null);
@@ -97,8 +99,9 @@ export default function FileInput({
           type="file"
           accept={accept}
           onChange={handleFileChange}
-          className="w-full cursor-pointer file:hover:bg-gray-200"
+          className="w-full cursor-pointer file:hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
           required={required}
+          disabled={disabled}
         />
         {/* Preview */}
         <div

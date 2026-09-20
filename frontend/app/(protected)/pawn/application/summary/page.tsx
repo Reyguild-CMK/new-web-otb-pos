@@ -2,7 +2,7 @@
 
 import { style_card } from "@/components/shared/Stepper/Stepper";
 import { getPawnSummary } from "@/app/(protected)/_data/data-summary";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 // Store
@@ -18,22 +18,40 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { Key } from "lucide-react";
 
-import { useEffect } from "react";
-
 export default function SummaryPage() {
     const router = useRouter();
 
     const [isPinDialogOpen, setIsPinDialogOpen] = useState(false);
     const [pin, setPin] = useState("");
 
+    const [simulatedStatus, setSimulatedStatus] = useState<"processing" | "ready">("ready");
+    const [storeBalance, setStoreBalance] = useState<number | null>(null);
+    const [isFetchingBalance, setIsFetchingBalance] = useState(true);
+    const [isRetrying, setIsRetrying] = useState(false);
+
     const loanDetails = usePawnStore((state) => state.loanDetails);
     const pawnItems = usePawnStore((state) => state.pawnItems);
     const syncActiveTransaction = usePawnStore((state) => state.syncActiveTransaction);
 
     useEffect(() => {
-        // When summary is reached, update status to done (if it was approved)
-        syncActiveTransaction('done');
-    }, [syncActiveTransaction]);
+        const fetchBalance = async () => {
+            setIsFetchingBalance(true);
+            await new Promise(resolve => setTimeout(resolve, 1500)); // Simulasi loading 1.5 detik
+            setStoreBalance(15000000); // Simulasi dapat balance 15jt
+            setIsFetchingBalance(false);
+        };
+        fetchBalance();
+    }, []);
+
+    const handleRetry = async () => {
+        setIsRetrying(true);
+        toast.add({ title: "Mencoba...", description: "Menghubungi server Iris...", type: "info" });
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        setIsRetrying(false);
+        setSimulatedStatus("ready");
+        toast.add({ title: "Berhasil", description: "Pencairan berhasil di-retry, status siap ditransfer.", type: "success" });
+    };
 
     const handleBack = () => {
         router.push("/pawn/application/document");
@@ -63,25 +81,67 @@ export default function SummaryPage() {
         pawnItems: pawnItems
     };
 
+    const nominalDitransfer = summaryData.totalNilaiPinjaman || summaryData.nominalDitransfer || 0;
+    const isBalanceInsufficient = storeBalance !== null && nominalDitransfer > storeBalance;
+
     return (
         <div className={`${style_card} w-full`}>
             {/* Judul */}
-            <div className="md:flex justify-between align-middle">
-                <h1 className="font-bold pb-2">Detail Pinjaman</h1>
+            <div className="md:flex justify-between align-middle pb-2">
+                <h1 className="font-bold">Detail Pinjaman</h1>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSimulatedStatus(prev => prev === "processing" ? "ready" : "processing")}
+                >
+                    Simulate Status: {simulatedStatus}
+                </Button>
             </div>
 
             {/* Table Barang */}
             <TableDocument data={pawnItems}></TableDocument>
             <Summary data={summaryData}></Summary>
 
-            <StepNavigation
-                currentStep={5}
-                totalSteps={5}
-                isLastStep
-                nextLabel="Transfer Dana"
-                onNext={handleTransferDana}
-                onBack={handleBack}
-            />
+            {/* Alerts */}
+            <div className="mt-4 flex flex-col gap-2">
+                {isFetchingBalance ? (
+                    <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm font-medium flex items-center gap-2">
+                        <span className="animate-pulse">⏳ Mengecek saldo Iris cabang...</span>
+                    </div>
+                ) : isBalanceInsufficient ? (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm font-medium">
+                        Pencairan Dana Terkendala! Saldo cabang (Iris) tidak mencukupi (Sisa: Rp{storeBalance?.toLocaleString('id-ID')}). Harap hubungi Finance J2C!
+                    </div>
+                ) : null}
+
+                {simulatedStatus === "processing" && (
+                    <div className="bg-amber-100 border border-amber-400 text-amber-800 px-4 py-3 rounded-lg text-sm font-medium text-center">
+                        <b>Pencairan sedang diproses.</b> Jika terlalu lama, klik tombol di bawah untuk cek dan retry.
+                    </div>
+                )}
+            </div>
+
+            {simulatedStatus === "processing" ? (
+                <div className="mt-4 flex justify-end">
+                    <Button
+                        className="bg-red-600 text-white hover:bg-red-700 w-full md:w-auto"
+                        onClick={handleRetry}
+                        disabled={isRetrying}
+                    >
+                        {isRetrying ? "Mencoba ulang..." : "Retry Pencairan"}
+                    </Button>
+                </div>
+            ) : (
+                <StepNavigation
+                    currentStep={5}
+                    totalSteps={5}
+                    isLastStep
+                    nextLabel="Transfer Dana"
+                    onNext={handleTransferDana}
+                    onBack={handleBack}
+                    nextDisabled={isFetchingBalance || isBalanceInsufficient}
+                />
+            )}
 
             {/* PIN Dialog */}
             <Dialog open={isPinDialogOpen} onOpenChange={setIsPinDialogOpen}>

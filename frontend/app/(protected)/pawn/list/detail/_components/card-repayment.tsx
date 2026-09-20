@@ -4,16 +4,24 @@ import { formatRupiah } from "@/lib/currency";
 import { dataPawnHistory } from "@/app/(protected)/_data/data-pawn-history";
 import { FileText } from "lucide-react";
 
-export function CardRepayment() {
+import { style_card } from "@/components/shared/Stepper/Stepper";
+import { PawnSummary } from "@/app/(protected)/_data/data-summary";
+
+interface CardRepaymentProps {
+    data: PawnSummary;
+}
+
+export function CardRepayment({ data }: CardRepaymentProps) {
+    const historyData = dataPawnHistory.filter(h => h.pawn_id === data.id);
+
     return (
-        <div className="">
-            <div className="md:flex justify-items-start gap-2 pb-2 pt-2">
+        <div className={style_card}>
+            <div className="flex flex-row items-center justify-start gap-2 pb-2">
                 <FileText size={20}></FileText>
                 <h1 className="font-bold">Repawn History</h1>
             </div>
-            <Card>
-                <CardContent className="space-y-4 p-4">
-                    {dataPawnHistory.map((history) => (
+            <div className="space-y-4">
+                {historyData.map((history) => (
                         <div key={history.id} className="space-y-4">
                             <h4 className="font-bold">
                                 Perpanjangan Ke {history.extend_number} | Due Date:{" "}
@@ -73,8 +81,7 @@ export function CardRepayment() {
                             </div>
                         </div>
                     ))}
-                </CardContent>
-            </Card>
+            </div>
         </div>
     );
 }

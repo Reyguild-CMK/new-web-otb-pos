@@ -22,12 +22,12 @@ import { usePawnStore } from "@/app/(protected)/_store/usePawnStore";
 
 import { type DateRange } from "react-day-picker"
 
-export default function PawnList(){
+export default function PawnList() {
     const router = useRouter();
     const [searchQuery, setSearchQuery] = React.useState("")
     const [statusFilter, setStatusFilter] = React.useState("all")
     const [dateRange, setDateRange] = React.useState<DateRange | undefined>()
-    
+
     const transactionList = usePawnStore((state) => state.transactionList);
     const createNewTransaction = usePawnStore((state) => state.createNewTransaction);
 
@@ -43,7 +43,7 @@ export default function PawnList(){
     const filteredApplications = pawnTableData.filter((application) => {
         // 1. Search Query
         const matchSearch = application.applicationNumber.toLowerCase().includes(searchQuery.toLowerCase());
-        
+
         // 2. Status Filter (Take Over)
         let matchStatus = true;
         if (statusFilter === "take over") {
@@ -51,16 +51,16 @@ export default function PawnList(){
         } else if (statusFilter === "without take over") {
             matchStatus = application.isTakeOver === false;
         }
-        
+
         // 3. Date Filter
         let matchDate = true;
         if (dateRange?.from) {
             const appDate = new Date(application.tanggalTransaksi);
             appDate.setHours(0, 0, 0, 0);
-            
+
             const fromDate = new Date(dateRange.from);
             fromDate.setHours(0, 0, 0, 0);
-            
+
             if (dateRange.to) {
                 const toDate = new Date(dateRange.to);
                 toDate.setHours(23, 59, 59, 999);
@@ -73,13 +73,13 @@ export default function PawnList(){
         return matchSearch && matchStatus && matchDate;
     });
 
-    return(
+    return (
         <div>
             <div className="mt-6">
                 {/* Judul */}
                 <div className="mb-6 flex justify-between items-center">
-                    <h1 className="font-bold flex gap-2 items-center"><List size={22}/>Application List</h1>
-                    <Button onClick={handleNewTransaction} className="bg-btn-primary-bg text-btn-primary-text">
+                    <h1 className="font-bold flex gap-2 items-center"><List size={22} />Application List</h1>
+                    <Button size="sm" onClick={handleNewTransaction} className="bg-btn-primary-bg text-btn-primary-text text-xs">
                         <Plus className="mr-2 h-4 w-4" /> Add New Transaction
                     </Button>
                 </div>
