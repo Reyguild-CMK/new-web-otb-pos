@@ -24,7 +24,6 @@ import { FileText } from "lucide-react"
 import { Pawn } from "@/app/(protected)/_data/data-pawn"
 import { Customer } from "@/app/(protected)/_data/data-customer"
 
-// Helper to format currency
 export const formatRupiah = (number: number) => {
     return new Intl.NumberFormat("id-ID", {
         style: "currency",
@@ -35,9 +34,9 @@ export const formatRupiah = (number: number) => {
 
 // Helper to calculate days until due
 export const getDaysUntilDue = (dueDate: Date | string | null) => {
-    if (!dueDate) return 999; // Fallback
+    if (!dueDate) return 999;
     const parsedDate = new Date(dueDate);
-    const today = new Date("2026-09-21T00:00:00"); // Using current system date for consistency
+    const today = new Date("2026-09-21T00:00:00");
     const diffTime = parsedDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
@@ -55,9 +54,6 @@ export const enrichPawnData = (pawns: Pawn[], customers: Customer[]): EnrichedPa
     });
 };
 
-// ----------------------------------------------------------------------
-// Jatuh Tempo Card Component
-// ----------------------------------------------------------------------
 interface JatuhTempoCardProps {
     title: string;
     headerColorClass: string;
@@ -94,11 +90,11 @@ export function JatuhTempoCard({ title, headerColorClass, data, daysThreshold, m
                                 const txDate = new Date(item.tanggalTransaksi);
                                 const dueDate = item.dueDate ? new Date(item.dueDate) : new Date(txDate.getTime() + (item.tenor * 24 * 60 * 60 * 1000));
                                 return (
-                                <TableRow key={idx} className="bg-white hover:bg-gray-50 border-b border-gray-100">
-                                    <TableCell className={`text-center font-bold text-gray-600`}>{getDaysUntilDue(dueDate)}</TableCell>
-                                    <TableCell className="border-x border-gray-100 text-gray-600">{item.customerName}</TableCell>
-                                    <TableCell className="text-center text-gray-600">{formatRupiah(item.nilaiPinjaman)}</TableCell>
-                                </TableRow>
+                                    <TableRow key={idx} className="bg-white hover:bg-gray-50 border-b border-gray-100">
+                                        <TableCell className={`text-center font-bold text-gray-600`}>{getDaysUntilDue(dueDate)}</TableCell>
+                                        <TableCell className="border-x border-gray-100 text-gray-600">{item.customerName}</TableCell>
+                                        <TableCell className="text-center text-gray-600">{formatRupiah(item.nilaiPinjaman)}</TableCell>
+                                    </TableRow>
                                 );
                             })
                         ) : (
@@ -117,10 +113,6 @@ export function JatuhTempoCard({ title, headerColorClass, data, daysThreshold, m
 }
 
 
-
-// ----------------------------------------------------------------------
-// Main Table Component
-// ----------------------------------------------------------------------
 interface MainTableProps {
     title: string;
     data: EnrichedPawn[];
@@ -166,10 +158,10 @@ export function MainTable({ title, data, type }: MainTableProps) {
                         {filteredData.length > 0 ? (
                             filteredData.map((item, idx) => {
                                 const txDate = new Date(item.tanggalTransaksi);
-                                const dateToShow = (type === "processing" || type === "waiting_approval") 
-                                    ? txDate 
+                                const dateToShow = (type === "processing" || type === "waiting_approval")
+                                    ? txDate
                                     : (item.dueDate ? new Date(item.dueDate) : new Date(txDate.getTime() + (item.tenor * 24 * 60 * 60 * 1000)));
-                                
+
                                 return (
                                     <TableRow key={idx} className="bg-white hover:bg-gray-50 border-b border-gray-100">
                                         <TableCell className="text-gray-600 font-medium">{item.applicationNumber}</TableCell>
