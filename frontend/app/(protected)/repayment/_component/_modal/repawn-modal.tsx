@@ -8,7 +8,7 @@ import { PawnStatusNotification } from "@/app/(protected)/_data/data-pawn"
 import { PawnSummary } from "@/app/(protected)/_data/data-summary"
 import { getRepawnFormType } from "../../_lib/repayment-action"
 import { PaymentMethod } from "./payment-method-modal"
-import { useState } from "react"
+import type { RepaymentFormValues } from "../../_lib/repayment-schema"
 
 export interface RepaymentSubmitData{
     nominal:number;
@@ -26,12 +26,16 @@ interface RepawnModalProps{
 
 export function RepawnModal({
     open, pawn, status, onClose, onSubmit}: RepawnModalProps){
-        const [transferNominal, setTransferNominal] = useState("")
-        const [transferProof, setTransferProof] = useState<File | null>(null);
-
         if (!pawn) return null
 
         const formType = getRepawnFormType(status)
+        const formId = "repayment-form"
+        const handleFormSubmit = (values: RepaymentFormValues) => {
+            onSubmit({
+                nominal: Number(values.nominal),
+                buktiTransaksi: values.buktiTransaksi,
+            })
+        }
         return(
             <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
                 <DialogContent className="max-w-md">
@@ -42,26 +46,15 @@ export function RepawnModal({
                     </DialogHeader>
                     <div className="py-4">
                         {formType === "repayment" && (
-                            <RepaymentForm data={pawn}
-                                transferNominal={transferNominal}
-                                onTransferNominalChange={setTransferNominal}
-                                onTransferProofChange={setTransferProof}
-                                />
+                            <RepaymentForm data={pawn} formId={formId} onSubmit={handleFormSubmit} />
                         )}
                         {formType === "gadai-ulang" && (
-                            <GadaiUlangRepaymentForm data={pawn}
-                                transferNominal={transferNominal}
-                                onTransferNominalChange={setTransferNominal}
-                                onTransferProofChange={setTransferProof}/>
+                            <GadaiUlangRepaymentForm data={pawn} formId={formId} onSubmit={handleFormSubmit} />
                         )}
                     </div>
                     <DialogFooter>
                         <Button variant="secondary" onClick={onClose}>Cancel</Button>
-                        <Button type="button" onClick={()=>{onSubmit({
-                            nominal: Number(transferNominal),
-                            buktiTransaksi: transferProof,
-                            });
-                        }}>Submit</Button>
+                        <Button type="submit" form={formId}>Submit</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

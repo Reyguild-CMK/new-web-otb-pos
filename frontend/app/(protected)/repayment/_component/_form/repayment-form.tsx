@@ -1,26 +1,32 @@
 "use client"
 import { differenceInDays, parseISO } from 'date-fns';
-
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react"
 import { PawnSummary } from "@/app/(protected)/_data/data-summary"
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { CurrencyInput } from '@/components/ui/currency-input';
 import { formatRupiah } from '@/lib/currency';
+import { createRepaymentSchema, type RepaymentFormValues } from '../../_lib/repayment-schema';
 
 interface RepaymentFormProps{
     data: PawnSummary;
-    transferNominal: string;
-    onTransferNominalChange: (value: string) => void;
-    onTransferProofChange: (file: File | null) => void;
+    formId: string;
+    onSubmit: (data: RepaymentFormValues) => void;
 }
 
-export function RepaymentForm({data, transferNominal, onTransferNominalChange, onTransferProofChange}: RepaymentFormProps){
+export function RepaymentForm({data, formId, onSubmit}: RepaymentFormProps){
+    const form = useForm<RepaymentFormValues>({
+        resolver: zodResolver(createRepaymentSchema(data.nilaiPinjaman)) as never,
+        defaultValues: { nominal: "", buktiTransaksi: null },
+    });
+    const { control, handleSubmit, formState: { errors } } = form;
     // untuk hitung pemakaian
     const pemakaianHari = differenceInDays(new Date(), parseISO(data.tanggalTransaksi.toLocaleDateString("id-ID")));
     
     return(
-        <div className="grid grid-cols-12 gap-6">
+        <form id={formId} onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-12 gap-6">
             <div className="col-span-12">
                 <div className="rounded-md border p-4">
                     Mohon hubungi ibu Meilisa untuk pembayaran
@@ -69,15 +75,34 @@ export function RepaymentForm({data, transferNominal, onTransferNominalChange, o
                         <Label className='mb-2 block text-xs'>
                             Transfer Nominal
                         </Label>
-                        <CurrencyInput value={transferNominal} onValueChange={onTransferNominalChange} placeholder='Nominal' className='w-full rounded-md border px-3 py-2'>
-                        </CurrencyInput>
+                        <Controller
+                            name="nominal"
+                            control={control}
+                            render={({ field }) => (
+                                <CurrencyInput value={field.value} onValueChange={field.onChange} placeholder="Nominal" className="w-full rounded-md border px-3 py-2" />
+                            )}
+                        />
+                        {errors.nominal && <p className="text-sm text-destructive">{errors.nominal.message}</p>}
                     </div>
                     <div>
                         <Label className='mb-2 block text-xs'>Bukti Transfer</Label>
-                        <Input type='file' accept='image/*' onChange={(event) => onTransferProofChange(event.target.files?.[0] ?? null)}></Input>
+                        <Controller
+                            name="buktiTransaksi"
+                            control={control}
+                            render={({ field: { onChange, name, ref } }) => (
+                                <Input
+                                    ref={ref}
+                                    name={name}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(event) => onChange(event.target.files?.[0] ?? null)}
+                                />
+                            )}
+                        />
+                        {errors.buktiTransaksi && <p className="text-sm text-destructive">{errors.buktiTransaksi.message}</p>}
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     )
 }

@@ -203,6 +203,9 @@ export function PaymentTable({ data }: PaymentDataProps) {
             status={selectedStatus}
             documents={selectedPawn? {data: selectedPawn} : null}
             onClose={() => setActiveModal(null)}
+            onDownloadDocument={() => {
+                window.open("/pawn/application/document", "_blank")
+            }}
             onUpload={(type, file) => {
                 if (!selectedPawn || type !== "form_application") {
                     return;
