@@ -28,7 +28,14 @@ export function SearchBar({ onSearch }: SearchBarProps) {
                     placeholder="Search Application Number" 
                     value={search}
                     className="text-xs h-8 w-65 border border-black/30" 
-                    onChange={(e) => setSearch(e.target.value)} />
+                    onChange={(e) => {
+                        const val = e.target.value;
+                        setSearch(val);
+                        if (val === "") {
+                            onSearch("");
+                        }
+                    }} 
+                />
                 <Button className="bg-gold text-navy-dark" onClick={handleSearch}>
                     <Search size={12} />
                 </Button>
