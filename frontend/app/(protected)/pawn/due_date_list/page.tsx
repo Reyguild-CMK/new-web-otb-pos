@@ -9,7 +9,7 @@ import { DropDownFilter } from "./_components/filter-due-date";
 import { filterDueDateData } from "./_data/filter-function";
 
 export default function DueDatePage() {
-    const [filter, setFilter] = React.useState("Semua");
+    const [filter, setFilter] = React.useState("all");
     const allData: PawnSummary[] = pawnData
         .map((pawn) => getPawnSummary(pawn))
         .filter((item): item is PawnSummary => Boolean(item))

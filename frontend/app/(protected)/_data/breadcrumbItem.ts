@@ -3,6 +3,8 @@ import {
   FilePenLine,
   ShoppingCartPlus,
   List,
+  CalendarDays,
+  icons
 } from "lucide-react";
 
 // Isi Default Breadcrumb
@@ -21,4 +23,8 @@ export const appTodaysTransaction = [
 
 export const appPawnList = [
   { label: "List", href: "/pawn/list", icon: List },
+]
+
+export const appDueDateList = [
+  { label: "Due Date Pawn List", href: "/pawn/due_date_list", icon: CalendarDays},
 ]

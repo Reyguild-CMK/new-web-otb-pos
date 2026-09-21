@@ -20,11 +20,14 @@ export const filterOptions = [
 ]
 
 export function DropDownFilter({ value, onChange}: DropDownFilterProps) {
+    const selectedLabel = filterOptions.find((item) => item.value === value)?.label??"Semua";
     return(
         <Field className="w-45 text-xs">
             <Select value={value} onValueChange={(nextValue) => onChange(nextValue ?? "all")}>
                 <SelectTrigger className="border border-black/30">
-                    <SelectValue></SelectValue>
+                    <span className="flex-1 text-left">
+                        {selectedLabel}
+                    </span>
                 </SelectTrigger>
                 <SelectContent>
                     <SelectGroup>
