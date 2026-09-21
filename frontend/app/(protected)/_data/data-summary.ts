@@ -55,9 +55,28 @@ export function getPawnSummary(pawn: Pawn): PawnSummary | undefined {
             IDCustomerStamps: null
         } as any;
     }
-    const bank = dataBank.find((item) => item.id === pawn.bankId);
+    if (!customer) {
+        customer = {
+            id: 0,
+            name: "-",
+            tanggal_lahir: null,
+            address: "-",
+            handphone: "-",
+            email: null,
+            profesi: null,
+            status_perkawinan: null,
+            tanda_pengenal: "-",
+            image_tanda_pengenal: "",
+            image_selfie: "",
+            created_at: null,
+            deleted_at: null,
+            NoCustomer: "",
+            IDCustomerStamps: null
+        } as any;
+    }
+    const bank = dataBank.find((item) => item.id === pawn.bankId) || { id: 0, name: "-", image: "" };
     const barang = dataBarang.filter((item) => pawn.barangCodes.includes(item.kode));
-    const pawnTenor = tenor.find((item) => item.id === pawn.idPawnTenor);
+    const pawnTenor = tenor.find((item) => item.id === pawn.idPawnTenor) || { id: "", tenor: 0, type: "days" };
 
     const storedPawnItems: PawnItemSummary[] = dataPawnItems
         .filter((item) => item.pawn_id === pawn.id)
@@ -82,9 +101,7 @@ export function getPawnSummary(pawn: Pawn): PawnSummary | undefined {
         pawn.draftData?.pawnDocs ??
         null;
 
-    if (!customer || !bank || !pawnTenor) {
-        return undefined;
-    }
+    // We no longer return undefined here so that drafts and incomplete transactions still appear in the list
 
     const jatuhTempo = calculateDueData(
         pawn.tanggalTransaksi,

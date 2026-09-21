@@ -17,22 +17,36 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useRouter } from "next/navigation";
 
 // function dummy for last url
-const getLastStepUrl = (status: string, role: Role) => {
-    switch (status) {
+const getLastStepUrl = (pawn: PawnSummary, role: Role) => {
+    switch (pawn.status) {
         case "created":
-            return role === "SM" ? "/pawn/list/detail" : "/pawn/application/form-application"
+            if (role === "SM") return "/pawn/list/detail";
+            
+            // Deduce the last step for JR based on filled data:
+            if (!pawn.pawnItems || pawn.pawnItems.length === 0) {
+                return "/pawn/application/form-application"; // Step 1: Items
+            }
+            if (!pawn.draftData?.loanDetails?.isCalculated) {
+                return "/pawn/application/loan"; // Step 2: Loan Calculation
+            }
+            if (!pawn.customer || pawn.customer.id === 0) {
+                return "/pawn/application/customer_data"; // Step 3: Customer
+            }
+            if (!pawn.pawnDocs) {
+                return "/pawn/application/document"; // Step 4: Document
+            }
+            return "/pawn/application/summary"; // Step 5: Summary
+
         case "waiting_approval":
             return role === "SM" ? "/pawn/list/detail" : "/pawn/application/document"
         case "approved":
             return "/pawn/application/summary"
         case "done":
-            return "/pawn/list/detail"
         case "disbursed":
-            return "/pawn/list/detail"
         case "ready_disburse":
             return "/pawn/list/detail"
         default:
-            return "/pawn/application/loan"
+            return "/pawn/application/form-application"
     }
 }
 
@@ -223,7 +237,7 @@ export function PawnTable({ data }: PawnTableProps) {
                         </TableCell>
                         <TableCell className="flex gap-2">
 
-                            <Link href={getLastStepUrl(list.status, currentRole)}>
+                            <Link href={getLastStepUrl(list, currentRole)}>
                                 <Button variant="ghost" size="icon" onClick={() => loadTransaction(list.id)}>
                                     <FileText size={16} />
                                 </Button>
