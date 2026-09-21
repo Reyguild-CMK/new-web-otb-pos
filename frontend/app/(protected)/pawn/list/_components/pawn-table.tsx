@@ -86,6 +86,11 @@ export function PawnTable({ data }: PawnTableProps) {
     const [dibuatOlehFilter, setDibuatOlehFilter] = useState<string>("all");
     const [statusFilter, setStatusFilter] = useState<string>(searchParams.get("status") || "all");
 
+    // Sync statusFilter with URL when it changes (e.g. clicking Sidebar link)
+    useEffect(() => {
+        setStatusFilter(searchParams.get("status") || "all");
+    }, [searchParams]);
+
     const uniqueCustomers = useMemo(() => Array.from(new Set(data.map(d => d.customer?.name || "-"))).filter(Boolean), [data]);
     const uniqueCreators = useMemo(() => Array.from(new Set(data.map(d => d.dibuatOleh))).filter(Boolean), [data]);
     const uniqueStatuses = useMemo(() => Array.from(new Set(data.map(d => d.status))).filter(Boolean), [data]);
@@ -109,6 +114,7 @@ export function PawnTable({ data }: PawnTableProps) {
             const matchCustomer = customerFilter === "all" || (d.customer?.name || "-") === customerFilter;
             const matchCreator = dibuatOlehFilter === "all" || d.dibuatOleh === dibuatOlehFilter;
             const matchStatus = statusFilter === "all" || d.status === statusFilter;
+            
             return matchCustomer && matchCreator && matchStatus;
         });
     }, [data, customerFilter, dibuatOlehFilter, statusFilter]);
@@ -167,10 +173,16 @@ export function PawnTable({ data }: PawnTableProps) {
                                             <ChevronsUpDown size={14} className="text-gray-400" />
                                         )}
                                     </Button>
-                                    {col.isFilterable && (
+                                    {col.isFilterable && (() => {
+                                        const isFilterActive = 
+                                            (col.key === "customer" && customerFilter !== "all") ||
+                                            (col.key === "dibuatOleh" && dibuatOlehFilter !== "all") ||
+                                            (col.key === "status" && statusFilter !== "all");
+                                        
+                                        return (
                                         <Popover>
-                                            <PopoverTrigger className="h-6 w-6 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
-                                                <Filter size={12} className="text-gray-500" />
+                                            <PopoverTrigger className={`h-6 w-6 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground ${isFilterActive ? 'bg-blue-50' : ''}`}>
+                                                <Filter size={12} className={isFilterActive ? "text-blue-600 fill-blue-100" : "text-gray-500"} />
                                             </PopoverTrigger>
                                             <PopoverContent className="w-[200px] p-3" align="start">
                                                 <p className="text-xs font-semibold mb-2">Filter {col.label}</p>
@@ -202,9 +214,32 @@ export function PawnTable({ data }: PawnTableProps) {
                                                         <option key={opt as string} value={opt as string}>{opt as string}</option>
                                                     ))}
                                                 </select>
+                                                
+                                                {isFilterActive && (
+                                                    <div className="mt-3 flex justify-end border-t border-gray-100 pt-2">
+                                                        <Button 
+                                                            variant="ghost" 
+                                                            size="sm" 
+                                                            className="text-[10px] h-6 px-2 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                                            onClick={() => {
+                                                                if (col.key === "customer") setCustomerFilter("all");
+                                                                if (col.key === "dibuatOleh") setDibuatOlehFilter("all");
+                                                                if (col.key === "status") {
+                                                                    setStatusFilter("all");
+                                                                    const params = new URLSearchParams(searchParams.toString());
+                                                                    params.delete("status");
+                                                                    router.push(`${pathname}?${params.toString()}`);
+                                                                }
+                                                            }}
+                                                        >
+                                                            Hapus Filter
+                                                        </Button>
+                                                    </div>
+                                                )}
                                             </PopoverContent>
                                         </Popover>
-                                    )}
+                                        );
+                                    })()}
                                 </div>
                             ) : (
                                 <div className="pt-1">{col.label}</div>

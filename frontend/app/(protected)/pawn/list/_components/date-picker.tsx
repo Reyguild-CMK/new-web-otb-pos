@@ -36,7 +36,7 @@ export function PawnDataPicker({ date, setDate }: PawnDataPickerProps) {
                 format(date.from, "LLL dd, y")
                 )
             ) : (
-                <span>Pick a date</span>
+                <span>Tanggal Transaksi</span>
             )}</Button>} />
             <PopoverContent className="w-auto p-0" align="start">
             <Calendar

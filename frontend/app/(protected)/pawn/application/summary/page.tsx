@@ -143,9 +143,9 @@ export default function SummaryPage() {
                     currentStep={5}
                     totalSteps={5}
                     isLastStep
+                    isFirstStep={true}
                     nextLabel="Transfer Dana"
                     onNext={handleTransferDana}
-                    onBack={handleBack}
                     nextDisabled={isFetchingBalance || isBalanceInsufficient}
                 />
             )}

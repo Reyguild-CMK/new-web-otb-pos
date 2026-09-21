@@ -116,7 +116,7 @@ export default function DetailPage() {
             </div>
 
             <div className="flex flex-col gap-4 mt-4">
-                <TableItemList data={data.pawnItems} isReuploadMode={isReuploadMode} />
+                <TableItemList data={data.pawnItems} isReuploadMode={isReuploadMode} pawnInvoice={data.invoice} pawnSealForm={data.suratsegel} />
                 <CardDoc data={data} isReuploadMode={isReuploadMode} />
                 <CardRepayment data={data} />
                 <CardReceipts data={data} />

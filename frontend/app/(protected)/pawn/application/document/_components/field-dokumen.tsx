@@ -19,6 +19,15 @@ export function FieldDokumen({ data, pawnCode }: FieldDokumenProps) {
   const defaultAppNumber = `J2CE34${yy}${mm}${dd}0001`;
   const appNumber = data?.applicationNumber || defaultAppNumber;
 
+  let tanggalPenjualan = "";
+  if (data?.tanggalJatuhTempo) {
+    const jatuhTempo = new Date(data.tanggalJatuhTempo);
+    if (!isNaN(jatuhTempo.getTime())) {
+      jatuhTempo.setDate(jatuhTempo.getDate() + 7);
+      tanggalPenjualan = jatuhTempo.toISOString().split('T')[0];
+    }
+  }
+
   return (
     <FieldGroup className={`${style_card}`}>
       <Field>
@@ -36,7 +45,7 @@ export function FieldDokumen({ data, pawnCode }: FieldDokumenProps) {
       <Field>
         <FieldLabel>Tanggal Penjualan</FieldLabel>
         <Input
-          value={data?.tanggalTransaksi || ""}
+          value={tanggalPenjualan}
           disabled
           type="date"
         />

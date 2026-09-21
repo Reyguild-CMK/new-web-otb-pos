@@ -9,22 +9,25 @@ import { style_card } from "@/components/shared/Stepper/Stepper";
 // Data
 import { dataBank } from "@/app/(protected)/_data/data-bank";
 
+import { tenor } from "@/app/(protected)/_data/data-tenor";
+
 interface FieldNominalProps {
   data: any;
 }
 
 export function FieldNominal({ data }: FieldNominalProps) {
   const bankName = dataBank.find(b => String(b.id) === data?.bankId)?.name || "-";
+  const tenorValue = tenor.find(t => String(t.id) === String(data?.tenor))?.tenor || data?.tenor || 0;
 
   return (
     <FieldGroup className={`${style_card}`}>
       <Field>
         <FieldLabel>Tenor</FieldLabel>
-        <Input value={`${data?.tenor || 0} Days`} disabled />
+        <Input value={`${tenorValue} Days`} disabled />
       </Field>
       <Field>
         <FieldLabel>Persentase Biaya Perawatan (%)</FieldLabel>
-        <Input value={`${((data?.persentaseBiayaPerawatan || 0) * 100).toFixed(2)}%`} disabled />
+        <Input value={`${(Number(data?.persentaseBiayaPerawatan) || 0).toFixed(2)}%`} disabled />
       </Field>
       <Field>
         <FieldLabel>Metode Pencairan</FieldLabel>

@@ -8,12 +8,14 @@ import { dataPawnItemType } from "@/app/(protected)/_data/data-pawn-item-type";
 import { PawnItemSummary } from "@/app/(protected)/_data/data-summary";
 import { useState } from "react";
 
-interface TableItemProps{
+interface TableItemProps {
     data: PawnItemSummary[];
     isReuploadMode?: boolean;
+    pawnInvoice?: string | null;
+    pawnSealForm?: string | null;
 }
 
-export function TableItemList({data, isReuploadMode}: TableItemProps){
+export function TableItemList({ data, isReuploadMode, pawnInvoice, pawnSealForm }: TableItemProps) {
     const [localImages, setLocalImages] = useState<Record<string, string>>({});
 
     const handleFileChange = (itemId: number, type: string, event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,12 +26,12 @@ export function TableItemList({data, isReuploadMode}: TableItemProps){
         }
     };
 
-    return(
+    return (
         <div className={style_card}>
             <div className="flex flex-row items-center justify-start gap-2 pb-2">
                 <Gem size={20}></Gem>
                 <h1 className="font-bold">Item List</h1>
-            </div> 
+            </div>
             <div className="text-xs overflow-x-auto">
                 <Table>
                     <TableHeader>
@@ -40,7 +42,7 @@ export function TableItemList({data, isReuploadMode}: TableItemProps){
                             <TableHead>Weight</TableHead>
                             <TableHead>Appraisal</TableHead>
                             <TableHead>Max Loan Price</TableHead>
-                            <TableHead>Photo</TableHead>
+                            <TableHead>Product</TableHead>
                             <TableHead>Invoice</TableHead>
                             <TableHead>Seal Form</TableHead>
                         </TableRow>
@@ -91,12 +93,12 @@ export function TableItemList({data, isReuploadMode}: TableItemProps){
                                                 <Upload size={12} /> Ganti Foto
                                                 <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileChange(item.id, 'invoice', e)} />
                                             </label>
-                                            {(localImages[`${item.id}-invoice`] || item.invoice_photo) && (
-                                                <PreviewImage src={localImages[`${item.id}-invoice`] || item.invoice_photo || ""} alt={item.item_name} />
+                                            {(localImages[`${item.id}-invoice`] || item.invoice_photo || pawnInvoice) && (
+                                                <PreviewImage src={localImages[`${item.id}-invoice`] || item.invoice_photo || pawnInvoice || ""} alt={item.item_name} />
                                             )}
                                         </div>
                                     ) : (
-                                        item.invoice_photo && <PreviewImage src={item.invoice_photo} alt={item.item_name} />
+                                        (item.invoice_photo || pawnInvoice) && <PreviewImage src={item.invoice_photo || pawnInvoice || ""} alt={item.item_name} />
                                     )}
                                 </TableCell>
                                 <TableCell>
@@ -106,12 +108,12 @@ export function TableItemList({data, isReuploadMode}: TableItemProps){
                                                 <Upload size={12} /> Ganti Foto
                                                 <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileChange(item.id, 'seal', e)} />
                                             </label>
-                                            {(localImages[`${item.id}-seal`] || item.seal_form_photo) && (
-                                                <PreviewImage src={localImages[`${item.id}-seal`] || item.seal_form_photo || ""} alt={item.item_name} />
+                                            {(localImages[`${item.id}-seal`] || item.seal_form_photo || pawnSealForm) && (
+                                                <PreviewImage src={localImages[`${item.id}-seal`] || item.seal_form_photo || pawnSealForm || ""} alt={item.item_name} />
                                             )}
                                         </div>
                                     ) : (
-                                        item.seal_form_photo && <PreviewImage src={item.seal_form_photo} alt={item.item_name} />
+                                        (item.seal_form_photo || pawnSealForm) && <PreviewImage src={item.seal_form_photo || pawnSealForm || ""} alt={item.item_name} />
                                     )}
                                 </TableCell>
                             </TableRow>

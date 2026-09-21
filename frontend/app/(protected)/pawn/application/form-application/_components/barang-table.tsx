@@ -18,10 +18,11 @@ import type { PawnItemSummary } from "@/app/(protected)/_data/data-summary";
 import { usePawnStore } from "@/app/(protected)/_store/usePawnStore";
 
 interface BarangTableProps {
-  data: PawnItemSummary[]
+  data: PawnItemSummary[];
+  isLocked?: boolean;
 }
 
-export function BarangTable({ data }: BarangTableProps) {
+export function BarangTable({ data, isLocked = false }: BarangTableProps) {
   let totalNilai = 0;
   let totalMaksPinjaman = 0;
 
@@ -81,32 +82,34 @@ export function BarangTable({ data }: BarangTableProps) {
               <TableCell className="text-right">{formatRupiah(item.appraisal)}</TableCell>
               <TableCell className="text-right">{formatRupiah(item.max_loan_price)}</TableCell>
               <TableCell className="p-2!">
-                <Dialog>
-                  <DialogTrigger render={
-                    <Button className="bg-btn-delete-bg hover:bg-btn-delete-bg/80 text-btn-delete-text size-7 p-0">
-                      <CircleX />
-                    </Button>
-                  } />
-                  <DialogContent className="max-w-md">
-                    <DialogHeader>
-                      <DialogTitle>Konfirmasi Hapus</DialogTitle>
-                      <DialogDescription>
-                        Apakah Anda yakin ingin menghapus barang <b>{item.pawn_item_code}</b> dari daftar pinjaman?
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter className="sm:justify-end mt-4">
-                      <DialogClose render={<Button variant="outline">Batal</Button>} />
-                      <DialogClose render={
-                        <Button
-                          className="bg-btn-delete-bg hover:bg-btn-delete-bg/80 text-white"
-                          onClick={() => removePawnItem(item.id)}
-                        >
-                          Ya, Hapus
-                        </Button>
-                      } />
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                {!isLocked && (
+                  <Dialog>
+                    <DialogTrigger render={
+                      <Button className="bg-btn-delete-bg hover:bg-btn-delete-bg/80 text-btn-delete-text size-7 p-0">
+                        <CircleX />
+                      </Button>
+                    } />
+                    <DialogContent className="max-w-md">
+                      <DialogHeader>
+                        <DialogTitle>Konfirmasi Hapus</DialogTitle>
+                        <DialogDescription>
+                          Apakah Anda yakin ingin menghapus barang <b>{item.pawn_item_code}</b> dari daftar pinjaman?
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter className="sm:justify-end mt-4">
+                        <DialogClose render={<Button variant="outline">Batal</Button>} />
+                        <DialogClose render={
+                          <Button
+                            className="bg-btn-delete-bg hover:bg-btn-delete-bg/80 text-white"
+                            onClick={() => removePawnItem(item.id)}
+                          >
+                            Ya, Hapus
+                          </Button>
+                        } />
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
               </TableCell>
             </TableRow>
           ))}

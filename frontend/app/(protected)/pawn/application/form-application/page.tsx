@@ -19,6 +19,12 @@ export default function FormApplication() {
   const pawnItems = usePawnStore((state) => state.pawnItems);
   const router = useRouter();
 
+  const activeTransactionId = usePawnStore((state) => state.activeTransactionId);
+  const transactionList = usePawnStore((state) => state.transactionList);
+  
+  const activeTx = transactionList.find(t => t.id === activeTransactionId);
+  const isLocked = activeTx?.status === "waiting_approval" || activeTx?.status === "ready_disburse" || activeTx?.status === "disbursed";
+
   const handleNext = () => {
     if (pawnItems.length === 0) {
       toast.add({ title: "Barang Belum Ditambahkan", description: "Silakan masukkan minimal 1 barang jaminan terlebih dahulu.", type: "error" });
@@ -34,7 +40,7 @@ export default function FormApplication() {
         <h1 className="font-bold pb-2">Daftar Barang</h1>
 
         {/* Add Item */}
-        <ModalLayout />
+        {!isLocked && <ModalLayout />}
       </div>
 
       {/* Tabel Daftar Barang*/}
@@ -43,7 +49,7 @@ export default function FormApplication() {
           * Untuk penginputan transaksi hanya dapat dilakukan per 1 item. Apabila barang ada lebih dari 1 maka silahkan menyelesaikan penginputan hingga tahap "Waiting Approval" lalu melakukan penginputan lagi
         </div>
       )}
-      <BarangTable data={pawnItems} />
+      <BarangTable data={pawnItems} isLocked={isLocked} />
 
       <StepNavigation
         currentStep={1}

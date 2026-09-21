@@ -38,7 +38,7 @@ export default function CustomerApplication() {
   const setPawnDocs = usePawnStore((state) => state.setPawnDocs);
 
   const activeTx = transactionList.find(t => t.id === activeTransactionId);
-  const isAlreadyWaiting = activeTx?.status === "waiting_approval";
+  const isAlreadyWaiting = activeTx?.status === "waiting_approval" || activeTx?.status === "ready_disburse" || activeTx?.status === "disbursed";
 
   const [isWaitingApproval, setIsWaitingApproval] = useState(isAlreadyWaiting);
   const [files, setFiles] = useState<Record<string, File | null>>({});
@@ -95,10 +95,15 @@ export default function CustomerApplication() {
 
       const mockPawnDocs = {
         application_form: files.formPerjanjian ? URL.createObjectURL(files.formPerjanjian) : null,
-        sbg_form: files.suratKepemilikanBarang ? URL.createObjectURL(files.suratKepemilikanBarang) : null,
-        bukti_kepemilikan: files.suratSegelBarang ? URL.createObjectURL(files.suratSegelBarang) : null,
+        sbg_form: null,
+        bukti_kepemilikan: files.suratKepemilikanBarang ? URL.createObjectURL(files.suratKepemilikanBarang) : null,
+        surat_segel_barang: files.suratSegelBarang ? URL.createObjectURL(files.suratSegelBarang) : null,
         form_perjanjian: files.formPerjanjian ? URL.createObjectURL(files.formPerjanjian) : null,
         bukti_transaksi: files.buyingPrice ? URL.createObjectURL(files.buyingPrice) : null,
+        sertifikat_in_house: files.sertifikatInHouse ? URL.createObjectURL(files.sertifikatInHouse) : null,
+        sertifikat_gia: files.sertifikatGIA ? URL.createObjectURL(files.sertifikatGIA) : null,
+        buying_price: files.buyingPrice ? URL.createObjectURL(files.buyingPrice) : null,
+        lainnya: files.lainnya ? URL.createObjectURL(files.lainnya) : null,
       };
       setPawnDocs(mockPawnDocs);
 

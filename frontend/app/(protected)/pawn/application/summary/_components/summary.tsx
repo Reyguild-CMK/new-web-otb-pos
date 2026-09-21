@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 // Library
 import { formatRupiah } from "@/lib/currency"
 import { dataBank } from "@/app/(protected)/_data/data-bank"
+import { tenor } from "@/app/(protected)/_data/data-tenor"
 
 interface SummaryProps {
     data: any; // data from loanDetails
@@ -13,6 +14,7 @@ export function Summary({ data }: SummaryProps) {
     const style_grid_summary = "grid lg:grid-cols-[220px_1fr] md:grid-cols-[220px_1fr] sm:grid-cols-[200px_1fr] grid-cols-[160px_1fr] gap-x-2"
 
     const bankName = dataBank.find(b => String(b.id) === data?.bankId)?.name || "-";
+    const tenorValue = tenor.find(t => String(t.id) === String(data?.tenor))?.tenor || data?.tenor || 0;
 
     const txDate = data?.tanggalTransaksi ? new Date(data.tanggalTransaksi) : new Date();
     const yy = String(txDate.getFullYear()).slice(-2);
@@ -34,12 +36,12 @@ export function Summary({ data }: SummaryProps) {
             <CardContent className="flex flex-col gap-3 md:gap-4 p-0 md:p-2">
                 <div className={`${style_grid_summary}`}>
                     <span>Tenor</span>
-                    <span>: {data?.tenor || 0} Days</span>
+                    <span>: {tenorValue} Days</span>
                 </div>
 
                 <div className={`${style_grid_summary}`}>
                     <span>Persentase Biaya Perawatan</span>
-                    <span>: {`${((data?.persentaseBiayaPerawatan || 0) * 100).toFixed(2)}%`}</span>
+                    <span>: {`${(Number(data?.persentaseBiayaPerawatan) || 0).toFixed(2)}%`}</span>
                 </div>
 
                 <div className={`${style_grid_summary}`}>

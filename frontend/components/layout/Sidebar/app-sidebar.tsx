@@ -19,10 +19,12 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { useSidebar } from "@/components/ui/sidebar";
+import { useAuthStore } from "@/app/(protected)/_store/useAuthStore";
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
+  const { currentRole } = useAuthStore();
   return (
     <Sidebar collapsible="icon" className="text-white h-[calc(100vh-var(--height-navbar))] top-(--height-navbar)">
       {/* logo */}
@@ -62,14 +64,16 @@ export function AppSidebar() {
           </SidebarMenuItem>
 
           {/* pembayaran */}
-          <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Pembayaran"
-              render={<Link href="/repayment" />}
-              className={`flex items-center group-data-[collapsible=icon]:p-1! ${isCollapsed ? "mx-auto" : "px-5"}`}>
-              <CreditCard className={isCollapsed ? "size-6!" : "size-5!"} />
-              {!isCollapsed && <span>Pembayaran</span>}
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {currentRole === "JR" && (
+            <SidebarMenuItem>
+              <SidebarMenuButton tooltip="Pembayaran"
+                render={<Link href="/repayment" />}
+                className={`flex items-center group-data-[collapsible=icon]:p-1! ${isCollapsed ? "mx-auto" : "px-5"}`}>
+                <CreditCard className={isCollapsed ? "size-6!" : "size-5!"} />
+                {!isCollapsed && <span>Pembayaran</span>}
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
 
 
           {/* logout */}

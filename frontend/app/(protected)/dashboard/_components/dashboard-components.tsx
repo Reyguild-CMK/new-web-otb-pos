@@ -23,6 +23,8 @@ import { FileText } from "lucide-react"
 // Types
 import { Pawn } from "@/app/(protected)/_data/data-pawn"
 import { Customer } from "@/app/(protected)/_data/data-customer"
+import { PawnSummary } from "@/app/(protected)/_data/data-summary"
+import { Role } from "@/app/(protected)/_store/useAuthStore"
 
 export const formatRupiah = (number: number) => {
     return new Intl.NumberFormat("id-ID", {
@@ -43,8 +45,8 @@ export const getDaysUntilDue = (dueDate: Date | string | null) => {
 };
 
 // Helper to merge pawn with customer data
-export type EnrichedPawn = Pawn & { customerName: string };
-export const enrichPawnData = (pawns: Pawn[], customers: Customer[]): EnrichedPawn[] => {
+export type EnrichedPawn = PawnSummary & { customerName: string };
+export const enrichPawnData = (pawns: PawnSummary[], customers: Customer[]): EnrichedPawn[] => {
     return pawns.map(pawn => {
         const customer = customers.find(c => c.id === pawn.customerId);
         return {
@@ -54,21 +56,51 @@ export const enrichPawnData = (pawns: Pawn[], customers: Customer[]): EnrichedPa
     });
 };
 
+const getLastStepUrl = (pawn: EnrichedPawn, role: Role) => {
+    switch (pawn.status) {
+        case "created":
+            if (role === "SM") return "/pawn/list/detail";
+            if (!pawn.pawnItems || pawn.pawnItems.length === 0) return "/pawn/application/form-application";
+            if (!pawn.draftData?.loanDetails?.isCalculated) return "/pawn/application/loan";
+            if (!pawn.customer || pawn.customer.id === 0) return "/pawn/application/customer_data";
+            if (!pawn.pawnDocs) return "/pawn/application/document";
+            return "/pawn/application/summary";
+        case "waiting_approval":
+            return role === "SM" ? "/pawn/list/detail" : "/pawn/application/document";
+        case "approved":
+            return "/pawn/application/summary";
+        case "done":
+        case "disbursed":
+        case "ready_disburse":
+            return "/pawn/list/detail";
+        default:
+            return "/pawn/application/form-application";
+    }
+}
+
 interface JatuhTempoCardProps {
     title: string;
     headerColorClass: string;
     data: EnrichedPawn[];
     daysThreshold: number;
     minDays?: number;
+    role: Role;
+    loadTransaction: (id: number) => void;
 }
 
-export function JatuhTempoCard({ title, headerColorClass, data, daysThreshold, minDays = 0 }: JatuhTempoCardProps) {
+export function JatuhTempoCard({ title, headerColorClass, data, daysThreshold, minDays = 0, role, loadTransaction }: JatuhTempoCardProps) {
+    const router = require("next/navigation").useRouter();
     const filteredData = data.filter(pawn => {
-        const txDate = new Date(pawn.tanggalTransaksi);
-        const dueDate = pawn.dueDate ? new Date(pawn.dueDate) : new Date(txDate.getTime() + (pawn.tenor * 24 * 60 * 60 * 1000));
+        const dueDate = pawn.jatuhTempo instanceof Date ? pawn.jatuhTempo : new Date(pawn.jatuhTempo);
         const days = getDaysUntilDue(dueDate);
-        return pawn.status === "disbursed" && days < daysThreshold && days >= minDays;
+        const isActive = pawn.status === "disbursed";
+        return isActive && days <= daysThreshold && days >= minDays;
     }).slice(0, 4); // Take top 4 for the small card
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const minDateStr = new Date(today.getTime() + (minDays * 24 * 60 * 60 * 1000)).toISOString().split("T")[0];
+    const thresholdDateStr = new Date(today.getTime() + (daysThreshold * 24 * 60 * 60 * 1000)).toISOString().split("T")[0];
 
     return (
         <Card className="flex flex-col h-full border-0 shadow-sm rounded-md overflow-hidden bg-white">
@@ -87,10 +119,16 @@ export function JatuhTempoCard({ title, headerColorClass, data, daysThreshold, m
                     <TableBody>
                         {filteredData.length > 0 ? (
                             filteredData.map((item, idx) => {
-                                const txDate = new Date(item.tanggalTransaksi);
-                                const dueDate = item.dueDate ? new Date(item.dueDate) : new Date(txDate.getTime() + (item.tenor * 24 * 60 * 60 * 1000));
+                                const dueDate = item.jatuhTempo instanceof Date ? item.jatuhTempo : new Date(item.jatuhTempo);
                                 return (
-                                    <TableRow key={idx} className="bg-white hover:bg-gray-50 border-b border-gray-100">
+                                    <TableRow 
+                                        key={idx} 
+                                        className="bg-white hover:bg-gray-50 border-b border-gray-100 cursor-pointer"
+                                        onClick={() => {
+                                            loadTransaction(item.id);
+                                            router.push(getLastStepUrl(item, role));
+                                        }}
+                                    >
                                         <TableCell className={`text-center font-bold text-gray-600`}>{getDaysUntilDue(dueDate)}</TableCell>
                                         <TableCell className="border-x border-gray-100 text-gray-600">{item.customerName}</TableCell>
                                         <TableCell className="text-center text-gray-600">{formatRupiah(item.nilaiPinjaman)}</TableCell>
@@ -106,7 +144,9 @@ export function JatuhTempoCard({ title, headerColorClass, data, daysThreshold, m
                 </Table>
             </div>
             <CardFooter className="p-3 justify-end bg-white border-t border-gray-100">
-                <Button variant="ghost" size="sm" className="text-xs h-6 text-gray-400 hover:text-gray-600 font-medium px-2">Lihat semua</Button>
+                <Link href={`/pawn/list?status=disbursed&dueDateFrom=${minDateStr}&dueDateTo=${thresholdDateStr}`}>
+                    <Button variant="ghost" size="sm" className="text-xs h-6 text-gray-400 hover:text-gray-600 font-medium px-2">Lihat semua</Button>
+                </Link>
             </CardFooter>
         </Card>
     );
@@ -117,9 +157,11 @@ interface MainTableProps {
     title: string;
     data: EnrichedPawn[];
     type: "due" | "processing" | "approved" | "waiting_approval";
+    role: Role;
+    loadTransaction: (id: number) => void;
 }
 
-export function MainTable({ title, data, type }: MainTableProps) {
+export function MainTable({ title, data, type, role, loadTransaction }: MainTableProps) {
     const filteredData = data.filter(pawn => {
         if (type === "due") {
             const txDate = new Date(pawn.tanggalTransaksi);
@@ -176,9 +218,11 @@ export function MainTable({ title, data, type }: MainTableProps) {
                                             }).replace(',', '')}
                                         </TableCell>
                                         <TableCell className="text-center">
-                                            <Button variant="ghost" size="icon" className="h-6 w-6 text-gray-500">
-                                                <FileText className="h-4 w-4" />
-                                            </Button>
+                                            <Link href={getLastStepUrl(item, role)}>
+                                                <Button variant="ghost" size="icon" className="h-6 w-6 text-gray-500" onClick={() => loadTransaction(item.id)}>
+                                                    <FileText className="h-4 w-4" />
+                                                </Button>
+                                            </Link>
                                         </TableCell>
                                     </TableRow>
                                 );

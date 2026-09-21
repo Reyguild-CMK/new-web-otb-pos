@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 
 // Data
 import { dataCustomer } from "@/app/(protected)/_data/data-customer"
+import { getPawnSummary, PawnSummary } from "@/app/(protected)/_data/data-summary"
 
 // Components
 import {
@@ -25,13 +26,14 @@ import { usePawnStore } from "@/app/(protected)/_store/usePawnStore"
 export default function DashboardPage() {
     // Store handlers
     const { currentRole: role } = useAuthStore();
-    const { transactionList: pawnData } = usePawnStore();
+    const { transactionList: pawnData, loadTransaction } = usePawnStore();
 
     // Enrich pawn data with customer names
-    const enrichedData = enrichPawnData(pawnData, dataCustomer);
+    const summaryData = pawnData.map(p => getPawnSummary(p)).filter((p): p is PawnSummary => p !== undefined);
+    const enrichedData = enrichPawnData(summaryData, dataCustomer);
 
     // Calculate Summary Stats dynamically
-    const activePawns = enrichedData.filter(p => !['done', 'cancel', 'rejected'].includes(p.status));
+    const activePawns = enrichedData.filter(p => p.status === "disbursed");
     const activePawnsCount = activePawns.length;
     const totalGoldTunai = activePawns.reduce((sum, p) => sum + p.nilaiPinjaman, 0);
 
@@ -39,15 +41,19 @@ export default function DashboardPage() {
     const currentYear = new Date("2026-09-21").getFullYear();
 
     const currentMonthPawns = activePawns.filter(p => {
-        const txDate = new Date(p.tanggalTransaksi);
-        return txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear;
+        let dueDate = p.jatuhTempo instanceof Date ? p.jatuhTempo : new Date(p.jatuhTempo);
+        if (isNaN(dueDate.getTime())) {
+            const txDate = new Date(p.tanggalTransaksi);
+            dueDate = p.dueDate ? new Date(p.dueDate) : new Date(txDate.getTime() + ((p.tenordata?.tenor || p.tenor || 120) * 24 * 60 * 60 * 1000));
+        }
+        return dueDate.getMonth() === currentMonth && dueDate.getFullYear() === currentYear;
     });
     const currentMonthCount = currentMonthPawns.length;
     const currentMonthGold = currentMonthPawns.reduce((sum, p) => sum + p.nilaiPinjaman, 0);
 
     return (
         <div className="flex flex-col gap-6 py-4">
-            
+
             {/* Header Section */}
             <div className="flex flex-col gap-4">
                 <div className="flex justify-between items-start">
@@ -89,42 +95,19 @@ export default function DashboardPage() {
             {/* SM ONLY: Waiting Approval immediately after header */}
             {role === "SM" && (
                 <div className="mt-2">
-                    <MainTable 
+                    <MainTable
                         title="Waiting Approval List"
                         data={enrichedData}
                         type="waiting_approval"
+                        role={role}
+                        loadTransaction={loadTransaction}
                     />
                 </div>
             )}
 
             <h2 className="text-xl font-bold text-gray-600 mt-2">Dashboard Pawn</h2>
 
-            {/* Jatuh Tempo Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <JatuhTempoCard
-                    title="Jatuh Tempo < 7"
-                    headerColorClass="bg-[#FA6C6C] text-white"
-                    data={enrichedData}
-                    daysThreshold={7}
-                    minDays={0}
-                />
-                <JatuhTempoCard
-                    title="Jatuh Tempo < 14"
-                    headerColorClass="bg-[#F6B714] text-white"
-                    data={enrichedData}
-                    daysThreshold={14}
-                    minDays={7}
-                />
-                <JatuhTempoCard
-                    title="Jatuh Tempo < 30"
-                    headerColorClass="bg-[#12E275] text-white"
-                    data={enrichedData}
-                    daysThreshold={30}
-                    minDays={14}
-                />
-            </div>
-
-            {/* Summary Stats below Jatuh Tempo */}
+            {/* Summary Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-2 mb-4">
                 <Card className="border-0 shadow-none rounded-xl">
                     <CardContent className="p-4 flex items-center gap-4">
@@ -172,21 +155,56 @@ export default function DashboardPage() {
                 </Card>
             </div>
 
+            {/* Jatuh Tempo Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <JatuhTempoCard
+                    title="Jatuh Tempo <= 7 Hari"
+                    headerColorClass="bg-[#FA6C6C] text-white"
+                    data={enrichedData}
+                    daysThreshold={7}
+                    minDays={0}
+                    role={role}
+                    loadTransaction={loadTransaction}
+                />
+                <JatuhTempoCard
+                    title="Jatuh Tempo <= 14 Hari"
+                    headerColorClass="bg-[#F6B714] text-white"
+                    data={enrichedData}
+                    daysThreshold={14}
+                    minDays={8}
+                    role={role}
+                    loadTransaction={loadTransaction}
+                />
+                <JatuhTempoCard
+                    title="Jatuh Tempo <= 30 Hari"
+                    headerColorClass="bg-[#12E275] text-white"
+                    data={enrichedData}
+                    daysThreshold={30}
+                    minDays={15}
+                    role={role}
+                    loadTransaction={loadTransaction}
+                />
+            </div>
+
             {/* Main Tables */}
             <div className="flex flex-col gap-2 mt-4">
-                
+
                 {role === "JR" && (
                     <>
-                        <MainTable 
+                        <MainTable
                             title="Sedang proses persetujuan"
                             data={enrichedData}
                             type="waiting_approval"
+                            role={role}
+                            loadTransaction={loadTransaction}
                         />
-                        
-                        <MainTable 
+
+                        <MainTable
                             title="Transaksi yang sudah disetujui"
                             data={enrichedData}
                             type="approved"
+                            role={role}
+                            loadTransaction={loadTransaction}
                         />
                     </>
                 )}

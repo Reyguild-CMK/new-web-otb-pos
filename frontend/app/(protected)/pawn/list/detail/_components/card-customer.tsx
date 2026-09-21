@@ -22,7 +22,7 @@ export function CardCustomer({data, isReuploadMode}: CardCustomerProps){
                 <div className="flex flex-col gap-2">
                     <div className="grid grid-cols-[220px_1fr] gap-x-2">
                         <span>ID Number </span>
-                        <span>: {data.customerId}</span>
+                        <span>: {data.customer.tanda_pengenal || "-"}</span>
                     </div>
                     <div className="grid grid-cols-[220px_1fr] gap-x-2">
                         <span>Nama</span>
