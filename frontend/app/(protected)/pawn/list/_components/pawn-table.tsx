@@ -11,10 +11,11 @@ import { pawnData } from "../../../_data/data-pawn-dummy";
 // Icon
 import { FileText, ChevronsUpDown, ChevronUp, ChevronDown, Filter } from "lucide-react";
 import { PawnSummary } from "@/app/(protected)/_data/data-summary";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import { useAuthStore, Role } from "@/app/(protected)/_store/useAuthStore";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 // function dummy for last url
 const getLastStepUrl = (pawn: PawnSummary, role: Role) => {
@@ -75,13 +76,15 @@ export function PawnTable({ data }: PawnTableProps) {
     const transactionList = usePawnStore((state) => state.transactionList);
     const { currentRole } = useAuthStore();
     const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     const [sortKey, setSortKey] = useState<SortKey | null>(null);
     const [sortDirection, setSortDirection] = useState<SortDirection>(null);
 
     const [customerFilter, setCustomerFilter] = useState<string>("all");
     const [dibuatOlehFilter, setDibuatOlehFilter] = useState<string>("all");
-    const [statusFilter, setStatusFilter] = useState<string>("all");
+    const [statusFilter, setStatusFilter] = useState<string>(searchParams.get("status") || "all");
 
     const uniqueCustomers = useMemo(() => Array.from(new Set(data.map(d => d.customer?.name || "-"))).filter(Boolean), [data]);
     const uniqueCreators = useMemo(() => Array.from(new Set(data.map(d => d.dibuatOleh))).filter(Boolean), [data]);
@@ -133,7 +136,18 @@ export function PawnTable({ data }: PawnTableProps) {
         });
     }, [filteredData, sortKey, sortDirection]);
 
+    const itemsPerPage = 10;
+    const [currentPage, setCurrentPage] = useState(1);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [sortedData]);
+
+    const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+    const paginatedData = sortedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
     return (
+        <div className="flex flex-col gap-4">
         <Table>
             <TableHeader className="text-md">
                 <TableRow>
@@ -170,7 +184,17 @@ export function PawnTable({ data }: PawnTableProps) {
                                                     onChange={(e) => {
                                                         if (col.key === "customer") setCustomerFilter(e.target.value);
                                                         if (col.key === "dibuatOleh") setDibuatOlehFilter(e.target.value);
-                                                        if (col.key === "status") setStatusFilter(e.target.value);
+                                                        if (col.key === "status") {
+                                                            const val = e.target.value;
+                                                            setStatusFilter(val);
+                                                            const params = new URLSearchParams(searchParams.toString());
+                                                            if (val === "all") {
+                                                                params.delete("status");
+                                                            } else {
+                                                                params.set("status", val);
+                                                            }
+                                                            router.push(`${pathname}?${params.toString()}`);
+                                                        }
                                                     }}
                                                 >
                                                     <option value="all">Semua</option>
@@ -190,11 +214,21 @@ export function PawnTable({ data }: PawnTableProps) {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {sortedData.map((list, index) =>(
+                {paginatedData.map((list, index) =>(
                     <TableRow key={list.id}>
-                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
                         <TableCell>{list.type}</TableCell>
-                        <TableCell>{list.applicationNumber}</TableCell>
+                        <TableCell>
+                            <div className="flex flex-col gap-0.5">
+                                <span>{list.applicationNumber}</span>
+                                {list.isTakeOver && (
+                                    <span className="text-[11px] text-red-700 font-semibold">(Take Over)</span>
+                                )}
+                                {list.status === "created" && (
+                                    <span className="text-[11px] text-red-700 font-semibold">(Draft)</span>
+                                )}
+                            </div>
+                        </TableCell>
                         <TableCell>
                             {(() => {
                                 if (list.oldApplication === "-") return list.oldApplication;
@@ -215,7 +249,17 @@ export function PawnTable({ data }: PawnTableProps) {
                                 return list.oldApplication;
                             })()}
                         </TableCell>
-                        <TableCell>{list.customer?.name || "-"}</TableCell>
+                        <TableCell>
+                            <div className="flex flex-col">
+                                <span>{list.customer?.name || "-"}</span>
+                                {list.customer?.id !== 0 && (
+                                    <div className="flex flex-col text-[10px] text-gray-500 mt-0.5 leading-tight">
+                                        <span>{list.customer?.handphone !== "-" ? list.customer?.handphone : ""}</span>
+                                        <span>{list.customer?.email || ""}</span>
+                                    </div>
+                                )}
+                            </div>
+                        </TableCell>
                         <TableCell>
                             {list.jatuhTempo instanceof Date && !isNaN(list.jatuhTempo.getTime())
                                 ? list.jatuhTempo.toLocaleDateString("id-ID")
@@ -247,5 +291,67 @@ export function PawnTable({ data }: PawnTableProps) {
                 ))}
             </TableBody>
         </Table>
+        
+        {/* Pagination Controls */}
+        <div className="flex items-center justify-center py-4">
+            <nav role="navigation" aria-label="pagination" className="mx-auto flex w-full justify-center">
+                <ul className="flex flex-row items-center -space-x-px">
+                    <li>
+                        <button
+                            className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 w-9 rounded-l-md"
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                        >
+                            <ChevronLeft className="h-4 w-4" />
+                            <span className="sr-only">Previous</span>
+                        </button>
+                    </li>
+                    
+                    {[...Array(totalPages)].map((_, i) => {
+                        const page = i + 1;
+                        if (totalPages > 7) {
+                            if (page !== 1 && page !== totalPages && Math.abs(currentPage - page) > 1) {
+                                if (page === currentPage - 2 || page === currentPage + 2) {
+                                    return (
+                                        <li key={page}>
+                                            <span className="flex h-9 w-9 items-center justify-center border border-input bg-background">
+                                                <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                                            </span>
+                                        </li>
+                                    );
+                                }
+                                return null;
+                            }
+                        }
+                        return (
+                            <li key={page}>
+                                <button
+                                    onClick={() => setCurrentPage(page)}
+                                    className={`inline-flex h-9 w-9 items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input ${
+                                        currentPage === page
+                                            ? "bg-[#337ab7] text-white hover:bg-[#286090]"
+                                            : "bg-background text-foreground hover:bg-accent hover:text-accent-foreground"
+                                    }`}
+                                >
+                                    {page}
+                                </button>
+                            </li>
+                        );
+                    })}
+
+                    <li>
+                        <button
+                            className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 w-9 rounded-r-md"
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages || totalPages === 0}
+                        >
+                            <ChevronRight className="h-4 w-4" />
+                            <span className="sr-only">Next</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        </div>
     )
 }
