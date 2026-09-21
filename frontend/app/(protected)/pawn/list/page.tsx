@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 // icon
 import { List, Plus } from 'lucide-react';
@@ -24,7 +24,18 @@ import { useAuthStore } from "@/app/(protected)/_store/useAuthStore";
 import { type DateRange } from "react-day-picker"
 
 export default function PawnList() {
+    return (
+        <React.Suspense fallback={<div className="p-6">Loading...</div>}>
+            <PawnListContent />
+        </React.Suspense>
+    )
+}
+
+function PawnListContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const urlStatus = searchParams.get("status");
+
     const [searchQuery, setSearchQuery] = React.useState("")
     const [statusFilter, setStatusFilter] = React.useState("all")
     const [dateRange, setDateRange] = React.useState<DateRange | undefined>()
@@ -73,7 +84,19 @@ export default function PawnList() {
             }
         }
 
-        return matchSearch && matchStatus && matchDate;
+        // 4. URL Status Filter
+        let matchUrlStatus = true;
+        if (urlStatus) {
+            if (urlStatus === "processing") {
+                matchUrlStatus = application.status === "processing";
+            } else if (urlStatus === "waiting_approval") {
+                matchUrlStatus = application.status === "waiting_approval";
+            } else if (urlStatus === "approved") {
+                matchUrlStatus = application.status === "approved";
+            }
+        }
+
+        return matchSearch && matchStatus && matchDate && matchUrlStatus;
     });
 
     return (
