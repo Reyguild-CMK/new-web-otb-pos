@@ -127,6 +127,8 @@ function PawnListContent() {
                 matchUrlStatus = application.status === "waiting_approval";
             } else if (urlStatus === "approved") {
                 matchUrlStatus = application.status === "approved";
+            } else if (urlStatus === "disbursed") {
+                matchUrlStatus = application.status === "disbursed";
             }
         }
 
@@ -134,9 +136,11 @@ function PawnListContent() {
         let matchDueDate = true;
         
         if (dueDateFrom && dueDateTo) {
-            const fromDate = new Date(dueDateFrom);
-            const toDate = new Date(dueDateTo);
-            toDate.setHours(23, 59, 59, 999);
+            // Parse as local date (YYYY-MM-DD without timezone = UTC in JS, so we parse manually)
+            const [fy, fm, fd] = dueDateFrom.split("-").map(Number);
+            const [ty, tm, td] = dueDateTo.split("-").map(Number);
+            const fromDate = new Date(fy, fm - 1, fd, 0, 0, 0, 0);
+            const toDate = new Date(ty, tm - 1, td, 23, 59, 59, 999);
             
             let itemDueDate = application.jatuhTempo instanceof Date ? application.jatuhTempo : new Date(application.jatuhTempo);
             

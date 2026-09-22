@@ -172,7 +172,7 @@ export function SuratPerjanjian({ loanDetails, pawnItems, customerData }: SuratP
       </div>
 
       {/* Page break handler */}
-      <div className="break-after-page page-break-after-always" style={{ pageBreakAfter: 'always' }}></div>
+      {/* <div className="break-after-page page-break-after-always" style={{ pageBreakAfter: 'always' }}></div> */}
 
       {/* 
         ========================================
