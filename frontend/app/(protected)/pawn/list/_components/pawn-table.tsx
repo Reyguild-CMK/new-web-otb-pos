@@ -154,7 +154,7 @@ export function PawnTable({ data }: PawnTableProps) {
 
     return (
         <div className="flex flex-col gap-4">
-        <Table>
+        <Table className="min-w-225">
             <TableHeader className="text-md">
                 <TableRow>
                     {columns.map((col) => (
@@ -181,10 +181,14 @@ export function PawnTable({ data }: PawnTableProps) {
                                         
                                         return (
                                         <Popover>
-                                            <PopoverTrigger className={`h-6 w-6 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground ${isFilterActive ? 'bg-blue-50' : ''}`}>
-                                                <Filter size={12} className={isFilterActive ? "text-blue-600 fill-blue-100" : "text-gray-500"} />
+                                            <PopoverTrigger
+                                                aria-label={`Filter ${col.label}`}
+                                                title={`Filter ${col.label}`}
+                                                className={`inline-flex h-6 w-6 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground ${isFilterActive ? 'bg-blue-50' : ''}`}
+                                            >
+                                                <Filter size={12} aria-hidden="true" className={isFilterActive ? "fill-blue-100 text-blue-700" : "text-gray-700"} />
                                             </PopoverTrigger>
-                                            <PopoverContent className="w-[200px] p-3" align="start">
+                                            <PopoverContent className="w-50 p-3" align="start">
                                                 <p className="text-xs font-semibold mb-2">Filter {col.label}</p>
                                                 <select 
                                                     className="text-xs border border-gray-200 rounded p-1.5 bg-white w-full focus:outline-none focus:ring-1 focus:ring-primary"
@@ -220,7 +224,7 @@ export function PawnTable({ data }: PawnTableProps) {
                                                         <Button 
                                                             variant="ghost" 
                                                             size="sm" 
-                                                            className="text-[10px] h-6 px-2 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                                            className="h-6 px-2 text-[10px] text-red-700 hover:bg-red-50 hover:text-red-900"
                                                             onClick={() => {
                                                                 if (col.key === "customer") setCustomerFilter("all");
                                                                 if (col.key === "dibuatOleh") setDibuatOlehFilter("all");
@@ -288,7 +292,7 @@ export function PawnTable({ data }: PawnTableProps) {
                             <div className="flex flex-col">
                                 <span>{list.customer?.name || "-"}</span>
                                 {list.customer?.id !== 0 && (
-                                    <div className="flex flex-col text-[10px] text-gray-500 mt-0.5 leading-tight">
+                                    <div className="mt-0.5 flex flex-col text-[10px] leading-tight text-gray-700">
                                         <span>{list.customer?.handphone !== "-" ? list.customer?.handphone : ""}</span>
                                         <span>{list.customer?.email || ""}</span>
                                     </div>
@@ -316,11 +320,16 @@ export function PawnTable({ data }: PawnTableProps) {
                         </TableCell>
                         <TableCell className="flex gap-2">
 
-                            <Link href={getLastStepUrl(list, currentRole)}>
-                                <Button variant="ghost" size="icon" onClick={() => loadTransaction(list.id)}>
-                                    <FileText size={16} />
-                                </Button>
-                            </Link>
+                            <Button
+                                nativeButton={false}
+                                render={<Link href={getLastStepUrl(list, currentRole)} />}
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => loadTransaction(list.id)}
+                                aria-label={`Buka transaksi ${list.applicationNumber}`}
+                            >
+                                <FileText size={16} aria-hidden="true" />
+                            </Button>
                         </TableCell>
                     </TableRow>
                 ))}

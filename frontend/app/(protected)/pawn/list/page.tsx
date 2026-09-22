@@ -159,19 +159,19 @@ function PawnListContent() {
         <div>
             <div className="mt-6">
                 {/* Judul */}
-                <div className="mb-6 flex justify-between items-center">
-                    <h1 className="font-bold flex gap-2 items-center"><List size={22} />Application List</h1>
+                <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <h1 className="flex items-center gap-2 text-xl font-bold"><List size={22} aria-hidden="true" />Application List</h1>
                     {currentRole === 'JR' && (
-                        <Button size="sm" onClick={handleNewTransaction} className="bg-btn-primary-bg text-btn-primary-text text-xs">
-                            <Plus className="mr-2 h-4 w-4" /> Add New Transaction
+                        <Button size="sm" onClick={handleNewTransaction} className="w-full bg-btn-primary-bg text-btn-primary-text text-xs sm:w-auto">
+                            <Plus className="mr-2 h-4 w-4" aria-hidden="true" /> Add New Transaction
                         </Button>
                     )}
                 </div>
 
                 {/* Search Bar, Dropdown Filter & Date Picker */}
-                <div className="mb-2 flex justify-between">
+                <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                     <SearchBar onSearch={setSearchQuery} />
-                    <div className="flex gap-2">
+                    <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 lg:w-auto lg:min-w-95">
                         <DropDown data={selectData} value={statusFilter} onChange={setStatusFilter}></DropDown>
                         <PawnDataPicker date={dateRange} setDate={setDateRange}></PawnDataPicker>
                     </div>
@@ -179,15 +179,17 @@ function PawnListContent() {
 
                 {/* Active Filters Display */}
                 {(dueDateFrom || urlStatus || searchQuery || statusFilter !== "all" || txDateFrom) && (
-                    <div className="flex items-center gap-2 mb-4 flex-wrap">
-                        <span className="text-xs text-gray-500 font-medium mr-1">Active Filters:</span>
+                    <div className="mb-4 flex flex-wrap items-center gap-2">
+                        <span className="mr-1 text-xs font-medium text-gray-700">Active Filters:</span>
                         
                         {searchQuery && (
                             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 border border-gray-200 text-gray-700 text-xs font-medium">
                                 <span>Pencarian: {searchQuery}</span>
-                                <button 
+                                <button
+                                    type="button"
+                                    aria-label="Hapus filter pencarian"
                                     onClick={() => setSearchQuery("")}
-                                    className="hover:bg-gray-200 rounded-full p-0.5 transition-colors cursor-pointer"
+                                    className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-gray-200"
                                 >
                                     <X size={12} />
                                 </button>
@@ -197,9 +199,11 @@ function PawnListContent() {
                         {statusFilter !== "all" && (
                             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 border border-orange-100 text-orange-700 text-xs font-medium uppercase">
                                 <span>Tipe: {statusFilter.replace('_', ' ')}</span>
-                                <button 
+                                <button
+                                    type="button"
+                                    aria-label="Hapus filter tipe transaksi"
                                     onClick={() => setStatusFilter("all")}
-                                    className="hover:bg-orange-200 rounded-full p-0.5 transition-colors cursor-pointer"
+                                    className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-orange-200"
                                 >
                                     <X size={12} />
                                 </button>
@@ -209,9 +213,11 @@ function PawnListContent() {
                         {txDateFrom && (
                             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 border border-green-100 text-green-700 text-xs font-medium">
                                 <span>Tanggal Transaksi: {new Date(txDateFrom).toLocaleDateString('id-ID')} {txDateTo ? `- ${new Date(txDateTo).toLocaleDateString('id-ID')}` : ''}</span>
-                                <button 
+                                <button
+                                    type="button"
+                                    aria-label="Hapus filter tanggal transaksi"
                                     onClick={() => setDateRange(undefined)}
-                                    className="hover:bg-green-200 rounded-full p-0.5 transition-colors cursor-pointer"
+                                    className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-green-200"
                                 >
                                     <X size={12} />
                                 </button>
@@ -221,14 +227,16 @@ function PawnListContent() {
                         {dueDateFrom && dueDateTo && (
                             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-medium">
                                 <span>Jatuh Tempo: {new Date(dueDateFrom).toLocaleDateString('id-ID')} - {new Date(dueDateTo).toLocaleDateString('id-ID')}</span>
-                                <button 
+                                <button
+                                    type="button"
+                                    aria-label="Hapus filter jatuh tempo"
                                     onClick={() => {
                                         const params = new URLSearchParams(searchParams.toString());
                                         params.delete("dueDateFrom");
                                         params.delete("dueDateTo");
                                         router.push(`/pawn/list?${params.toString()}`);
                                     }}
-                                    className="hover:bg-blue-200 rounded-full p-0.5 transition-colors cursor-pointer"
+                                    className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-blue-200"
                                 >
                                     <X size={12} />
                                 </button>
@@ -238,13 +246,15 @@ function PawnListContent() {
                         {urlStatus && (
                             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 border border-purple-100 text-purple-700 text-xs font-medium uppercase">
                                 <span>Status: {urlStatus.replace('_', ' ')}</span>
-                                <button 
+                                <button
+                                    type="button"
+                                    aria-label="Hapus filter status"
                                     onClick={() => {
                                         const params = new URLSearchParams(searchParams.toString());
                                         params.delete("status");
                                         router.push(`/pawn/list?${params.toString()}`);
                                     }}
-                                    className="hover:bg-purple-200 rounded-full p-0.5 transition-colors cursor-pointer"
+                                    className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-purple-200"
                                 >
                                     <X size={12} />
                                 </button>
@@ -254,7 +264,7 @@ function PawnListContent() {
                         <Button 
                             variant="ghost" 
                             size="sm" 
-                            className="text-xs h-6 text-gray-500 hover:text-gray-800"
+                            className="h-7 text-xs text-gray-700 hover:text-gray-900"
                             onClick={() => {
                                 setSearchQuery("");
                                 setStatusFilter("all");

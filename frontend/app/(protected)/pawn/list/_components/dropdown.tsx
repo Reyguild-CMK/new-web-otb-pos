@@ -13,9 +13,9 @@ interface DropDownProps {
 
 export function DropDown({ data, value, onChange }: DropDownProps) {
     return(
-        <Field className="w-45 text-xs">
+        <Field className="w-full text-xs">
             <Select items={data} value={value} onValueChange={(val) => onChange?.(val || "all")}>
-                <SelectTrigger className="border border-black/30">
+            <SelectTrigger aria-label="Filter tipe transaksi" className="h-9 w-full border border-gray-400">
                     <SelectValue>
                     </SelectValue>
                 </SelectTrigger>
