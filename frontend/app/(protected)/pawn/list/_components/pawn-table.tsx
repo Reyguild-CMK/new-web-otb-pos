@@ -309,11 +309,11 @@ export function PawnTable({ data }: PawnTableProps) {
                         <TableCell>{list.dibuatOleh}</TableCell>
                         <TableCell>
                             <span className={`px-2 py-1 rounded-full text-xs font-semibold
-                                ${list.status === 'created' ? 'bg-gray-200 text-gray-800' : ''}
-                                ${list.status === 'waiting_approval' ? 'bg-yellow-200 text-yellow-800' : ''}
-                                ${list.status === 'approved' ? 'bg-blue-200 text-blue-800' : ''}
-                                ${list.status === 'done' ? 'bg-indigo-200 text-indigo-800' : ''}
-                                ${list.status === 'disbursed' ? 'bg-green-200 text-green-800' : ''}
+                                ${list.status === 'created' ? 'bg-text-muted text-gray-dark' : ''}
+                                ${list.status === 'waiting_approval' ? 'bg-yellow-medium text-yellow-800' : ''}
+                                ${list.status === 'approved' ? 'bg-blue-soft text-blue-800' : ''}
+                                ${list.status === 'disbursed' ? 'bg-green-soft text-green-800' : ''}
+                                ${list.status === 'done' ? 'bg-green-800 text-white' : ''}
                             `}>
                                 {list.status}
                             </span>
