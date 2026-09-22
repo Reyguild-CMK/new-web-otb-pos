@@ -48,11 +48,11 @@ export function PaymentMethodModal({ open, paymentDate, onPaymentDateChange, onC
                     <hr/>
 
                     <div className="flex flex-col items-center gap-2">
-                        <Button disabled={!isPaymentDateToday} onClick={() => onSelectMethod("bca")}>Transfer Virtual Account BCA</Button>
-                        <Button disabled={!isPaymentDateToday} onClick={() => onSelectMethod("bni")}>Transfer Virtual Account BNI</Button>
-                        <Button disabled={!isPaymentDateToday} onClick={() => onSelectMethod("bri")}>Transfer Virtual Account BRI</Button>
-                        <Button disabled={!isPaymentDateToday} onClick={() => onSelectMethod("mandiri")}>Transfer Virtual Account Mandiri</Button>
-                        <Button disabled={!isPaymentDateToday} onClick={() => onSelectMethod("permata")}>Transfer Virtual Account Permata atau Bank Lain</Button>
+                        <Button className="bg-blue-medium" disabled={!isPaymentDateToday} onClick={() => onSelectMethod("bca")}>Transfer Virtual Account BCA</Button>
+                        <Button className="bg-blue-medium" disabled={!isPaymentDateToday} onClick={() => onSelectMethod("bni")}>Transfer Virtual Account BNI</Button>
+                        <Button className="bg-blue-medium" disabled={!isPaymentDateToday} onClick={() => onSelectMethod("bri")}>Transfer Virtual Account BRI</Button>
+                        <Button className="bg-blue-medium" disabled={!isPaymentDateToday} onClick={() => onSelectMethod("mandiri")}>Transfer Virtual Account Mandiri</Button>
+                        <Button className="bg-blue-medium" disabled={!isPaymentDateToday} onClick={() => onSelectMethod("permata")}>Transfer Virtual Account Permata atau Bank Lain</Button>
                     </div>
                     <div className="flex justify-center gap-2">
                         <Button variant="secondary" onClick={onClose}>Cancel</Button>

@@ -6,6 +6,7 @@ import { PawnSummary } from "@/app/(protected)/_data/data-summary"
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { CurrencyInput } from '@/components/ui/currency-input';
+import { formatRupiah } from '@/lib/currency';
 import { createRepaymentSchema, type RepaymentFormValues } from '../../_lib/repayment-schema';
 
 interface GadaiUlangRepaymentFormProps{
@@ -57,15 +58,15 @@ export function GadaiUlangRepaymentForm({data, formId, onSubmit}: GadaiUlangRepa
                     </div>
                     <div className="grid grid-cols-[120px_1fr]">
                         <span>Pinjaman</span>
-                        <span>: {data.nilaiPinjaman}</span>
+                        <span>: {formatRupiah(data.nilaiPinjaman)}</span>
                     </div>
                     <div className="grid grid-cols-[120px_1fr]">
                         <span>Biaya Administrasi & Penyimpanan</span>
-                        <span>: {total}</span>
+                        <span>: {formatRupiah(total)}</span>
                     </div>
                     <div className="grid grid-cols-[120px_1fr]">
                         <span>Total</span>
-                        <span>: {total}</span>
+                        <span>: {formatRupiah(total)}</span>
                     </div>
                 </div>
             </div>

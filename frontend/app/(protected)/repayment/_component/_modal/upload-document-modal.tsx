@@ -1,12 +1,8 @@
 "use client"
 
-import { File } from "lucide-react"
+import { Info, File } from "lucide-react"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-
-import { PawnHistory } from "@/app/(protected)/_data/data-pawn-history"
 import { PawnStatusNotification } from "@/app/(protected)/_data/data-pawn"
 import { PawnSummary } from "@/app/(protected)/_data/data-summary"
 import UploadDocumentItem from "@/components/shared/UploadDocument/UploadDocumentItem"
@@ -35,42 +31,44 @@ interface UploadDocsModalProps{
 
 export function UploadDocsModal({
     open, status, documents, onClose, onDownloadDocument, onUpload}: UploadDocsModalProps){
-        const pendingHistory = documents?.data.pawnHistory
-            .filter((history) => history.status === "not_complete")
-            .sort((a, b) => b.extend_number - a.extend_number)[0];
-
-        const latestFormApplication =
-            pendingHistory?.form_application ?? null;
+    
+    const latestHistory = documents?.data.pawnHistory.slice().sort((a, b) => b.extend_number - a.extend_number)[0];
+    const existingFormApplication = latestHistory?.form_application ?? null;
         return(
             <Dialog open={open} onOpenChange={(isOpen) => {
                 if (!isOpen){
                     onClose()
                 }
             }}>
-                <DialogContent className="sm:max-w-3xl">
+                <DialogContent className="max-h-[90vh] sm:max-w-3xl">
                     <DialogHeader>
                         <DialogTitle>Document Form</DialogTitle>
 
-                        <div className="flex items-center justify-between border-t pt-3">
-                            <div className="flex items-center gap-2">
-                                <File size={16} />
-                                <h5>Informasi</h5>
+                        <div className="flex items-center justify-items-start border-t pt-3 gap-2">
+                            <div className="flex items-center gap-1">
+                                <Info size={16} />
+                                <h3>Informasi</h3>
                             </div>
-
-                            <button
-                                type="button"
-                                onClick={onDownloadDocument}
-                                className="text-sm text-primary underline underline-offset-4"
-                            >
-                                Download Dokumen Perpanjangan
-                            </button>
+                            <span>|</span>
+                            <div className="flex items-center gap-1">
+                                <File size={16}></File>
+                                <button
+                                    type="button"
+                                    onClick={onDownloadDocument}
+                                    className="text-xs text-blue-medium"
+                                >
+                                    Download Dokumen Perpanjangan
+                                </button>
+                            </div>
+                                
                         </div>
                     </DialogHeader>
-                    <div className="space-y-6">
+                    <div className="max-h-[70vh] overflow-y-auto pr-2">
                         {status === "gadai_ulang" ? (
                             <UploadDocumentItem
                                 title="Document"
                                 required
+                                existingFile={existingFormApplication}
                                 onUpload={(file) => onUpload("form_application", file)}>
                             </UploadDocumentItem>
                         ) : null}

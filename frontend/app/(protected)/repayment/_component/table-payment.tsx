@@ -3,6 +3,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PawnSummary } from "@/app/(protected)/_data/data-summary";
 import { useState } from "react";
+import { createPortal } from "react-dom";
+import { SuratPerjanjian } from "@/app/(protected)/pawn/application/document/_components/surat-perjanjian";
 import { PawnStatusNotification } from "../../_data/data-pawn";
 import { DropDownStatus } from "../../pawn/due_date_list/_components/dropdown-due-date";
 import { Card } from "@/components/ui/card";
@@ -82,6 +84,16 @@ export function PaymentTable({ data }: PaymentDataProps) {
         setActiveModal("upload-docs")
     }
 
+    const [printTarget, setPrintTarget] = useState<PawnSummary | null>(null);
+
+    const handleDownloadDocument = (pawn: PawnSummary) => {
+        setPrintTarget(pawn);
+        setTimeout(() => {
+            window.print();
+            setPrintTarget(null);
+        }, 300);
+    };
+
     return (
         <>
        <Card className="rounded-none p-4">
@@ -131,14 +143,14 @@ export function PaymentTable({ data }: PaymentDataProps) {
                             </TableCell>
                             <TableCell>
                                 {action === "view-docs" && (
-                                    <Button type="button" onClick={() => {
+                                    <Button type="button" className="bg-blue-medium" onClick={() => {
                                         setSelectedPawn(pawn);
                                         setActiveModal("view-docs");
                                     }}>View Docs</Button>
                                 )}
                                 {action === "upload-docs" && (
                                     <div>
-                                        <Button type="button" onClick={() => {
+                                        <Button className="bg-blue-medium" type="button" onClick={() => {
                                             handleOpenUploadDocs(
                                                 pawn,
                                                 statusMap[pawn.id] ??
@@ -149,7 +161,7 @@ export function PaymentTable({ data }: PaymentDataProps) {
                                     </div>
                                 )}
                                 {action === "payment-method" && (
-                                    <Button type="button" onClick={() => openPaymentMethod(pawn)}>Virtual Account</Button>
+                                    <Button className="bg-blue-medium" type="button" onClick={() => openPaymentMethod(pawn)}>Virtual Account</Button>
                                 )}
                                 {action === "Unpaid" && "~"}
                             </TableCell>
@@ -204,7 +216,8 @@ export function PaymentTable({ data }: PaymentDataProps) {
             documents={selectedPawn? {data: selectedPawn} : null}
             onClose={() => setActiveModal(null)}
             onDownloadDocument={() => {
-                window.open("/pawn/application/document", "_blank")
+                if (!selectedPawn) return;
+                handleDownloadDocument(selectedPawn);
             }}
             onUpload={(type, file) => {
                 if (!selectedPawn || type !== "form_application") {
@@ -221,31 +234,24 @@ export function PaymentTable({ data }: PaymentDataProps) {
                 }));
                 setActiveModal(null);
             }}></UploadDocsModal>
-        
-        {/* <CashPaymentModal
-            open={activeModal === "cash"}
-            amountPayment={selectedPawn?.nilaiPinjaman ?? 0}
-            paymentDate={paymentDate}
-            onClose={() => setActiveModal(null)}
-            onSubmit={(result) => {
-                console.log(result);
-                setActiveModal(null);
-            }}
-            />
 
-            <ManualTransferModal
-            open={activeModal === "manual-transfer"}
-            onClose={() => setActiveModal(null)}
-            onSubmit={(result) => {
-                console.log(result);
-                setActiveModal(null);
-            }}
-            />
-
-            />
-
-             */}
+        {/* Print portal - render langsung ke body agar tidak terhalang parent display:none saat print */}
+        {printTarget && typeof window !== "undefined" && createPortal(
+            <div className="print-container">
+                <SuratPerjanjian
+                    loanDetails={{
+                        nilaiPinjaman: printTarget.nilaiPinjaman,
+                        biayaPerawatan: printTarget.biayaPerawatan,
+                        tanggalTransaksi: printTarget.tanggalTransaksi,
+                        tanggalJatuhTempo: printTarget.jatuhTempo,
+                        applicationNumber: printTarget.applicationNumber,
+                    }}
+                    pawnItems={printTarget.pawnItems}
+                    customerData={printTarget.customer}
+                />
+            </div>,
+            document.body
+        )}
         </>
     );
 }
-

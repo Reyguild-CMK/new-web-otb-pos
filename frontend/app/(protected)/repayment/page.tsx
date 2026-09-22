@@ -24,7 +24,7 @@ export default function RepaymentPage(){
         <div className="mt-4">
             {/* Judul */}
             <div className="mb-4 justify-left">
-                <h3 className="font-bold flex gap-2 self-center"><CreditCard size={22} />Repayment</h3>
+                <h3 className="font-bold flex gap-2 self-center"><CreditCard size={22} />Payment</h3>
             </div>
         </div>
         <SearchBarPayment onSearch={setSearchQuery}></SearchBarPayment>

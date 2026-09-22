@@ -46,15 +46,27 @@ export function ViewDocsModal({
 
         return(
             <Dialog open={open} onOpenChange={(open) => {if (!open) onClose()}}>
-                <DialogContent className="sm:max-w-4xl">
+                <DialogContent className="max-h-[90vh] overflow-hidden sm:max-w-4xl">
                     <DialogHeader>
                         <DialogTitle>Uploaded Documents</DialogTitle>
                     </DialogHeader>
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div className="grid max-h-[75vh] grid-cols-1 gap-4 overflow-y-auto pr-2 md:grid-cols-3">
                         {documents.data.pawnDocs?.bukti_transaksi && (
                             <DocumentPreview
                                 title="Bukti Transaksi"
                                 src = {documents.data.pawnDocs.bukti_transaksi}>
+                            </DocumentPreview>
+                        )}
+                        {documents.data.pawnDocs?.nota_pembayaran && (
+                            <DocumentPreview
+                                title="Nota Pembayaran"
+                                src={documents.data.pawnDocs.nota_pembayaran}>
+                            </DocumentPreview>
+                        )}
+                        {documents.data.pawnDocs?.nota_tanda_terima && (
+                            <DocumentPreview
+                                title="Nota Tanda Terima"
+                                src={documents.data.pawnDocs.nota_tanda_terima }>
                             </DocumentPreview>
                         )}
                         {formApplicationUrl && (
