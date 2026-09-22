@@ -34,7 +34,6 @@ export function Header({
   tgpValue = 2222222,
   businessDate,
   onMenuClick,
-  onTgpClick,
   children,
   }: HeaderProps) {
     const [isActive, setIsActive] = useState(false);
@@ -47,7 +46,7 @@ export function Header({
         <div className={style_side}>
           {/* Sidebar Button */}
           {children ? (children) : (
-            <button onClick={onMenuClick} className={style_button}>
+            <button onClick={onMenuClick} className={style_button} aria-label="Buka menu navigasi">
               <Menu size={16} />
             </button>
           )}
@@ -86,6 +85,8 @@ export function Header({
             onClick={() =>
               setIsActive(prev => !prev)}
             className={style_button}
+            aria-label={isActive ? "Tutup ringkasan TGP" : "Buka ringkasan TGP"}
+            title={isActive ? "Tutup ringkasan TGP" : "Buka ringkasan TGP"}
             suppressHydrationWarning
           >
             {isActive ? (<SquareX stroke="gold" size={16} />) : (<ReceiptText stroke="gold" size={16} />)}

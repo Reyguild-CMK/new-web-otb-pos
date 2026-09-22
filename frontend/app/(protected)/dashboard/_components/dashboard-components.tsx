@@ -1,7 +1,7 @@
 "use client"
 
-import * as React from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import {
     Card,
     CardContent,
@@ -21,7 +21,6 @@ import { Button } from "@/components/ui/button"
 import { FileText } from "lucide-react"
 
 // Types
-import { Pawn } from "@/app/(protected)/_data/data-pawn"
 import { Customer } from "@/app/(protected)/_data/data-customer"
 import { PawnSummary } from "@/app/(protected)/_data/data-summary"
 import { Role } from "@/app/(protected)/_store/useAuthStore"
@@ -91,7 +90,7 @@ interface JatuhTempoCardProps {
 }
 
 export function JatuhTempoCard({ title, headerColorClass, data, daysThreshold, minDays = 0, role, loadTransaction }: JatuhTempoCardProps) {
-    const router = require("next/navigation").useRouter();
+    const router = useRouter();
     const filteredData = data.filter(pawn => {
         const dueDate = pawn.jatuhTempo instanceof Date ? pawn.jatuhTempo : new Date(pawn.jatuhTempo);
         const days = getDaysUntilDue(dueDate);
@@ -132,7 +131,7 @@ export function JatuhTempoCard({ title, headerColorClass, data, daysThreshold, m
                                 const dueDate = item.jatuhTempo instanceof Date ? item.jatuhTempo : new Date(item.jatuhTempo);
                                 return (
                                     <TableRow
-                                        key={idx}
+                                        key={item.id}
                                         className="bg-white hover:bg-gray-50 border-b border-gray-100 cursor-pointer"
                                         onClick={() => {
                                             loadTransaction(item.id);
@@ -154,9 +153,15 @@ export function JatuhTempoCard({ title, headerColorClass, data, daysThreshold, m
                 </Table>
             </div>
             <CardFooter className="p-3 justify-end bg-white border-t border-gray-100 mt-auto">
-                <Link href={`/pawn/list?status=disbursed&dueDateFrom=${minDateStr}&dueDateTo=${thresholdDateStr}`}>
-                    <Button variant="ghost" size="sm" className="h-6 text-navy-medium hover:underline font-medium px-2">Lihat semua</Button>
-                </Link>
+                <Button
+                    nativeButton={false}
+                    render={<Link href={`/pawn/list?status=disbursed&dueDateFrom=${minDateStr}&dueDateTo=${thresholdDateStr}`} />}
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 text-navy-medium hover:underline font-medium px-2"
+                >
+                    Lihat semua
+                </Button>
             </CardFooter>
         </Card>
     );
@@ -197,16 +202,20 @@ export function MainTable({ title, data, type, role, loadTransaction }: MainTabl
                 <div className="flex items-center gap-2">
                     <h2 className="font-medium">{title}</h2>
                     {totalCount > 0 && (
-                        <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-600">
+                        <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-gray-100 px-1.5 text-[10px] font-bold text-gray-600 h-5">
                             {totalCount}
                         </span>
                     )}
                 </div>
-                <Link href={detailHref}>
-                    <Button variant="secondary" size="xs" className="bg-btn-primary-bg hover:bg-yellow-500 text-black h-6 px-4 rounded-sm">
-                        Lihat Detail
-                    </Button>
-                </Link>
+                <Button
+                    nativeButton={false}
+                    render={<Link href={detailHref} />}
+                    variant="secondary"
+                    size="xs"
+                    className="bg-btn-primary-bg hover:bg-yellow-500 text-black h-6 px-4 rounded-sm"
+                >
+                    Lihat Detail
+                </Button>
             </div>
             <div className="w-full">
                 <Table className="w-full">
@@ -221,14 +230,14 @@ export function MainTable({ title, data, type, role, loadTransaction }: MainTabl
                     </TableHeader>
                     <TableBody>
                         {filteredData.length > 0 ? (
-                            filteredData.map((item, idx) => {
+                            filteredData.map((item) => {
                                 const txDate = new Date(item.tanggalTransaksi);
                                 const dateToShow = (type === "processing" || type === "waiting_approval")
                                     ? txDate
                                     : (item.dueDate ? new Date(item.dueDate) : new Date(txDate.getTime() + (item.tenor * 24 * 60 * 60 * 1000)));
 
                                 return (
-                                    <TableRow key={idx} className="bg-white hover:bg-gray-50 border-b border-gray-100">
+                                    <TableRow key={item.id} className="bg-white hover:bg-gray-50 border-b border-gray-100">
                                         <TableCell className="font-medium">{item.applicationNumber}</TableCell>
                                         <TableCell className="">{item.customerName}</TableCell>
                                         <TableCell className="">{formatRupiah(item.nilaiPinjaman)}</TableCell>
@@ -241,11 +250,17 @@ export function MainTable({ title, data, type, role, loadTransaction }: MainTabl
                                             }).replace(',', '')}
                                         </TableCell>
                                         <TableCell className="text-center">
-                                            <Link href={getLastStepUrl(item, role)}>
-                                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => loadTransaction(item.id)}>
-                                                    <FileText className="h-4 w-4" />
-                                                </Button>
-                                            </Link>
+                                            <Button
+                                                nativeButton={false}
+                                                render={<Link href={getLastStepUrl(item, role)} />}
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-6 w-6"
+                                                onClick={() => loadTransaction(item.id)}
+                                                aria-label={`Buka transaksi ${item.applicationNumber}`}
+                                            >
+                                                <FileText className="h-4 w-4" />
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -260,7 +275,7 @@ export function MainTable({ title, data, type, role, loadTransaction }: MainTabl
             </div>
             {hasMore && (
                 <div className="flex items-center justify-between mt-2 px-1">
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-600">
                         Menampilkan <span className="font-semibold text-gray-600">5</span> dari <span className="font-semibold text-gray-600">{totalCount}</span> data
                     </p>
                     <Link href={detailHref} className="text-xs text-navy-medium hover:underline font-medium">

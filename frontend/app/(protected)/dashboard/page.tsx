@@ -4,6 +4,7 @@ import { Calculator, List, ShoppingCart, Wallet, Banknote, CalendarDays, Coins }
 
 // Components
 import Link from "next/link"
+import { useMemo } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 
 // Data
@@ -27,27 +28,28 @@ export default function DashboardPage() {
     const { transactionList: pawnData, loadTransaction } = usePawnStore();
 
     // Enrich pawn data with customer names
-    const summaryData = pawnData.map(p => getPawnSummary(p)).filter((p): p is PawnSummary => p !== undefined);
-    const enrichedData = enrichPawnData(summaryData, dataCustomer);
+    const { enrichedData, activePawnsCount, totalGoldTunai, currentMonthCount, currentMonthGold } = useMemo(() => {
+        const summaryData = pawnData.map(p => getPawnSummary(p)).filter((p): p is PawnSummary => p !== undefined);
+        const enrichedData = enrichPawnData(summaryData, dataCustomer);
+        const activePawns = enrichedData.filter(p => p.status === "disbursed");
+        const currentDate = new Date();
+        const currentMonthPawns = activePawns.filter(p => {
+            let dueDate = p.jatuhTempo instanceof Date ? p.jatuhTempo : new Date(p.jatuhTempo);
+            if (isNaN(dueDate.getTime())) {
+                const txDate = new Date(p.tanggalTransaksi);
+                dueDate = p.dueDate ? new Date(p.dueDate) : new Date(txDate.getTime() + ((p.tenordata?.tenor || p.tenor || 120) * 24 * 60 * 60 * 1000));
+            }
+            return dueDate.getMonth() === currentDate.getMonth() && dueDate.getFullYear() === currentDate.getFullYear();
+        });
 
-    // Calculate Summary Stats dynamically
-    const activePawns = enrichedData.filter(p => p.status === "disbursed");
-    const activePawnsCount = activePawns.length;
-    const totalGoldTunai = activePawns.reduce((sum, p) => sum + p.nilaiPinjaman, 0);
-
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
-
-    const currentMonthPawns = activePawns.filter(p => {
-        let dueDate = p.jatuhTempo instanceof Date ? p.jatuhTempo : new Date(p.jatuhTempo);
-        if (isNaN(dueDate.getTime())) {
-            const txDate = new Date(p.tanggalTransaksi);
-            dueDate = p.dueDate ? new Date(p.dueDate) : new Date(txDate.getTime() + ((p.tenordata?.tenor || p.tenor || 120) * 24 * 60 * 60 * 1000));
-        }
-        return dueDate.getMonth() === currentMonth && dueDate.getFullYear() === currentYear;
-    });
-    const currentMonthCount = currentMonthPawns.length;
-    const currentMonthGold = currentMonthPawns.reduce((sum, p) => sum + p.nilaiPinjaman, 0);
+        return {
+            enrichedData,
+            activePawnsCount: activePawns.length,
+            totalGoldTunai: activePawns.reduce((sum, p) => sum + p.nilaiPinjaman, 0),
+            currentMonthCount: currentMonthPawns.length,
+            currentMonthGold: currentMonthPawns.reduce((sum, p) => sum + p.nilaiPinjaman, 0),
+        };
+    }, [pawnData]);
 
     return (
         <div className="flex flex-col gap-6 py-4">
@@ -106,7 +108,7 @@ export default function DashboardPage() {
             <h2 className="text-xl font-bold mt-2">Dashboard Pawn</h2>
 
             {/* Summary Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
                 <Card className="border-0 shadow-none rounded-xl">
                     <CardContent className="p-4 flex items-center gap-4">
                         <div className="p-3 bg-blue-50 rounded-full text-blue-600">

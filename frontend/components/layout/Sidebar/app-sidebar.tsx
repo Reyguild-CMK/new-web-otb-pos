@@ -43,7 +43,9 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarMenu className="gap-6">
           {/* dashboard */}
-          <hr className="border-t border-white mb-2" />
+          <SidebarMenuItem>
+            <hr className="mb-2 border-t border-white" />
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Dashboard"
               render={<Link href="/dashboard" />}
