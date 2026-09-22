@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { formatDateTime } from "@/lib/date";
 import { Button } from "@/components/ui/button";
-import { Edit, Mail, CheckCircle, XCircle } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
+import { Edit, Mail, CheckCircle, XCircle, KeyRound } from "lucide-react";
 import { usePawnStore } from "@/app/(protected)/_store/usePawnStore";
 import { useAuthStore } from "@/app/(protected)/_store/useAuthStore";
 import { useRouter } from "next/navigation";
@@ -21,6 +24,8 @@ import { CardReceipts } from "./_components/card-receipts";
 
 export default function DetailPage() {
     const [isReuploadMode, setIsReuploadMode] = useState(false);
+    const [isApprovalPinDialogOpen, setIsApprovalPinDialogOpen] = useState(false);
+    const [approvalPin, setApprovalPin] = useState("");
 
     const { currentRole } = useAuthStore();
     const router = useRouter();
@@ -35,6 +40,25 @@ export default function DetailPage() {
     if (!data) {
         return <p>Data pawn tidak ditemukan.</p>;
     }
+
+    const handleApprove = () => {
+        setApprovalPin("");
+        setIsApprovalPinDialogOpen(true);
+    };
+
+    const handleSubmitApprovalPin = () => {
+        // Temporary frontend-only PIN until approval verification is handled by the backend.
+        if (approvalPin !== "222222") {
+            toast.add({ title: "Gagal", description: "PIN approval salah, silakan coba lagi.", type: "error" });
+            return;
+        }
+
+        updateTransactionStatus(data.id, 'approved');
+        setIsApprovalPinDialogOpen(false);
+        setApprovalPin("");
+        toast.add({ title: "Berhasil", description: "Aplikasi berhasil di-approve.", type: "success" });
+        router.push("/pawn/list");
+    };
 
     return (
         <div className="flex flex-col gap-4 pb-10">
@@ -83,10 +107,7 @@ export default function DetailPage() {
                             <Button
                                 className="bg-green-600 hover:bg-green-700 text-white"
                                 size="sm"
-                                onClick={() => {
-                                    updateTransactionStatus(data.id, 'approved');
-                                    router.push("/pawn/list");
-                                }}
+                                onClick={handleApprove}
                             >
                                 <CheckCircle className="w-4 h-4 mr-2" />
                                 Approve
@@ -95,6 +116,54 @@ export default function DetailPage() {
                     )}
                 </div>
             </div>
+
+            <Dialog
+                open={isApprovalPinDialogOpen}
+                onOpenChange={(open) => {
+                    setIsApprovalPinDialogOpen(open);
+                    if (!open) setApprovalPin("");
+                }}
+            >
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <KeyRound className="w-5 h-5" />
+                            Masukkan PIN Approval
+                        </DialogTitle>
+                        <DialogDescription>
+                            Verifikasi PIN SM untuk approve aplikasi {data.applicationNumber}.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <form
+                        onSubmit={(event) => {
+                            event.preventDefault();
+                            handleSubmitApprovalPin();
+                        }}
+                    >
+                        <Input
+                            type="password"
+                            inputMode="numeric"
+                            autoComplete="one-time-code"
+                            placeholder="Masukkan 6 digit PIN"
+                            value={approvalPin}
+                            onChange={(event) => setApprovalPin(event.target.value.replace(/\D/g, ""))}
+                            maxLength={6}
+                            className="w-full"
+                            autoFocus
+                        />
+
+                        <DialogFooter className="mt-4">
+                            <Button type="button" variant="secondary" onClick={() => setIsApprovalPinDialogOpen(false)}>
+                                Batal
+                            </Button>
+                            <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white" disabled={approvalPin.length !== 6}>
+                                Verifikasi & Approve
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
 
             {/* Done Alert */}
             {data.status === "done" && (
@@ -116,7 +185,7 @@ export default function DetailPage() {
             </div>
 
             <div className="flex flex-col gap-4 mt-4">
-                <TableItemList data={data.pawnItems} isReuploadMode={isReuploadMode} />
+                <TableItemList data={data.pawnItems} isReuploadMode={isReuploadMode} pawnInvoice={data.invoice} pawnSealForm={data.suratsegel} />
                 <CardDoc data={data} isReuploadMode={isReuploadMode} />
                 <CardRepayment data={data} />
                 <CardReceipts data={data} />

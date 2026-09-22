@@ -38,7 +38,11 @@ export function NotificationBell({ styleButton }: { styleButton: string }) {
       }}>
 
       {/* Notif button */}
-      <PopoverTrigger className={`${styleButton} relative flex items-center justify-center`}>
+      <PopoverTrigger
+        aria-label={hasNotification ? `Buka notifikasi, ${receiveItemsDummy.length} notifikasi baru` : "Buka notifikasi"}
+        title="Notifikasi"
+        className={`${styleButton} relative flex items-center justify-center`}
+      >
         <Bell fill="white" size={16} />
         {/* Count badge */}
         {receiveItemsDummy.length > 0 && hasNotification && (

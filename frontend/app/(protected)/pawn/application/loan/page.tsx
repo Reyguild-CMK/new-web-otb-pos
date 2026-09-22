@@ -126,6 +126,11 @@ export default function FormLoanApplication() {
         router.push("/pawn/application/form-application");
     };
 
+    const activeTransactionId = usePawnStore((state) => state.activeTransactionId);
+    const transactionList = usePawnStore((state) => state.transactionList);
+    const activeTx = transactionList.find(t => t.id === activeTransactionId);
+    const isLocked = activeTx?.status === "waiting_approval" || activeTx?.status === "ready_disburse" || activeTx?.status === "disbursed";
+
     return (
         <div className={`${style_card} w-full`}>
             <div className="md:flex justify-between align-middle">
@@ -135,37 +140,48 @@ export default function FormLoanApplication() {
 
             <FormProvider {...form}>
                 <form className="grid grid-cols-1 items-start gap-4 md:grid-cols-2" onSubmit={form.handleSubmit(onSubmit, onError)}>
-
-                    {/* Kolom Kiri */}
-                    <div className="flex flex-col gap-4">
-                        <CardDayLoan data={tenor} isSubmitting={isSubmitting} />
-                        <CardBank data={dataBank} isSubmitting={isSubmitting} />
-                    </div>
-
-                    {/* Kolom Kanan */}
-                    <div className="flex flex-col gap-4">
-                        {/* Catatan */}
-                        <div className="h-fit border border-grey/50 rounded-xl p-4">
-                            <FieldGroup>
-                                <Field>
-                                    <FieldLabel htmlFor="catatan">Catatan/ Keterangan</FieldLabel>
-                                    <Textarea id="catatan" {...form.register("catatan")} />
-                                </Field>
-                            </FieldGroup>
+                    <fieldset disabled={isLocked} className="contents">
+                        {/* Kolom Kiri */}
+                        <div className="flex flex-col gap-4">
+                            <CardDayLoan data={tenor} isSubmitting={isSubmitting} />
+                            <CardBank data={dataBank} isSubmitting={isSubmitting} />
                         </div>
 
-                        {/* Hasil Perhitungan Loan */}
-                        <CardDetailLoan />
-                    </div>
+                        {/* Kolom Kanan */}
+                        <div className="flex flex-col gap-4">
+                            {/* Catatan */}
+                            <div className="h-fit border border-grey/50 rounded-xl p-4">
+                                <FieldGroup>
+                                    <Field>
+                                        <FieldLabel htmlFor="catatan">Catatan/ Keterangan</FieldLabel>
+                                        <Textarea id="catatan" {...form.register("catatan")} />
+                                    </Field>
+                                </FieldGroup>
+                            </div>
 
-                    <div className="col-span-1 md:col-span-2">
-                        <StepNavigation
-                            currentStep={2}
-                            totalSteps={5}
-                            onBack={handleBack}
-                            nextButtonType="submit"
-                            isLoading={isSubmitting}
-                        />
+                            {/* Hasil Perhitungan Loan */}
+                            <CardDetailLoan />
+                        </div>
+                    </fieldset>
+
+                    <div className="col-span-full">
+                        {isLocked ? (
+                            <StepNavigation
+                                currentStep={2}
+                                totalSteps={5}
+                                onBack={handleBack}
+                                nextButtonType="button"
+                                onNext={() => router.push("/pawn/application/customer_data")}
+                            />
+                        ) : (
+                            <StepNavigation
+                                currentStep={2}
+                                totalSteps={5}
+                                onBack={handleBack}
+                                nextButtonType="submit"
+                                isLoading={isSubmitting}
+                            />
+                        )}
                     </div>
                 </form>
             </FormProvider>

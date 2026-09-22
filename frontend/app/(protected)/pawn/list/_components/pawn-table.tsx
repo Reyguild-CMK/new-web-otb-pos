@@ -86,6 +86,11 @@ export function PawnTable({ data }: PawnTableProps) {
     const [dibuatOlehFilter, setDibuatOlehFilter] = useState<string>("all");
     const [statusFilter, setStatusFilter] = useState<string>(searchParams.get("status") || "all");
 
+    // Sync statusFilter with URL when it changes (e.g. clicking Sidebar link)
+    useEffect(() => {
+        setStatusFilter(searchParams.get("status") || "all");
+    }, [searchParams]);
+
     const uniqueCustomers = useMemo(() => Array.from(new Set(data.map(d => d.customer?.name || "-"))).filter(Boolean), [data]);
     const uniqueCreators = useMemo(() => Array.from(new Set(data.map(d => d.dibuatOleh))).filter(Boolean), [data]);
     const uniqueStatuses = useMemo(() => Array.from(new Set(data.map(d => d.status))).filter(Boolean), [data]);
@@ -109,6 +114,7 @@ export function PawnTable({ data }: PawnTableProps) {
             const matchCustomer = customerFilter === "all" || (d.customer?.name || "-") === customerFilter;
             const matchCreator = dibuatOlehFilter === "all" || d.dibuatOleh === dibuatOlehFilter;
             const matchStatus = statusFilter === "all" || d.status === statusFilter;
+            
             return matchCustomer && matchCreator && matchStatus;
         });
     }, [data, customerFilter, dibuatOlehFilter, statusFilter]);
@@ -148,7 +154,7 @@ export function PawnTable({ data }: PawnTableProps) {
 
     return (
         <div className="flex flex-col gap-4">
-        <Table>
+        <Table className="min-w-225">
             <TableHeader className="text-md">
                 <TableRow>
                     {columns.map((col) => (
@@ -167,12 +173,22 @@ export function PawnTable({ data }: PawnTableProps) {
                                             <ChevronsUpDown size={14} className="text-gray-400" />
                                         )}
                                     </Button>
-                                    {col.isFilterable && (
+                                    {col.isFilterable && (() => {
+                                        const isFilterActive = 
+                                            (col.key === "customer" && customerFilter !== "all") ||
+                                            (col.key === "dibuatOleh" && dibuatOlehFilter !== "all") ||
+                                            (col.key === "status" && statusFilter !== "all");
+                                        
+                                        return (
                                         <Popover>
-                                            <PopoverTrigger className="h-6 w-6 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
-                                                <Filter size={12} className="text-gray-500" />
+                                            <PopoverTrigger
+                                                aria-label={`Filter ${col.label}`}
+                                                title={`Filter ${col.label}`}
+                                                className={`inline-flex h-6 w-6 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground ${isFilterActive ? 'bg-blue-50' : ''}`}
+                                            >
+                                                <Filter size={12} aria-hidden="true" className={isFilterActive ? "fill-blue-100 text-blue-700" : "text-gray-700"} />
                                             </PopoverTrigger>
-                                            <PopoverContent className="w-[200px] p-3" align="start">
+                                            <PopoverContent className="w-50 p-3" align="start">
                                                 <p className="text-xs font-semibold mb-2">Filter {col.label}</p>
                                                 <select 
                                                     className="text-xs border border-gray-200 rounded p-1.5 bg-white w-full focus:outline-none focus:ring-1 focus:ring-primary"
@@ -202,9 +218,32 @@ export function PawnTable({ data }: PawnTableProps) {
                                                         <option key={opt as string} value={opt as string}>{opt as string}</option>
                                                     ))}
                                                 </select>
+                                                
+                                                {isFilterActive && (
+                                                    <div className="mt-3 flex justify-end border-t border-gray-100 pt-2">
+                                                        <Button 
+                                                            variant="ghost" 
+                                                            size="sm" 
+                                                            className="h-6 px-2 text-[10px] text-red-700 hover:bg-red-50 hover:text-red-900"
+                                                            onClick={() => {
+                                                                if (col.key === "customer") setCustomerFilter("all");
+                                                                if (col.key === "dibuatOleh") setDibuatOlehFilter("all");
+                                                                if (col.key === "status") {
+                                                                    setStatusFilter("all");
+                                                                    const params = new URLSearchParams(searchParams.toString());
+                                                                    params.delete("status");
+                                                                    router.push(`${pathname}?${params.toString()}`);
+                                                                }
+                                                            }}
+                                                        >
+                                                            Hapus Filter
+                                                        </Button>
+                                                    </div>
+                                                )}
                                             </PopoverContent>
                                         </Popover>
-                                    )}
+                                        );
+                                    })()}
                                 </div>
                             ) : (
                                 <div className="pt-1">{col.label}</div>
@@ -253,7 +292,7 @@ export function PawnTable({ data }: PawnTableProps) {
                             <div className="flex flex-col">
                                 <span>{list.customer?.name || "-"}</span>
                                 {list.customer?.id !== 0 && (
-                                    <div className="flex flex-col text-[10px] text-gray-500 mt-0.5 leading-tight">
+                                    <div className="mt-0.5 flex flex-col text-[10px] leading-tight text-gray-700">
                                         <span>{list.customer?.handphone !== "-" ? list.customer?.handphone : ""}</span>
                                         <span>{list.customer?.email || ""}</span>
                                     </div>
@@ -270,22 +309,27 @@ export function PawnTable({ data }: PawnTableProps) {
                         <TableCell>{list.dibuatOleh}</TableCell>
                         <TableCell>
                             <span className={`px-2 py-1 rounded-full text-xs font-semibold
-                                ${list.status === 'created' ? 'bg-gray-200 text-gray-800' : ''}
-                                ${list.status === 'waiting_approval' ? 'bg-yellow-200 text-yellow-800' : ''}
-                                ${list.status === 'approved' ? 'bg-blue-200 text-blue-800' : ''}
-                                ${list.status === 'done' ? 'bg-indigo-200 text-indigo-800' : ''}
-                                ${list.status === 'disbursed' ? 'bg-green-200 text-green-800' : ''}
+                                ${list.status === 'created' ? 'bg-text-muted text-gray-dark' : ''}
+                                ${list.status === 'waiting_approval' ? 'bg-yellow-medium text-yellow-800' : ''}
+                                ${list.status === 'approved' ? 'bg-blue-soft text-blue-800' : ''}
+                                ${list.status === 'disbursed' ? 'bg-green-soft text-green-800' : ''}
+                                ${list.status === 'done' ? 'bg-green-800 text-white' : ''}
                             `}>
                                 {list.status}
                             </span>
                         </TableCell>
                         <TableCell className="flex gap-2">
 
-                            <Link href={getLastStepUrl(list, currentRole)}>
-                                <Button variant="ghost" size="icon" onClick={() => loadTransaction(list.id)}>
-                                    <FileText size={16} />
-                                </Button>
-                            </Link>
+                            <Button
+                                nativeButton={false}
+                                render={<Link href={getLastStepUrl(list, currentRole)} />}
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => loadTransaction(list.id)}
+                                aria-label={`Buka transaksi ${list.applicationNumber}`}
+                            >
+                                <FileText size={16} aria-hidden="true" />
+                            </Button>
                         </TableCell>
                     </TableRow>
                 ))}

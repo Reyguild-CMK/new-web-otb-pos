@@ -12,7 +12,12 @@ export interface Docs{
     nota_pembayaran:string,
     nota_tanda_terima:string | null,
     perjanjian_take_over:string,
-    permintaan_dana_take_over:string,   
+    permintaan_dana_take_over:string,
+    sertifikat_in_house?:string | null,
+    sertifikat_gia?:string | null,
+    buying_price?:string | null,
+    surat_segel_barang?:string | null,
+    lainnya?:string | null,
 }
 
 export const dataDocs: Docs[]=[

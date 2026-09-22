@@ -74,52 +74,52 @@ const emptyPawnFields = {
 } satisfies Partial<Pawn>;
 
 const generateDraftData = (appNumber: string, date: string, customerId: number, bankId: number) => {
-    return {
-        pawnItems: [
-            {
-                id: Math.floor(Math.random() * 10000),
-                pawn_id: 4,
-                pawn_item_code: "ITEM-260901-0001",
-                pawn_item_type_id: 9,
-                item_name: "Cincin Berlian Mewah",
-                status: "stored",
-                plu: "DJ001",
-                weight: 5.5,
-                weight_current: 5.5,
-                carat: "75",
-                carat_current: "75",
-                photo: "/image/jewelry.jpg",
-                quantity: 1,
-                condition: "Excellent",
-                appraisal: 9835366,
-                max_loan_price: 8851829,
-                remark: "Barang masih mulus",
-                itemType: { id: 9, type: "dj", text: "Diamond Jewelry", status: 1 }
-            }
-        ],
-        loanDetails: {
-            applicationNumber: appNumber,
-            tanggalTransaksi: new Date(date).toISOString().split('T')[0],
-            tenor: "1",
-            maksNilaiPinjaman: 8851829,
-            nilaiPinjaman: 8500000,
-            setMaksimalPinjaman: false,
-            persentaseBiayaPerawatan: 0.75,
-            bankId: bankId.toString(),
-            cabang: "Sudirman",
-            nomorRekening: bankId === 1 ? "0011223344" : "0099887766",
-            namaPemilikRekening: bankId === 1 ? "BCA Simulator A" : "Bank Simulator A",
-            tanggalJatuhTempo: new Date(new Date(date).getTime() + 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            biayaAdmin: 35000,
-            biayaPerawatan: 63750,
-            totalNilaiPinjaman: 8401250,
-            calculatedNilaiPinjaman: 8500000,
-            catatan: "Catatan simulasi peminjaman",
-            isCalculated: true,
-            isRekeningChecked: true,
-        },
-        customerData: dataCustomer.find(c => c.id === customerId) || null
-    };
+   return {
+      pawnItems: [
+         {
+            id: Math.floor(Math.random() * 10000),
+            pawn_id: 4,
+            pawn_item_code: "ITEM-260901-0001",
+            pawn_item_type_id: 9,
+            item_name: "Cincin Berlian Mewah",
+            status: "stored",
+            plu: "DJ001",
+            weight: 5.5,
+            weight_current: 5.5,
+            carat: "75",
+            carat_current: "75",
+            photo: "/image/jewelry.jpg",
+            quantity: 1,
+            condition: "Excellent",
+            appraisal: 9835366,
+            max_loan_price: 8851829,
+            remark: "Barang masih mulus",
+            itemType: { id: 9, type: "dj", text: "Diamond Jewelry", status: 1 }
+         }
+      ],
+      loanDetails: {
+         applicationNumber: appNumber,
+         tanggalTransaksi: new Date(date).toISOString().split('T')[0],
+         tenor: "1",
+         maksNilaiPinjaman: 8851829,
+         nilaiPinjaman: 8500000,
+         setMaksimalPinjaman: false,
+         persentaseBiayaPerawatan: 0.75,
+         bankId: bankId.toString(),
+         cabang: "Sudirman",
+         nomorRekening: bankId === 1 ? "0011223344" : "0099887766",
+         namaPemilikRekening: bankId === 1 ? "BCA Simulator A" : "Bank Simulator A",
+         tanggalJatuhTempo: new Date(new Date(date).getTime() + 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+         biayaAdmin: 35000,
+         biayaPerawatan: 63750,
+         totalNilaiPinjaman: 8401250,
+         calculatedNilaiPinjaman: 8500000,
+         catatan: "Catatan simulasi peminjaman",
+         isCalculated: true,
+         isRekeningChecked: true,
+      },
+      customerData: dataCustomer.find(c => c.id === customerId) || null
+   };
 };
 
 export const pawnData: Pawn[] = [

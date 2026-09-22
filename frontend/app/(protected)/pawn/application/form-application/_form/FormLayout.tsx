@@ -176,6 +176,7 @@ export function ModalLayout() {
           carat: data.itemFineness || data.manualFineness || 0,
           carat_current: data.itemFineness || data.manualFineness || 0,
           photo: data.productPhoto ? URL.createObjectURL(data.productPhoto as unknown as Blob) : "/image/jewelry.jpg",
+          invoice_photo: data.invoicePhoto ? URL.createObjectURL(data.invoicePhoto as unknown as Blob) : null,
           quantity: data.itemQty || 1,
           condition: data.condition || data.manualCondition || "Excellent",
           appraisal: data.appraisal || data.estimatedValue || data.manualAppraisal || 0,

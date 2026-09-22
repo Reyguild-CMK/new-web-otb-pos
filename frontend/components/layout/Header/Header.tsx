@@ -34,7 +34,6 @@ export function Header({
   tgpValue = 2222222,
   businessDate,
   onMenuClick,
-  onTgpClick,
   children,
   }: HeaderProps) {
     const [isActive, setIsActive] = useState(false);
@@ -47,7 +46,7 @@ export function Header({
         <div className={style_side}>
           {/* Sidebar Button */}
           {children ? (children) : (
-            <button onClick={onMenuClick} className={style_button}>
+            <button onClick={onMenuClick} className={style_button} aria-label="Buka menu navigasi">
               <Menu size={16} />
             </button>
           )}
@@ -62,7 +61,7 @@ export function Header({
           <div className="flex items-center gap-2 md:mx-2 mx-1">
             {/* Role Switcher */}
             <Select value={currentRole} onValueChange={(val) => setRole(val as Role)}>
-              <SelectTrigger className="border-0 bg-transparent text-white focus:ring-0 w-[70px] h-8 text-xs font-bold">
+              <SelectTrigger className="border-0 bg-transparent text-white focus:ring-0 w-17.5 h-8 text-xs font-bold">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -86,6 +85,8 @@ export function Header({
             onClick={() =>
               setIsActive(prev => !prev)}
             className={style_button}
+            aria-label={isActive ? "Tutup ringkasan TGP" : "Buka ringkasan TGP"}
+            title={isActive ? "Tutup ringkasan TGP" : "Buka ringkasan TGP"}
             suppressHydrationWarning
           >
             {isActive ? (<SquareX stroke="gold" size={16} />) : (<ReceiptText stroke="gold" size={16} />)}

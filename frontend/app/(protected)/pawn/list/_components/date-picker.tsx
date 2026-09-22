@@ -24,9 +24,11 @@ interface PawnDataPickerProps {
 export function PawnDataPicker({ date, setDate }: PawnDataPickerProps) {
 
     return (
-    <Field className="mx-auto w-50 text-xs">
+    <Field className="w-full text-xs">
         <Popover>
-            <PopoverTrigger render={<Button variant="outline" id="date-picker-range" className="justify-start px-2.5 font-normal border border-black/30"><CalendarIcon data-icon="inline-start" />{date?.from ? (
+            <PopoverTrigger render={<Button variant="outline" id="date-picker-range" aria-label="Pilih tanggal transaksi" className="h-9 w-full justify-start border border-gray-400 px-2.5 font-normal">
+                <CalendarIcon data-icon="inline-start" aria-hidden="true" />
+                {date?.from ? (
                 date.to ? (
                 <>
                     {format(date.from, "LLL dd, y")} -{" "}
@@ -36,7 +38,7 @@ export function PawnDataPicker({ date, setDate }: PawnDataPickerProps) {
                 format(date.from, "LLL dd, y")
                 )
             ) : (
-                <span>Pick a date</span>
+                <span>Tanggal Transaksi</span>
             )}</Button>} />
             <PopoverContent className="w-auto p-0" align="start">
             <Calendar
@@ -48,7 +50,7 @@ export function PawnDataPicker({ date, setDate }: PawnDataPickerProps) {
             />
             {date?.from && (
                 <div className="p-2 border-t flex justify-end">
-                    <Button variant="ghost" size="sm" className="text-xs h-8" onClick={() => setDate && setDate(undefined)}>
+                    <Button variant="ghost" size="sm" className="h-8 text-xs text-gray-700" onClick={() => setDate && setDate(undefined)}>
                         Clear Filter
                     </Button>
                 </div>

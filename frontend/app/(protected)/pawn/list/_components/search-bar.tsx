@@ -20,14 +20,14 @@ export function SearchBar({ onSearch }: SearchBarProps) {
         onSearch(search)
     }
     return(
-        <form onSubmit={handleSearch}>
+        <form onSubmit={handleSearch} className="w-full lg:max-w-md">
             {/* Search Bar Field */}
-            <Field orientation="horizontal" className="mb-4 text-xs">
+            <Field orientation="horizontal" className="mb-0 w-full text-xs">
                 <Input 
                     type="search" 
                     placeholder="Search Application Number" 
                     value={search}
-                    className="text-xs h-8 w-65 border border-black/30" 
+                    className="h-9 min-w-0 flex-1 border border-gray-400 text-xs"
                     onChange={(e) => {
                         const val = e.target.value;
                         setSearch(val);
@@ -36,8 +36,8 @@ export function SearchBar({ onSearch }: SearchBarProps) {
                         }
                     }} 
                 />
-                <Button className="bg-gold text-navy-dark" onClick={handleSearch}>
-                    <Search size={12} />
+                <Button type="submit" aria-label="Cari nomor aplikasi" className="h-9 bg-gold text-navy-dark hover:bg-yellow-medium">
+                    <Search size={12} aria-hidden="true" />
                 </Button>
             </Field>
         </form>

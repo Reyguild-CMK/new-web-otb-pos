@@ -114,6 +114,11 @@ export default function CustomerApplication() {
         setStoreSearchQuery(searchQuery);
         router.push("/pawn/application/loan");
     };
+    const activeTransactionId = usePawnStore((state) => state.activeTransactionId);
+    const transactionList = usePawnStore((state) => state.transactionList);
+    const activeTx = transactionList.find(t => t.id === activeTransactionId);
+    const isLocked = activeTx?.status === "waiting_approval" || activeTx?.status === "ready_disburse" || activeTx?.status === "disbursed";
+
     return (
         <>
         {/* Card */}
@@ -121,33 +126,35 @@ export default function CustomerApplication() {
                 {/* Judul */}
                 <h1 className="font-bold">Data Pelanggan</h1>
 
-                {/* Cari Pelanggan */}
-                <FieldGroup className="gap-2">
-                    <Field orientation="responsive">
-                        <FieldLabel htmlFor="customerName">Cari Pelanggan</FieldLabel>
-                        <div className="flex md:flex-row flex-col gap-2 w-full">
-                            <Input 
-                                id="customerSearch"
-                                placeholder="Masukan No. Customer atau No. Telepon" 
-                                className="w-full flex-1 min-w-[300px]" 
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                            />
-                            <Button type="button" onClick={handleSearch} className="bg-btn-primary-bg text-btn-primary-text">
-                                <Search className="w-4 h-4 mr-2"/>Find
-                            </Button>
-                        </div>
-                    </Field>
-                    <p className="text-alert-error-icon">* Masukan No HP, No KTP atau email customer yang pernah melakukan transaksi atau No HP customer Lakuemas</p>
-                </FieldGroup>
+                <fieldset disabled={isLocked} className="contents">
+                    {/* Cari Pelanggan */}
+                    <FieldGroup className="gap-2">
+                        <Field orientation="responsive">
+                            <FieldLabel htmlFor="customerName">Cari Pelanggan</FieldLabel>
+                            <div className="flex md:flex-row flex-col gap-2 w-full">
+                                <Input 
+                                    id="customerSearch"
+                                    placeholder="Masukan No. Customer atau No. Telepon" 
+                                    className="w-full flex-1 min-w-75" 
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                />
+                                <Button type="button" onClick={handleSearch} className="bg-btn-primary-bg text-btn-primary-text">
+                                    <Search className="w-4 h-4 mr-2"/>Find
+                                </Button>
+                            </div>
+                        </Field>
+                        <p className="text-alert-error-icon">* Masukan No HP, No KTP atau email customer yang pernah melakukan transaksi atau No HP customer Lakuemas</p>
+                    </FieldGroup>
 
-                {/* Form Data Diri*/}
-                <div className="flex flex-col md:flex-row gap-6">
-                    <FieldIdentity formData={customerData} setFormData={setCustomerData} />
-                    {/* Form KTP */}
-                    <FieldKTP customer={customerObj} formData={customerData} setFormData={setCustomerData} />
-                </div>
+                    {/* Form Data Diri*/}
+                    <div className="flex flex-col md:flex-row gap-6">
+                        <FieldIdentity formData={customerData} setFormData={setCustomerData} />
+                        {/* Form KTP */}
+                        <FieldKTP customer={customerObj} formData={customerData} setFormData={setCustomerData} />
+                    </div>
+                </fieldset>
 
                 <StepNavigation 
                     currentStep={3} 
