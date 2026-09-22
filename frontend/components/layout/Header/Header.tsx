@@ -61,7 +61,7 @@ export function Header({
           <div className="flex items-center gap-2 md:mx-2 mx-1">
             {/* Role Switcher */}
             <Select value={currentRole} onValueChange={(val) => setRole(val as Role)}>
-              <SelectTrigger className="border-0 bg-transparent text-white focus:ring-0 w-[70px] h-8 text-xs font-bold">
+              <SelectTrigger className="border-0 bg-transparent text-white focus:ring-0 w-17.5 h-8 text-xs font-bold">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

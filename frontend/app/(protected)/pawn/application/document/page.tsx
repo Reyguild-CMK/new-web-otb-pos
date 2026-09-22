@@ -140,7 +140,7 @@ export default function CustomerApplication() {
 
   return (
     <>
-      <div className="hidden print:block absolute top-0 left-0 w-full min-h-screen bg-white z-[9999] m-0 p-0 text-black">
+      <div className="hidden print:block absolute top-0 left-0 w-full min-h-screen bg-white z-9999 m-0 p-0 text-black">
         <SuratPerjanjian
           loanDetails={loanDetails}
           pawnItems={pawnItems}

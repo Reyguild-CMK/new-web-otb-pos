@@ -135,7 +135,7 @@ export default function CustomerApplication() {
                                 <Input 
                                     id="customerSearch"
                                     placeholder="Masukan No. Customer atau No. Telepon" 
-                                    className="w-full flex-1 min-w-[300px]" 
+                                    className="w-full flex-1 min-w-75" 
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
