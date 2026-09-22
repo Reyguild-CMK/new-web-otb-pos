@@ -5,15 +5,11 @@ import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import {
   Check,
-  ChevronLeft,
-  ChevronRight,
   LucideIcon,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { stepItems } from "@/app/(protected)/pawn/application/layout";
+import { stepItems } from "@/app/(protected)/_data/stepper";
 
 export interface Step {
   label: string;
@@ -21,7 +17,7 @@ export interface Step {
   href?: string;
 }
 
-export const style_card = "rounded-xl border border-border bg-background py-8 px-4 md:px-8 flex flex-col gap-8 shadow-md"
+export const style_card = "rounded-xl border border-border bg-background py-8 px-4 md:px-8 flex flex-col gap-6 shadow-md"
 
 export function Stepper({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -31,20 +27,8 @@ export function Stepper({ children }: { children: React.ReactNode }) {
   const activeStep = stepItems.findIndex((step) => step.href === pathname);
   const progress = activeStep / (stepItems.length - 1);
 
-  const handleNext = () => {
-    if (activeStep < stepItems.length - 1) {
-      const nextStep = stepItems[activeStep + 1];
-      if (nextStep?.href) router.push(nextStep.href);
-    }
-  };
-
-  const handleBack = () => {
-    // setActiveStep((prev) => Math.max(0, prev - 1));
-    if (activeStep > 0) {
-      const prevStep = stepItems[activeStep - 1];
-      if (prevStep?.href) router.push(prevStep.href);
-    }
-  }
+  const isFirstStep = activeStep === 0;
+  const isLastStep = activeStep === stepItems.length - 1;
 
   const handleStepClick = (index: number) => {
     const targetStep = stepItems[index];
@@ -91,6 +75,7 @@ export function Stepper({ children }: { children: React.ReactNode }) {
                   {/* Button per icon */}
                   <button
                     type="button"
+                    suppressHydrationWarning
                     // menuju ke index
                     onClick={() =>
                       handleStepClick(index)
@@ -200,31 +185,6 @@ export function Stepper({ children }: { children: React.ReactNode }) {
         {/* Content */}
         <div className="my-5">
           {children}
-        </div>
-        {/* Separator */}
-        <Separator />
-        <div className="flex items-center justify-between my-5">
-          {/* Button action */}
-          <Button
-            variant="outline"
-            onClick={handleBack}
-            disabled={activeStep === 0}
-            className="cursor-pointer w-25 h-8"
-          >
-            <ChevronLeft />
-            Back
-          </Button>
-          <p className="text-sm text-muted-foreground">
-            {activeStep + 1} dari {stepItems.length}
-          </p>
-          <Button
-            onClick={handleNext}
-            disabled={activeStep === stepItems.length - 1}
-            className="cursor-pointer bg-btn-next-bg text-btn-next-text w-25 h-8 hover:bg-btn-next-bg/80"
-          >
-            Next
-            <ChevronRight />
-          </Button>
         </div>
       </div>
     </div>

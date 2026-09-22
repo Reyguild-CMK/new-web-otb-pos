@@ -1,9 +1,17 @@
-// Format ke rupiah
-export function formatRupiah(value: number): string {
-    const formatted = new Intl.NumberFormat("id-ID", {
+// Format ribuan dst
+export function formatCurrency(value: number): string {
+    return new Intl.NumberFormat("id-ID", {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
     }).format(value);
+}
 
-    return `Rp${formatted}`;
+// Format Rupiah dengan prefix Rp
+export function formatRupiah(value: number): string {
+    return `Rp${formatCurrency(value)}`;
+}
+
+// Format Currency pada Input Field
+export function parseCurrency(value: string): string {
+    return value.replace(/\D/g, "");
 }

@@ -7,6 +7,8 @@ import { SidebarTGP } from "@/components/layout/SidebarTGP/SidebarTGP";
 import { formatBusinessDate } from "@/lib/date";
 import { formatRupiah } from "@/lib/currency";
 import { ReceiptText, Menu, SquareX } from "lucide-react";
+import { useAuthStore, Role } from "@/app/(protected)/_store/useAuthStore";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "@/components/ui/select";
 
 interface HeaderProps {
   userName?: string;
@@ -20,7 +22,7 @@ interface HeaderProps {
   children?: ReactNode;
 }
 
-// Style Button & Side
+// Styling for Header Button & Side
 const style_button = "hover:bg-navy-medium rounded-sm p-2 transition-colors";
 const style_side = "flex items-center text-xs md:gap-2 md:px-2 gap-0.5 px-0.5";
 
@@ -34,9 +36,10 @@ export function Header({
   onMenuClick,
   onTgpClick,
   children,
-}: HeaderProps) {
-  const [isActive, setIsActive] = useState(false);
-  const displayDate = businessDate || formatBusinessDate();
+  }: HeaderProps) {
+    const [isActive, setIsActive] = useState(false);
+    const { currentRole, setRole } = useAuthStore();
+    const displayDate = businessDate || formatBusinessDate();
   return (
     <>
       <header className="bg-navy-dark text-white flex justify-between h-navbar md:px-6 w-full z-50 top-0 sticky">
@@ -50,13 +53,26 @@ export function Header({
           )}
           {/* Title */}
           <Link href="/dashboard" className="hidden sm:inline">
-            {userName} - {brandName} {storeName} ({storeCode})
+            {currentRole} - {brandName} {storeName} ({storeCode})
           </Link>
         </div>
 
         {/* Right Side */}
         <div className={style_side}>
           <div className="flex items-center gap-2 md:mx-2 mx-1">
+            {/* Role Switcher */}
+            <Select value={currentRole} onValueChange={(val) => setRole(val as Role)}>
+              <SelectTrigger className="border-0 bg-transparent text-white focus:ring-0 w-[70px] h-8 text-xs font-bold">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="JR">JR</SelectItem>
+                  <SelectItem value="SM">SM</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
             {/* Notification */}
             <NotificationBell styleButton={style_button} />
             {/* Business Date & TGP */}
@@ -69,7 +85,9 @@ export function Header({
           <button
             onClick={() =>
               setIsActive(prev => !prev)}
-            className={style_button}>
+            className={style_button}
+            suppressHydrationWarning
+          >
             {isActive ? (<SquareX stroke="gold" size={16} />) : (<ReceiptText stroke="gold" size={16} />)}
           </button>
         </div>

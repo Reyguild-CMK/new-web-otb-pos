@@ -1,36 +1,34 @@
 "use client"
 
-import {
-    Home,
-    FilePenLine,
-    LucideIcon,
-    PackageSearch,
-    ClipboardCheck,
-    FileText,
-    ScrollText ,
-    UserRound,
-} from "lucide-react";
+import { Stepper } from "@/components/shared/Stepper/Stepper";
+import { stepItems } from "@/app/(protected)/_data/stepper";
 
-import { Step } from "@/components/shared/Stepper/Stepper";
-import { defaultBreadcrumb } from "../layout";
+import { usePathname } from "next/navigation";
+import { CustomBreadcrumbs } from "@/components/shared/Breadcrumbs/Breadcrumbs";
+import { defaultBreadcrumb, appBreadcrumb } from "@/app/(protected)/_data/breadcrumbItem";
 
-// Isi Stepper
-export const stepItems: Step[] = [
-  { label: "Daftar Barang", icon: PackageSearch, href: "/pawn/application/form-application" },
-  { label: "Detail Pinjaman", icon: ScrollText, href: "/pawn/application/loan" },
-  { label: "Data Pelanggan", icon: UserRound, href: "/pawn/application/customer_data" },
-  { label: "Document", icon: FileText, href: "/pawn/application/document" },
-  { label: "Summary", icon: ClipboardCheck, href: "/pawn/application/summary" },
-];
+export default function PawnApplicationLayout({ children }: { children: React.ReactNode }) {
+  // Mendapat pathname saat ini -> Menentukan step yang sedang aktif
+  const pathname = usePathname();
+  const activeStep = stepItems.find((step) => step.href === pathname) || stepItems[0];
 
-// Isi Default Breadcrumb
-export const breadcrumbItems = [
-  ...defaultBreadcrumb,
-  { label: "Form Pengajuan", href: "#", icon: FilePenLine },
-]
+  // Menggabungkan breadcrumb
+  const thisBreadcrumb = [
+    ...defaultBreadcrumb,
+    ...appBreadcrumb,
+    activeStep
+  ];
 
-export default function PawnFormLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div> {children} </div>
-    )
+    <div>
+      {/* Header (Breadcrumb) */}
+      <div className="mt-4 mb-6">
+        <CustomBreadcrumbs items={thisBreadcrumb} />
+      </div>
+
+      <Stepper>
+        {children}
+      </Stepper>
+    </div>
+  )
 }

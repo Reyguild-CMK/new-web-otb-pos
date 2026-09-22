@@ -214,3 +214,36 @@
     @apply font-sans;
   }
 }
+
+@media print {
+  /* Sembunyikan semua direct child body kecuali print container */
+  body > :not(.print-container) {
+    display: none !important;
+  }
+
+  /* Tampilkan print container (direct child of body via Portal) */
+  body > .print-container {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+
+  /* Ukuran halaman A4 */
+  @page {
+    margin: 10mm;
+    size: A4 portrait;
+  }
+
+  html, body {
+    width: 100%;
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+  }
+}
+
